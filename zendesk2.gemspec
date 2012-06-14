@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "zendesk2"
   gem.require_paths = ["lib"]
   gem.version       = Zendesk2::VERSION
+
+  gem.add_dependency "cistern"
 end

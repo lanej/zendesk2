@@ -1,7 +1,7 @@
-require "zendesk/version"
+require "zendesk2/version"
 
 module Zendesk
-  # Your code goes here...
+  autoload :Client, "zendesk/client"
 end
 
 Zendesk2= Zendesk
