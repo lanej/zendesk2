@@ -15,7 +15,8 @@ class Zendesk::Client < Cistern::Service
   collection :users
   request :get_current_user
   request :create_user
-  #request :get_user
+  request :get_user
+  request :get_users
   #request :update_user
   #request :destroy_user
   #
@@ -53,7 +54,7 @@ class Zendesk::Client < Cistern::Service
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, @password
         builder.use Faraday::Response::RaiseError
-        builder.use Faraday::Response::Logger, logger
+        builder.use Faraday::Response::Logger, logger if logger
         builder.response :json
 
         # request

@@ -11,8 +11,8 @@ class Zendesk::Client::Users < Cistern::Collection
     new(data)
   end
 
-  def all
-    body = connection.get_users.body
+  def all(params={})
+    body = connection.get_users(params).body
     load(body["users"])
     merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "prev_page"))
   end
