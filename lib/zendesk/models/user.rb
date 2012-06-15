@@ -28,4 +28,16 @@ class Zendesk::Client::User < Cistern::Model
   attribute :suspended
   attribute :photo
   attribute :authenticity_token
+
+  def save
+    if new_record?
+      requires :name, :email
+      data = connection.create_user(attributes).body["user"]
+      merge_attributes(data)
+    else
+      requires :identify
+      data = connection.update_user(attributes).body["user"]
+      merge_attributes(data)
+    end
+  end
 end

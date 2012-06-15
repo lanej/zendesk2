@@ -14,7 +14,7 @@ class Zendesk::Client < Cistern::Service
   model :user
   collection :users
   request :get_current_user
-  #request :create_user
+  request :create_user
   #request :get_user
   #request :update_user
   #request :destroy_user
