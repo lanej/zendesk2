@@ -16,4 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Zendesk2::VERSION
 
   gem.add_dependency "cistern"
+  gem.add_dependency "faraday"
+  gem.add_dependency "faraday_middleware"
+  gem.add_dependency "excon"
 end
