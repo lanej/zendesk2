@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'logger'
 
 describe "users" do
-  let(:client) { create_client(logger: Logger.new(STDOUT)) }
+  let(:client) { create_client }
   it_should_behave_like "a collection", :users
   it_should_behave_like "a model", :user
 
