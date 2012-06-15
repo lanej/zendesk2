@@ -83,9 +83,18 @@ class Zendesk::Client < Cistern::Service
   end
 
   class Mock
+    
+    attr_reader :username, :url
 
     def self.data
-      @data ||= {}
+      @data ||= {
+        :users => {},
+      }
+    end
+
+    def self.new_id
+      @current_id ||= 0
+      @current_id += 1
     end
 
     def data
@@ -97,8 +106,29 @@ class Zendesk::Client < Cistern::Service
     end
 
     def initialize(options={})
+      url = options[:url] || begin
+        host   = options[:host]
+        host ||= "#{options[:subdomain] || "mock"}.zendesk.com"
+
+        path   = options[:path] || "api/v2"
+        scheme = options[:scheme] || "https"
+
+        port   = options[:port] || (scheme == "https" ? 443 : 80)
+
+        "#{scheme}://#{host}:#{port}/#{path}"
+      end
+
+      @url  = url
+      @path = URI.parse(url).path
+      @username, @password = options[:username], options[:password]
+
+      @current_user_id = self.class.new_id
+
+      self.data[:users][@current_user_id]= {
+        "email" => @username,
+        "name" => "Mock Agent",
+        "url" => File.join(@url, "/users/#{@current_user_id}.json"),
+      }
     end
-
   end
-
 end
