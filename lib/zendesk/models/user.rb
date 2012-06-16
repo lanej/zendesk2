@@ -53,4 +53,8 @@ class Zendesk::Client::User < Cistern::Model
     data = connection.destroy_user("id" => self.identity).body["user"]
     merge_attributes(data)
   end
+
+  def destroyed?
+    !self.active
+  end
 end

@@ -14,7 +14,7 @@ class Zendesk::Client
     def update_user(params={})
       id   = params.delete("id")
       url  = File.join(@url, "/users/#{id}.json")
-      body = self.data[:users].merge!(params)
+      body = self.data[:users][id].merge!(params)
 
       Faraday::Response.new(
         :method          => :delete,

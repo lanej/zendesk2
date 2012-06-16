@@ -1,9 +1,10 @@
 require 'cistern'
+
+require 'addressable/uri'
 require 'faraday'
 require 'faraday_middleware'
-require 'excon'
+
 require 'time'
-require 'formatador'
 
 
 class Zendesk::Client < Cistern::Service
@@ -47,10 +48,11 @@ class Zendesk::Client < Cistern::Service
       @path = URI.parse(url).path
 
       logger             = options[:logger]
-      adapter            = options[:adapter] || :excon
+      adapter            = options[:adapter] || :net_http
+      connection_options = options[:connection_options] || {ssl: {verify: false}}
       @username, @password = options[:username], options[:password]
 
-      @connection = Faraday.new(url: @url) do |builder|
+      @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, @password
         builder.use Faraday::Response::RaiseError
@@ -83,7 +85,7 @@ class Zendesk::Client < Cistern::Service
   end
 
   class Mock
-    
+
     attr_reader :username, :url
 
     def self.data
@@ -125,10 +127,30 @@ class Zendesk::Client < Cistern::Service
       @current_user_id = self.class.new_id
 
       self.data[:users][@current_user_id]= {
+        "id"    => @current_user_id,
         "email" => @username,
-        "name" => "Mock Agent",
-        "url" => File.join(@url, "/users/#{@current_user_id}.json"),
+        "name"  => "Mock Agent",
+        "url"   => File.join(@url, "/users/#{@current_user_id}.json"),
       }
+    end
+
+    def response(options={})
+      method = options[:method] || :get
+      status = options[:status] || 200
+      path   = options[:path]
+      body   = options[:body]
+
+      url = File.join(@url, path)
+
+      Faraday::Response.new(
+        :method          => method,
+        :status          => status,
+        :url             => url,
+        :body            => body,
+        :request_headers => {
+          "Content-Type"   => "application/json"
+        },
+      )
     end
   end
 end
