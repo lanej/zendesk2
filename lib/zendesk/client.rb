@@ -2,7 +2,7 @@ require 'cistern'
 require 'faraday'
 require 'faraday_middleware'
 require 'excon'
-
+require 'time'
 require 'formatador'
 
 

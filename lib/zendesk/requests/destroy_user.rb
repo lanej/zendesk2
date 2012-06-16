@@ -6,7 +6,7 @@ class Zendesk::Client
       request(
         :method => :delete,
         :path => "/users/#{id}.json"
-      ).tap{|p| p(p)}
+      )
     end
   end
   class Mock

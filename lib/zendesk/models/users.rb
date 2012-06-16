@@ -19,7 +19,6 @@ class Zendesk::Client::Users < Cistern::Collection
 
   def get(id)
     data = connection.get_user("id" => id).body["user"]
-
-    new(data)
+    new(data) if data
   end
 end
