@@ -4,7 +4,7 @@ class Zendesk::Client
       request(
         :method => :get,
         :path => "/users/me.json",
-      ).tap{|r| p r}
+      )
     end
   end # Real
   class Mock

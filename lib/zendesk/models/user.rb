@@ -35,9 +35,22 @@ class Zendesk::Client::User < Cistern::Model
       data = connection.create_user(attributes).body["user"]
       merge_attributes(data)
     else
-      requires :identify
-      data = connection.update_user(attributes).body["user"]
+      requires :identity
+      params = {
+        "id" => self.identity,
+        "name" => self.name,
+        "email" => self.email,
+      }
+      data = connection.update_user(params).body["user"]
       merge_attributes(data)
     end
+  end
+
+  def destroy
+    requires :identity
+    raise "don't nuke yourself" if self.email == connection.username
+
+    data = connection.destroy_user("id" => self.identity).body["user"]
+    merge_attributes(data)
   end
 end

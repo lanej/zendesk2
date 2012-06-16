@@ -17,8 +17,8 @@ class Zendesk::Client < Cistern::Service
   request :create_user
   request :get_user
   request :get_users
-  #request :update_user
-  #request :destroy_user
+  request :update_user
+  request :destroy_user
   #
 
   requires :username, :password
