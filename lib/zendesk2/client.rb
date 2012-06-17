@@ -127,6 +127,40 @@ class Zendesk2::Client < Cistern::Service
       }
     end
 
+    def page(params, collection, path, collection_root)
+      page_params = Zendesk2.paging_parameters(params)
+      page_size   = (page_params["per_page"] || 50).to_i
+      page_index  = (page_params["page"] || 1).to_i
+      count       = self.data[collection].size
+      offset      = (page_index - 1) * page_size
+      total_pages = (count / page_size) + 1
+
+      next_page = if page_index < total_pages
+                    File.join(@url, "#{path}?page=#{page_index + 1}&per_page=#{page_size}")
+                  else
+                    nil
+                  end
+      previous_page = if page_index > 1
+                        File.join(@url, "#{path}?page=#{page_index - 1}&per_page=#{page_size}")
+                      else
+                        nil
+                      end
+
+      resource_page = self.data[collection].values.slice(offset, page_size)
+
+      body = {
+        collection_root => resource_page,
+        "count"         => count,
+        "next_page"     => next_page,
+        "previous_page" => previous_page,
+      }
+
+      response(
+        body: body,
+        path: path
+      )
+    end
+
     def response(options={})
       method = options[:method] || :get
       status = options[:status] || 200
