@@ -3,23 +3,19 @@ class Zendesk2::Client
     def get_current_user
       request(
         :method => :get,
-        :path => "/users/me.json",
+        :path   => "/users/me.json",
       )
     end
   end # Real
+
   class Mock
     def get_current_user
-
       body = self.data[:users][@current_user_id]
-      url = File.join(@url, "/users/me.json")
 
-      Faraday::Response.new(
-        :method          => :get,
-        :status          => 200,
-        :url             => url,
-        :body            => {"user" => body},
-        :request_headers => {
-          "Content-Type"   => "application/json"
+      response(
+        :path  => "/users/me.json",
+        :body  => {
+          "user" => body
         },
       )
     end

@@ -5,23 +5,21 @@ class Zendesk2::Client
 
       request(
         :method => :delete,
-        :path => "/users/#{id}.json"
+        :path   => "/users/#{id}.json"
       )
     end
   end
+
   class Mock
     def destroy_user(params={})
       id   = params["id"]
-      url  = File.join(@url, "/users/#{id}.json")
       body = self.data[:users].delete(id)
 
-      Faraday::Response.new(
-        :method          => :delete,
-        :status          => 200,
-        :url             => url,
-        :body            => {"user" => body},
-        :request_headers => {
-          "Content-Type"   => "application/json"
+      response(
+        :method => :delete,
+        :path   => "/users/#{id}.json",
+        :body   => {
+          "user" => body,
         },
       )
     end

@@ -123,8 +123,12 @@ class Zendesk2::Client < Cistern::Service
         "id"    => @current_user_id,
         "email" => @username,
         "name"  => "Mock Agent",
-        "url"   => File.join(@url, "/users/#{@current_user_id}.json"),
+        "url"   => url_for("/users/#{@current_user_id}.json"),
       }
+    end
+
+    def url_for(path)
+      File.join(@url, path)
     end
 
     def page(params, collection, path, collection_root)
@@ -136,12 +140,12 @@ class Zendesk2::Client < Cistern::Service
       total_pages = (count / page_size) + 1
 
       next_page = if page_index < total_pages
-                    File.join(@url, "#{path}?page=#{page_index + 1}&per_page=#{page_size}")
+                    url_for("#{path}?page=#{page_index + 1}&per_page=#{page_size}")
                   else
                     nil
                   end
       previous_page = if page_index > 1
-                        File.join(@url, "#{path}?page=#{page_index - 1}&per_page=#{page_size}")
+                        url_for("#{path}?page=#{page_index - 1}&per_page=#{page_size}")
                       else
                         nil
                       end
@@ -167,7 +171,7 @@ class Zendesk2::Client < Cistern::Service
       path   = options[:path]
       body   = options[:body]
 
-      url = File.join(@url, path)
+      url = options[:url] || url_for(path)
 
       Faraday::Response.new(
         :method          => method,
