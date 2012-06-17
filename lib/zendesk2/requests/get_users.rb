@@ -1,15 +1,10 @@
 class Zendesk2::Client
   class Real
     def get_users(params={})
-      query = if url = params["url"]
-                uri = Addressable::URI.parse(url)
-                uri.query_values
-              else
-                Cistern::Hash.slice(params, "page", "per_page")
-              end
+      page_params = Zendesk2.paging_parameters(params)
 
       request(
-        :params  => query,
+        :params  => page_params,
         :method  => :get,
         :path    => "/users.json",
       )
@@ -17,16 +12,10 @@ class Zendesk2::Client
   end
   class Mock
     def get_users(params={})
-      page_params = if url = params.delete("url")
-                      uri = Addressable::URI.parse(url)
-                      uri.query_values
-                    else
-                      Cistern::Hash.slice(params, "page", "per_page")
-                    end
-      params.merge!(page_params)
+      page_params = Zendesk2.paging_parameters(params)
 
-      page_size   = (params["per_page"] || 50).to_i
-      page_index  = (params["page"] || 1).to_i
+      page_size   = (page_params["per_page"] || 50).to_i
+      page_index  = (page_params["page"] || 1).to_i
       count       = self.data[:users].size
       offset      = (page_index - 1) * page_size
       total_pages = (count / page_size) + 1

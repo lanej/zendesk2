@@ -18,6 +18,15 @@ module Zendesk2
                     {}
                   end
   end
+
+  def self.paging_parameters(options={})
+    if url = options["url"]
+      uri = Addressable::URI.parse(url)
+      uri.query_values
+    else
+      Cistern::Hash.slice(options, "page", "per_page")
+    end
+  end
 end
 
 Zendesk = Zendesk2
