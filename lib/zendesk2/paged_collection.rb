@@ -1,0 +1,63 @@
+module Zendesk2::PagedCollection
+  def self.included(klass)
+    klass.send(:attribute, :count)
+    klass.send(:attribute, :next_page_link, {:aliases => "next_page"})
+    klass.send(:attribute, :previous_page_link, {:aliases => "previous_page"})
+    klass.send(:extend, Zendesk2::PagedCollection::Attributes)
+  end
+
+  def collection_method
+    self.class.instance_variable_get(:@collection_method)
+  end
+
+  def collection_root
+    self.class.instance_variable_get(:@collection_root)
+  end
+
+  def model_method
+    self.class.instance_variable_get(:@model_method)
+  end
+
+  def model_root
+    self.class.instance_variable_get(:@model_root)
+  end
+
+  def all(params={})
+    body = connection.send(collection_method, params).body
+
+    load(body[collection_root])
+    merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+  end
+
+  def get(id)
+    if data = connection.send(model_method, {"id" => id}).body[self.model_root]
+      new(data)
+    end
+  end
+
+  def next_page
+    all("url" => next_page_link) if next_page_link
+  end
+
+  def previous_page
+    all("url" => previous_page_link) if previous_page_link
+  end
+
+  module Attributes
+    def collection_method(method)
+      @collection_method = method
+    end
+
+    def collection_root(root)
+      @collection_root = root
+    end
+
+    def model_method(method)
+      @model_method = method
+    end
+
+    def model_root(root)
+      @model_root = root
+    end
+  end
+end

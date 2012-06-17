@@ -3,7 +3,7 @@ require 'logger'
 module ClientHelper
   def create_client(options={})
     options.merge!(logger: Logger.new(STDOUT)) if ENV['VERBOSE']
-    Zendesk2::Client.new(default_params.merge(options))
+    Zendesk2::Client.new(options)
   end
 end
 

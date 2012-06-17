@@ -38,10 +38,10 @@ class Zendesk2::Client
                     nil
                   end
       previous_page = if page_index > 1
-                    File.join(@url, "users.json?page=#{page_index - 1}&per_page=#{page_size}")
-                  else
-                    nil
-                  end
+                        File.join(@url, "users.json?page=#{page_index - 1}&per_page=#{page_size}")
+                      else
+                        nil
+                      end
 
       user_page = self.data[:users].values.slice(offset, page_size)
 

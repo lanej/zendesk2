@@ -1,12 +1,3 @@
-require 'cistern'
-
-require 'addressable/uri'
-require 'faraday'
-require 'faraday_middleware'
-
-require 'time'
-
-
 class Zendesk2::Client < Cistern::Service
 
   model_path "zendesk2/models"
