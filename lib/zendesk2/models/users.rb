@@ -1,6 +1,6 @@
-class Zendesk::Client::Users < Cistern::Collection
+class Zendesk2::Client::Users < Cistern::Collection
 
-  model Zendesk::Client::User
+  model Zendesk2::Client::User
 
   attribute :count
   attribute :next_page_link, :aliases => "next_page"

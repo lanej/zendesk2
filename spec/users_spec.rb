@@ -10,7 +10,7 @@ describe "users" do
 
   it "should get current user" do
     current_user = client.users.current
-    current_user.should be_a(Zendesk::Client::User)
+    current_user.should be_a(Zendesk2::Client::User)
     current_user.email.should == client.username
   end
 end

@@ -1,4 +1,4 @@
-class Zendesk::Client::User < Cistern::Model
+class Zendesk2::Client::User < Cistern::Model
   identity :id
   attribute :url
   attribute :external_id

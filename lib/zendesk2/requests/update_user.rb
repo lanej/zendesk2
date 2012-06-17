@@ -1,19 +1,20 @@
-class Zendesk::Client
+class Zendesk2::Client
   class Real
-    def destroy_user(params={})
-      id = params["id"]
+    def update_user(params={})
+      id = params.delete("id")
 
       request(
-        :method => :delete,
-        :path => "/users/#{id}.json"
+        :body   => {"user" => params},
+        :method => :put,
+        :path   => "/users/#{id}.json"
       )
     end
   end
   class Mock
-    def destroy_user(params={})
-      id   = params["id"]
+    def update_user(params={})
+      id   = params.delete("id")
       url  = File.join(@url, "/users/#{id}.json")
-      body = self.data[:users].delete(id)
+      body = self.data[:users][id].merge!(params)
 
       Faraday::Response.new(
         :method          => :delete,

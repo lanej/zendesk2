@@ -1,4 +1,4 @@
-class Zendesk::Client
+class Zendesk2::Client
   class Real
     def get_users(params={})
       query = if url = params["url"]

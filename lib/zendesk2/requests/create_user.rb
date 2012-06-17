@@ -1,4 +1,4 @@
-class Zendesk::Client
+class Zendesk2::Client
   class Real
     def create_user(params={})
       request(

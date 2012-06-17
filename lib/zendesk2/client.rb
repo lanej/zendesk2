@@ -7,10 +7,10 @@ require 'faraday_middleware'
 require 'time'
 
 
-class Zendesk::Client < Cistern::Service
+class Zendesk2::Client < Cistern::Service
 
-  model_path "zendesk/models"
-  request_path "zendesk/requests"
+  model_path "zendesk2/models"
+  request_path "zendesk2/requests"
 
   model :user
   collection :users
@@ -20,9 +20,6 @@ class Zendesk::Client < Cistern::Service
   request :get_users
   request :update_user
   request :destroy_user
-  #
-
-  requires :username, :password
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter
 
@@ -33,8 +30,10 @@ class Zendesk::Client < Cistern::Service
 
     def initialize(options={})
       url = options[:url] || begin
-        host   = options[:host]
-        host ||= "#{options[:subdomain]}.zendesk.com"
+        host      = options[:host]
+        subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
+
+        host ||= "#{subdomain}.zendesk.com"
 
         path   = options[:path] || "api/v2"
         scheme = options[:scheme] || "https"
@@ -50,7 +49,10 @@ class Zendesk::Client < Cistern::Service
       logger             = options[:logger]
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
-      @username, @password = options[:username], options[:password]
+      @username          = options[:username] || Zendesk2.defaults[:username]
+      @password          = options[:password] || Zendesk2.defaults[:password]
+
+      raise "Missing required options: [:username, :password]" unless @username && @password
 
       @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
         # response
