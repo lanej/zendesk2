@@ -6,21 +6,10 @@ module Zendesk2::PagedCollection
     klass.send(:extend, Zendesk2::PagedCollection::Attributes)
   end
 
-  def collection_method
-    self.class.instance_variable_get(:@collection_method)
-  end
-
-  def collection_root
-    self.class.instance_variable_get(:@collection_root)
-  end
-
-  def model_method
-    self.class.instance_variable_get(:@model_method)
-  end
-
-  def model_root
-    self.class.instance_variable_get(:@model_root)
-  end
+  def collection_method; self.class.collection_method; end
+  def collection_root; self.class.collection_root; end
+  def model_method; self.class.model_method; end
+  def model_root; self.class.model_root; end
 
   def all(params={})
     body = connection.send(collection_method, params).body
@@ -44,20 +33,6 @@ module Zendesk2::PagedCollection
   end
 
   module Attributes
-    def collection_method(method)
-      @collection_method = method
-    end
-
-    def collection_root(root)
-      @collection_root = root
-    end
-
-    def model_method(method)
-      @model_method = method
-    end
-
-    def model_root(root)
-      @model_root = root
-    end
+    attr_accessor :collection_method, :collection_root, :model_method, :model_root
   end
 end
