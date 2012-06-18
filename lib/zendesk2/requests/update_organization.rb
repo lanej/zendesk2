@@ -1,27 +1,27 @@
 class Zendesk2::Client
   class Real
-    def update_account(params={})
+    def update_organization(params={})
       id = params.delete("id")
 
       request(
         :method => :put,
-        :path   => "/accounts/#{id}.json",
+        :path   => "/organizations/#{id}.json",
         :body   => {
-          "account" => params
+          "organization" => params
         },
       )
     end
   end
   class Mock
-    def update_account(params={})
+    def update_organization(params={})
       id   = params.delete("id")
-      body = self.data[:accounts][id].merge!(params)
+      body = self.data[:organizations][id].merge!(params)
 
       response(
         :method => :put,
-        :path   => "/accounts/#{id}.json",
+        :path   => "/organizations/#{id}.json",
         :body   => {
-          "account" => body
+          "organization" => body
         },
       )
     end

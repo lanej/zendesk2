@@ -3,21 +3,21 @@ class Zendesk2::Client < Cistern::Service
   model_path "zendesk2/models"
   request_path "zendesk2/requests"
 
-  model :account
-  collection :accounts
+  model :organization
+  collection :organizations
   model :user
   collection :users
 
-  request :create_account
+  request :create_organization
   request :create_user
-  request :destroy_account
+  request :destroy_organization
   request :destroy_user
   request :get_current_user
-  request :get_account
+  request :get_organization
   request :get_user
-  request :get_accounts
+  request :get_organizations
   request :get_users
-  request :update_account
+  request :update_organization
   request :update_user
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter
@@ -38,7 +38,7 @@ class Zendesk2::Client < Cistern::Service
 
         port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}/#{path}"
+        "#{scheme}://#{host}:#{port}/#{@path}"
       end
 
       @url  = url
@@ -69,7 +69,7 @@ class Zendesk2::Client < Cistern::Service
 
     def request(options={})
       method  = options[:method] || :get
-      url     = File.join(@path, options[:path])
+      url     = File.join(@url, options[:path])
       params  = options[:params] || {}
       body    = options[:body]
       headers = options[:headers] || {}
@@ -91,7 +91,7 @@ class Zendesk2::Client < Cistern::Service
     def self.data
       @data ||= {
         :users    => {},
-        :accounts => {},
+        :organizations => {},
       }
     end
 

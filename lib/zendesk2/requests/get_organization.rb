@@ -1,24 +1,24 @@
 class Zendesk2::Client
   class Real
-    def get_account(params={})
+    def get_organization(params={})
       id = params["id"]
 
       request(
         :method => :get,
-        :path => "/accounts/#{id}.json"
+        :path => "/organizations/#{id}.json"
       )
     end
   end # Real
 
   class Mock
-    def get_account(params={})
+    def get_organization(params={})
       id   = params["id"]
-      body = self.data[:accounts][id]
+      body = self.data[:organizations][id]
 
       response(
-        :path  => "/accounts/#{id}.json",
+        :path  => "/organizations/#{id}.json",
         :body  => {
-          "account" => body
+          "organization" => body
         },
       )
     end

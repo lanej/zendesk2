@@ -1,31 +1,31 @@
 class Zendesk2::Client
   class Real
-    def create_account(params={})
+    def create_organization(params={})
       request(
-        :body   => {"account" => params},
+        :body   => {"organization" => params},
         :method => :post,
-        :path   => "/accounts.json",
+        :path   => "/organizations.json",
       )
     end
   end # Real
 
   class Mock
-    def create_account(params={})
+    def create_organization(params={})
       identity = self.class.new_id
 
       record = {
         "id"         => identity,
-        "url"        => url_for("/accounts/#{identity}.json"),
+        "url"        => url_for("/organizations/#{identity}.json"),
         "created_at" => Time.now.iso8601,
         "updated_at" => Time.now.iso8601,
       }.merge(params)
 
-      self.data[:accounts][identity]= record
+      self.data[:organizations][identity]= record
 
       response(
         :method => :post,
-        :body   => {"account" => record},
-        :path   => "/accounts.json"
+        :body   => {"organization" => record},
+        :path   => "/organizations.json"
       )
     end
   end # Mock

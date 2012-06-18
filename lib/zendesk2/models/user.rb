@@ -4,15 +4,15 @@ class Zendesk2::Client::User < Cistern::Model
   attribute :external_id
   attribute :name
   attribute :alias
-  attribute :created_at
-  attribute :updated_at
-  attribute :active
-  attribute :verified
+  attribute :created_at, type: :time
+  attribute :updated_at, type: :time
+  attribute :active, type: :boolean
+  attribute :verified, type: :boolean
   attribute :shared
   attribute :locale_id
   attribute :locale
   attribute :time_zone
-  attribute :last_login_at
+  attribute :last_login_at, type: :time
   attribute :email
   attribute :phone
   attribute :signature

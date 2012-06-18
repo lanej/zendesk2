@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'logger'
 
 describe "users" do
   let(:client) { create_client }
