@@ -5,19 +5,26 @@ class Zendesk2::Client < Cistern::Service
 
   model :organization
   collection :organizations
+  model :ticket
+  collection :tickets
   model :user
   collection :users
 
   request :create_organization
+  request :create_ticket
   request :create_user
   request :destroy_organization
+  request :destroy_ticket
   request :destroy_user
   request :get_current_user
   request :get_organization
+  request :get_ticket
   request :get_user
   request :get_organizations
+  request :get_tickets
   request :get_users
   request :update_organization
+  request :update_ticket
   request :update_user
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter
@@ -91,8 +98,9 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :users    => {},
+        :users         => {},
         :organizations => {},
+        :tickets       => {},
       }
     end
 

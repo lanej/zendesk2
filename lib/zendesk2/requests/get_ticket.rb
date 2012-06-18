@@ -1,29 +1,29 @@
 class Zendesk2::Client
   class Real
-    def get_organization(params={})
+    def get_ticket(params={})
       id = params["id"]
 
       request(
         :method => :get,
-        :path   => "/organizations/#{id}.json"
+        :path => "/tickets/#{id}.json"
       )
     end
   end # Real
 
   class Mock
-    def get_organization(params={})
+    def get_ticket(params={})
       id   = params["id"]
-      if body = self.data[:organizations][id]
+      if body = self.data[:tickets][id]
 
         response(
-          :path  => "/organizations/#{id}.json",
+          :path  => "/tickets/#{id}.json",
           :body  => {
-            "organization" => body
+            "ticket" => body
           },
         )
       else 
         r = response(
-          :path   => "/organizations/#{id}.json",
+          :path   => "/tickets/#{id}.json",
           :status => 404
         )
         raise not_found!(nil, r)
