@@ -4,7 +4,7 @@ describe "users" do
   let(:client) { create_client }
   it_should_behave_like "a resource", 
     :users,
-    lambda { {email: "zendesk2+#{rand(100_000_000)}@example.org", name: "Roger Wilco", verified: true} },
+    lambda { {email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "Roger Wilco", verified: true} },
     lambda { {name: "Rogerito Wilcinzo"} }
 
   it "should get current user" do

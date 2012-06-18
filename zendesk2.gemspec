@@ -19,4 +19,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency "faraday"
   gem.add_dependency "faraday_middleware"
   gem.add_dependency "addressable"
+  gem.add_dependency "uuidtools"
 end

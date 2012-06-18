@@ -4,6 +4,7 @@ require 'cistern'
 require 'addressable/uri'
 require 'faraday'
 require 'faraday_middleware'
+require 'uuidtools'
 
 require 'time'
 
@@ -26,6 +27,10 @@ module Zendesk2
     else
       Cistern::Hash.slice(options, "page", "per_page")
     end
+  end
+
+  def self.uuid
+    UUIDTools::UUID.random_create.to_s
   end
 end
 

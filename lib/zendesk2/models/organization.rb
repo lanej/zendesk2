@@ -35,6 +35,8 @@ class Zendesk2::Client::Organization < Cistern::Model
   end
 
   def destroyed?
-    !self.reload
+    self.reload
+  rescue Faraday::Error::ResourceNotFound # FIXME: leaky
+    true
   end
 end
