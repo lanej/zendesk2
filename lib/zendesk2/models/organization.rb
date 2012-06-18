@@ -1,4 +1,5 @@
 class Zendesk2::Client::Organization < Cistern::Model
+  include Zendesk2::Errors
   identity :id
   attribute :shared_comments
   attribute :notes
@@ -36,7 +37,7 @@ class Zendesk2::Client::Organization < Cistern::Model
 
   def destroyed?
     self.reload
-  rescue Faraday::Error::ResourceNotFound # FIXME: leaky
+  rescue not_found
     true
   end
 end

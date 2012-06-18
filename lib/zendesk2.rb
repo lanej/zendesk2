@@ -9,6 +9,7 @@ require 'uuidtools'
 require 'time'
 
 module Zendesk2
+  require 'zendesk2/errors'
   autoload :Client, "zendesk2/client"
   autoload :PagedCollection, "zendesk2/paged_collection"
 

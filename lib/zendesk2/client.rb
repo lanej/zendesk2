@@ -85,6 +85,7 @@ class Zendesk2::Client < Cistern::Service
   end
 
   class Mock
+    include Zendesk2::Errors
 
     attr_reader :username, :url
 
