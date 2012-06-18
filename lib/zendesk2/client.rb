@@ -18,6 +18,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_user
   request :get_current_user
   request :get_organization
+  request :get_organization_users
   request :get_ticket
   request :get_user
   request :get_organizations
@@ -148,12 +149,15 @@ class Zendesk2::Client < Cistern::Service
       File.join(@url, path)
     end
 
-    def page(params, collection, path, collection_root)
+    def page(params, collection, path, collection_root, options={})
       page_params = Zendesk2.paging_parameters(params)
       page_size   = (page_params["per_page"] || 50).to_i
       page_index  = (page_params["page"] || 1).to_i
-      count       = self.data[collection].size
       offset      = (page_index - 1) * page_size
+      filter      = options[:filter]
+      resources   = self.data[collection].values
+      resources   = filter.call(resources) if filter
+      count       = resources.size
       total_pages = (count / page_size) + 1
 
       next_page = if page_index < total_pages
@@ -167,7 +171,7 @@ class Zendesk2::Client < Cistern::Service
                         nil
                       end
 
-      resource_page = self.data[collection].values.slice(offset, page_size)
+      resource_page = resources.slice(offset, page_size)
 
       body = {
         collection_root => resource_page,

@@ -13,22 +13,6 @@ class Zendesk2::Client::Organization < Cistern::Model
   attribute :shared_tickets
   attribute :updated_at, type: :time
 
-  def save
-    if new_record?
-      requires :name
-      data = connection.create_organization(attributes).body["organization"]
-      merge_attributes(data)
-    else
-      requires :identity
-      params = {
-        "id" => self.identity,
-        "name" => self.name,
-      }
-      data = connection.update_organization(params).body["organization"]
-      merge_attributes(data)
-    end
-  end
-
   def destroy
     requires :identity
 
@@ -39,5 +23,27 @@ class Zendesk2::Client::Organization < Cistern::Model
     self.reload
   rescue not_found
     true
+  end
+
+  def save
+    if new_record?
+      requires :name
+      data = connection.create_organization(attributes).body["organization"]
+      merge_attributes(data)
+    else
+      requires :identity
+      params = {
+        "id"   => self.identity,
+        "name" => self.name,
+      }
+      data = connection.update_organization(params).body["organization"]
+      merge_attributes(data)
+    end
+  end
+
+  def users
+    requires :identity
+    data = connection.get_organization_users("id" => self.identity).body["users"]
+    connection.users.load(data)
   end
 end

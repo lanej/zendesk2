@@ -32,16 +32,11 @@ class Zendesk2::Client::User < Cistern::Model
   def save
     if new_record?
       requires :name, :email
-      data = connection.create_user(attributes).body["user"]
+      data = connection.create_user(params).body["user"]
       merge_attributes(data)
     else
       requires :identity
-      params = {
-        "id" => self.identity,
-        "name" => self.name,
-        "email" => self.email,
-      }
-      data = connection.update_user(params).body["user"]
+      data = connection.update_user(params.merge("id" => self.identity)).body["user"]
       merge_attributes(data)
     end
   end
@@ -56,5 +51,11 @@ class Zendesk2::Client::User < Cistern::Model
 
   def destroyed?
     !self.active
+  end
+
+  private
+
+  def params
+    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "name", "email", "organization_id", "external_id", "alias", "active", "verified", "locate_id", "time_zone", "phone", "signature", "details", "notes", "role", "custom_role_id", "moderator", "ticket_restriction", "only_private_comments")
   end
 end

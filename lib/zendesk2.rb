@@ -33,6 +33,10 @@ module Zendesk2
   def self.uuid
     UUIDTools::UUID.random_create.to_s
   end
+
+  def self.stringify_keys(hash)
+    hash.inject({}){|r,(k,v)| r.merge(k.to_s => v)}
+  end
 end
 
 Zendesk = Zendesk2
