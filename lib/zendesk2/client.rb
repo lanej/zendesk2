@@ -3,17 +3,24 @@ class Zendesk2::Client < Cistern::Service
   model_path "zendesk2/models"
   request_path "zendesk2/requests"
 
+  model :account
+  collection :accounts
   model :user
   collection :users
-  request :get_current_user
+
+  request :create_account
   request :create_user
-  request :get_user
-  request :get_users
-  request :update_user
+  request :destroy_account
   request :destroy_user
+  request :get_current_user
+  request :get_account
+  request :get_user
+  request :get_accounts
+  request :get_users
+  request :update_account
+  request :update_user
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter
-
 
   class Real
 
@@ -26,7 +33,7 @@ class Zendesk2::Client < Cistern::Service
 
         host ||= "#{subdomain}.zendesk.com"
 
-        path   = options[:path] || "api/v2"
+        @path   = options[:path] || "api/v2"
         scheme = options[:scheme] || "https"
 
         port   = options[:port] || (scheme == "https" ? 443 : 80)
@@ -35,7 +42,7 @@ class Zendesk2::Client < Cistern::Service
       end
 
       @url  = url
-      @path = URI.parse(url).path
+      @path ||= URI.parse(url).path
 
       logger             = options[:logger]
       adapter            = options[:adapter] || :net_http
@@ -83,7 +90,8 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :users => {},
+        :users    => {},
+        :accounts => {},
       }
     end
 
