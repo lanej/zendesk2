@@ -20,23 +20,18 @@ class Zendesk2::Client::Ticket < Cistern::Model
   attribute :forum_topic_id
   attribute :problem_id
   attribute :has_incidents
-  attribute :due_at
-  attribute :tags
+  attribute :due_at, type: :time
+  attribute :tags, type: :array
   attribute :fields
 
   def save
     if new_record?
       requires :subject, :description
-      data = connection.create_ticket(attributes).body["ticket"]
+      data = connection.create_ticket(params).body["ticket"]
       merge_attributes(data)
     else
       requires :identity
-      params = {
-        "id" => self.identity,
-        "subject" => self.subject,
-        "description" => self.description,
-      }
-      data = connection.update_ticket(params).body["ticket"]
+      data = connection.update_ticket(params.merge("id" => self.identity)).body["ticket"]
       merge_attributes(data)
     end
   end
@@ -51,5 +46,21 @@ class Zendesk2::Client::Ticket < Cistern::Model
     self.reload
   rescue not_found
     true
+  end
+
+  def params
+    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "external_id", "via", "requester_id", "submitter_id", "assignee_id", "organization_id", "subject", "description", "fields", "recipient", "status")
+  end
+
+  def submitter
+    self.connection.users.get(submitter_id)
+  end
+
+  def requester=(requester)
+    self.requester_id= requester.id
+  end
+
+  def requester
+    self.connection.users.get(self.requester_id)
   end
 end

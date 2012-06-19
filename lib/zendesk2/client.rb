@@ -18,6 +18,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_user
   request :get_current_user
   request :get_organization
+  request :get_organization_tickets
   request :get_organization_users
   request :get_ticket
   request :get_user

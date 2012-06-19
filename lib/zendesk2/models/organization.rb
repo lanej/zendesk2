@@ -46,4 +46,11 @@ class Zendesk2::Client::Organization < Cistern::Model
     data = connection.get_organization_users("id" => self.identity).body["users"]
     connection.users.load(data)
   end
+
+  def tickets
+    requires :identity
+    data = connection.get_organization_tickets("id" => self.identity).body["tickets"]
+
+    connection.tickets.load(data)
+  end
 end

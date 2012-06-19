@@ -20,6 +20,8 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
       }.merge(params)
 
+      record.delete("organization_id") # read-only
+
       self.data[:tickets][identity]= record
 
       response(
