@@ -16,7 +16,8 @@ class Zendesk2::Client
     def get_organization_tickets(params={})
       id = params["id"]
 
-      page(params, :tickets, "/organizations/#{id}/tickets.json", "tickets", filter: lambda{|c| c.select{|u| u["organization_id"].to_s == id.to_s}})
+      requesters = self.data[:users].values.select{|u| u["organization_id"].to_s == id.to_s}.map{|s| s["organization_id"].to_s}
+      page(params, :tickets, "/organizations/#{id}/tickets.json", "tickets", filter: lambda{|c| c.select{|u| requesters.include?(u["organization_id"].to_s)}})
     end
   end # Mock
 end

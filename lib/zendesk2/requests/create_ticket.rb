@@ -20,8 +20,11 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
       }.merge(params)
 
-      record.delete("organization_id") # read-only
-
+      record["requester_id"] ||= @current_user_id
+      record["submitter_id"]= @current_user_id
+      requester = self.data[:users][record["requester_id"]]
+      # TODO: throw error if user doesn't exist?
+      record["organization_id"]= requester["organization_id"]
       self.data[:tickets][identity]= record
 
       response(
