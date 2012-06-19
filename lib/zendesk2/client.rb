@@ -163,13 +163,9 @@ class Zendesk2::Client < Cistern::Service
 
       next_page = if page_index < total_pages
                     url_for("#{path}?page=#{page_index + 1}&per_page=#{page_size}")
-                  else
-                    nil
                   end
       previous_page = if page_index > 1
                         url_for("#{path}?page=#{page_index - 1}&per_page=#{page_size}")
-                      else
-                        nil
                       end
 
       resource_page = resources.slice(offset, page_size)
@@ -201,7 +197,7 @@ class Zendesk2::Client < Cistern::Service
         :url             => url,
         :body            => body,
         :request_headers => {
-          "Content-Type"   => "application/json"
+          "Content-Type"   => "application/json; charset=utf-8"
         },
       )
     end

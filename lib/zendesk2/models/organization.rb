@@ -1,17 +1,17 @@
 class Zendesk2::Client::Organization < Cistern::Model
   include Zendesk2::Errors
-  identity :id
-  attribute :shared_comments
-  attribute :notes
+  identity :id,               type: :integer
+  attribute :shared_comments, type: :boolean
+  attribute :notes,           type: :array
   attribute :tags
-  attribute :domain_names
-  attribute :group_id
-  attribute :external_id
+  attribute :domain_names,    type: :array
+  attribute :group_id,        type: :integer
+  attribute :external_id,     type: :integer
   attribute :name
-  attribute :created_at, type: :time
+  attribute :created_at,      type: :time
   attribute :details
-  attribute :shared_tickets
-  attribute :updated_at, type: :time
+  attribute :shared_tickets,  type: :boolean
+  attribute :updated_at,      type: :time
 
   def destroy
     requires :identity

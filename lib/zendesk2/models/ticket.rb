@@ -1,28 +1,28 @@
 class Zendesk2::Client::Ticket < Cistern::Model
   include Zendesk2::Errors
-  identity :id
+  identity :id,                type: :id
   attribute :external_id
   attribute :via
-  attribute :created_at, type: :time
-  attribute :updated_at, type: :time
+  attribute :created_at,       type: :time
+  attribute :updated_at,       type: :time
   attribute :type
   attribute :subject
   attribute :description
   attribute :priority
   attribute :status
   attribute :recipient
-  attribute :requester_id
-  attribute :submitter_id
-  attribute :assignee_id
-  attribute :organization_id
-  attribute :group_id
+  attribute :requester_id,     type: :integer
+  attribute :submitter_id,     type: :integer
+  attribute :assignee_id,      type: :integer
+  attribute :organization_id,  type: :integer
+  attribute :group_id,         type: :integer
   attribute :collaborator_ids, type: :array
-  attribute :forum_topic_id
-  attribute :problem_id
-  attribute :has_incidents
-  attribute :due_at, type: :time
-  attribute :tags, type: :array
-  attribute :fields
+  attribute :forum_topic_id,   type: :integer
+  attribute :problem_id,       type: :integer
+  attribute :has_incidents,    type: :boolean
+  attribute :due_at,           type: :time
+  attribute :tags,             type: :array
+  attribute :fields,           type: :array
 
   def save
     if new_record?

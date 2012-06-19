@@ -10,6 +10,8 @@ class Zendesk2::Client
           "user" => params
         },
       )
+    rescue => e
+      p e.response
     end
   end
   class Mock

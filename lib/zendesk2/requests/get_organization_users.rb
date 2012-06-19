@@ -15,7 +15,7 @@ class Zendesk2::Client
   class Mock
     def get_organization_users(params={})
       id = params["id"]
-      page(params, :users, "/organizations/#{id}/users.json", "users", filter: lambda{|c| c.select{|u| u["organization_id"].to_s == id.to_s}})
+      page(params, :users, "/organizations/#{id}/users.json", "users", filter: lambda{|c| c.select{|u| u["organization_id"] == id}})
     end
   end # Mock
 end
