@@ -1,6 +1,8 @@
 # Zendesk2
 
-TODO: Write a gem description
+[![Build Status](https://secure.travis-ci.org/lanej/zendesk2.png)](http://travis-ci.org/lanej/zendesk2)
+
+Ruby client for the [Zendesk V2 API](http://developer.zendesk.com/documentation/rest_api/introduction.html) using [cistern](https://github.com/lanej/cistern) and [faraday](https://github.com/technoweenie/faraday)
 
 ## Installation
 
