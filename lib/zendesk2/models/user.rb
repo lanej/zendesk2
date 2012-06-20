@@ -53,6 +53,40 @@ class Zendesk2::Client::User < Cistern::Model
     !self.active
   end
 
+  def organization=(organization)
+    self.organization_id= organization.id
+  end
+
+  def organization
+    self.connection.organizations.get(self.organization_id)
+  end
+
+  def login_url(timestamp, options={})
+    requires :name, :email
+
+    return_to = options[:return_to]
+    token     = self.token || options[:token]
+
+    uri      = Addressable::URI.parse(self.connection.url)
+    uri.path = "/access/remote"
+
+    raise "timestamp cannot be nil" unless timestamp
+
+    hash_str = "#{self.name}#{self.email}#{token}#{timestamp}"
+    query_values = {
+      'name'      => name,
+      'email'     => email,
+      'timestamp' => timestamp,
+      'hash'      => Digest::MD5.hexdigest(hash_str)
+    }
+    unless Zendesk2.blank?(return_to)
+      query_values['return_to'] = return_to
+    end
+    uri.query_values = query_values
+
+    uri.to_s
+  end
+
   private
 
   def params

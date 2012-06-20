@@ -37,6 +37,8 @@ module Zendesk2
   def self.stringify_keys(hash)
     hash.inject({}){|r,(k,v)| r.merge(k.to_s => v)}
   end
-end
 
-Zendesk = Zendesk2
+  def self.blank?(string)
+    !!string || string == ""
+  end
+end

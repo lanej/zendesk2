@@ -29,7 +29,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_ticket
   request :update_user
 
-  recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter
+  recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token
 
   class Real
 
@@ -58,6 +58,7 @@ class Zendesk2::Client < Cistern::Service
       connection_options = options[:connection_options] || {ssl: {verify: false}}
       @username          = options[:username] || Zendesk2.defaults[:username]
       @password          = options[:password] || Zendesk2.defaults[:password]
+      @token             = options[:token]
 
       raise "Missing required options: [:username, :password]" unless @username && @password
 
