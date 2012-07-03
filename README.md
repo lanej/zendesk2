@@ -10,17 +10,34 @@ Add this line to your application's Gemfile:
 
     gem 'zendesk2'
 
-And then execute:
-
-    $ bundle
-
 Or install it yourself as:
 
     $ gem install zendesk2
 
 ## Usage
 
-TODO: Write usage instructions here
+### Defaults
+
+Default credentials (username, password, subdomain) will be read in from `~/.zendesk2` file if it exists.
+
+### Creating the client
+
+Either the absolute url or the subdomain is required.  Username and password is always required.
+
+	Zendesk2::Client.new(subdomain: "engineyard", username: "orchestra", password: "gwoo")
+	=> #<Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …>
+
+or
+
+	=> #<Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @password="bambilla", …>
+
+### Resources
+
+Currently support resources
+
+* Users
+* Tickets
+* Organizations
 
 ## Contributing
 
