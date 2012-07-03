@@ -42,29 +42,28 @@ class Zendesk2::Client < Cistern::Service
 
         host ||= "#{subdomain}.zendesk.com"
 
-        @path   = options[:path] || "api/v2"
+        path   = options[:path] || "api/v2"
         scheme = options[:scheme] || "https"
 
         port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}/#{@path}"
+        "#{scheme}://#{host}:#{port}/#{path}"
       end
 
-      @url  = url
-      @path ||= URI.parse(url).path
+      @url  = URI.parse(url).to_s
 
       logger             = options[:logger]
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
-      @username          = options[:username] || Zendesk2.defaults[:username]
-      @password          = options[:password] || Zendesk2.defaults[:password]
+      username           = options[:username] || Zendesk2.defaults[:username]
+      password           = options[:password] || Zendesk2.defaults[:password]
       @token             = options[:token]
 
-      raise "Missing required options: [:username, :password]" unless @username && @password
+      raise "Missing required options: [:username, :password]" unless username && password
 
       @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
         # response
-        builder.use Faraday::Request::BasicAuthentication, @username, @password
+        builder.use Faraday::Request::BasicAuthentication, username, password
         builder.use Faraday::Response::RaiseError
         builder.use Faraday::Response::Logger, logger if logger
         builder.response :json
