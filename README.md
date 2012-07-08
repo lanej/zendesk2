@@ -18,7 +18,12 @@ Or install it yourself as:
 
 ### Defaults
 
-Default credentials (username, password, subdomain) will be read in from `~/.zendesk2` file if it exists.
+Default credentials will be read in from `~/.zendesk2` file in YAML format.
+
+	---
+	:subdomain: zendeskdev
+	:username: zendeskedge@example.com
+	:password: wickedsecurepassword
 
 ### Creating the client
 
@@ -33,11 +38,109 @@ or
 
 ### Resources
 
+#### Collections
+
 Currently support resources
 
-* Users
-* Tickets
-* Organizations
+* User
+* Ticket
+* Organization
+
+All collection are accessed like so:
+
+    client.users.all
+     =>   <Zendesk2::Client::Users
+    count=1779,
+    next_page_link="https://dev.zendesk.com/api/v2/users.json?page=2",
+    previous_page_link=nil
+    [
+      <Zendesk2::Client::User
+        id=125394183,
+        url="https://dev.zendesk.com/api/v2/users/125394183.json",
+        ...
+       >
+    ]
+
+Collections also respond to `create` and `new`
+
+	client.users.create(email: "ohhai@example.org", name: "lulz")
+	 =>   <Zendesk2::Client::User
+    id=234020811,
+    ...
+    url="https://engineyarddev.zendesk.com/api/v2/users/234020811.json",
+    ...
+    email="ohhai@example.org",
+    >
+
+
+	client.users.new(email: "ohhai@example.org")
+	=>    <Zendesk2::Client::User
+    id=nil,
+    ...
+    url=nil,
+    ...
+    email="ohhai@example.org",
+    ...
+    >
+
+#### Paging
+
+Paged collections respond to `next_page` and `previous_page` when appropriate.  `page_size` and `page` can be passed directly to the collection to control size and index.
+
+    page = client.users.all("per_page" => 1, "page" => 4)
+	 =>   <Zendesk2::Client::Users
+    count=1780,
+    next_page_link="https://dev.zendesk.com/api/v2/users.json?page=5&per_page=1",
+    previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=3&per_page=1"
+    [
+      <Zendesk2::Client::User
+        id=217761652,
+        url="https://dev.zendesk.com/api/v2/users/217761652.json",
+        external_id=nil,
+        name="Guy Dude",
+        ...
+       >
+    ]
+
+    page.next_page
+	 =>   <Zendesk2::Client::Users
+    count=1780,
+    next_page_link="https://dev.zendesk.com/api/v2/users.json?page=6&per_page=1",
+    previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=4&per_page=1"
+    [
+      <Zendesk2::Client::User
+        id=217761742,
+        url="https://dev.zendesk.com/api/v2/users/217761742.json",
+        ...
+        name="epitaphical osteofibrous",
+        ...
+        >
+     ]
+
+    page.previous_page
+	 =>   <Zendesk2::Client::Users
+    count=1780,
+    next_page_link="https://dev.zendesk.com/api/v2/users.json?page=5&per_page=1",
+    previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=3&per_page=1"
+    [
+      <Zendesk2::Client::User
+        id=217761652,
+        url="https://dev.zendesk.com/api/v2/users/217761652.json",
+        ...
+        name="Guy Dude",
+        ...
+      >
+    ]
+
+#### Models
+
+All models respond to `destroy` and `save` if applicable.  `save` performs a 'create' operation if there is no identity provided or an 'update' if there is an identity.
+
+	Zendesk2::Client::Ticket.new.save        # performs a create
+	Zendesk2::Client::Ticket.new(id: 1).save # performs an update
+
+Attributes can be enumerated by the `attributes` method.
+
 
 ## Contributing
 
