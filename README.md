@@ -141,6 +141,11 @@ All models respond to `destroy` and `save` if applicable.  `save` performs a 'cr
 
 Attributes can be enumerated by the `attributes` method.
 
+## Releasing
+
+
+  	$ gem install gem-release
+  	$ gem bump -trv (major|minor|patch)
 
 ## Contributing
 
