@@ -9,7 +9,7 @@ class Zendesk2::Client::Organization < Cistern::Model
   attribute :external_id,     type: :integer
   attribute :name
   attribute :created_at,      type: :time
-  attribute :details
+  attribute :details,         type: :string
   attribute :shared_tickets,  type: :boolean
   attribute :updated_at,      type: :time
 

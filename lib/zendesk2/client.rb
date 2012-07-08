@@ -96,7 +96,7 @@ class Zendesk2::Client < Cistern::Service
   class Mock
     include Zendesk2::Errors
 
-    attr_reader :username, :url
+    attr_reader :username, :url, :token
 
     def self.data
       @data ||= {
@@ -135,6 +135,7 @@ class Zendesk2::Client < Cistern::Service
       @url  = url
       @path = URI.parse(url).path
       @username, @password = options[:username], options[:password]
+      @token = options[:token]
 
       @current_user_id = self.class.new_id
 

@@ -16,7 +16,7 @@ class Zendesk2::Client::User < Cistern::Model
   attribute :email
   attribute :phone
   attribute :signature
-  attribute :details
+  attribute :details,               type: :string
   attribute :notes
   attribute :organization_id,       type: :integer
   attribute :role
@@ -65,7 +65,7 @@ class Zendesk2::Client::User < Cistern::Model
     requires :name, :email
 
     return_to = options[:return_to]
-    token     = self.token || options[:token]
+    token     = self.connection.token || options[:token]
 
     uri      = Addressable::URI.parse(self.connection.url)
     uri.path = "/access/remote"
