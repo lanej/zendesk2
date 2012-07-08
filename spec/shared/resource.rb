@@ -17,14 +17,14 @@ shared_examples "a resource" do |_collection, _params, _update_params|
     end
 
     it "by retrieving the next page" do
-      first_page = collection.all("per_page" => "1").to_a
-      second_page = collection.all("per_page" => 1).next_page.to_a
+      first_page = collection.all("per_page" => 1)
+      second_page = collection.all("per_page" => 1).next_page
       second_page.should_not == first_page
     end
 
     it "by retrieving the previous page" do
-      first_page = collection.all("per_page" => "1").to_a
-      previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page.to_a
+      first_page = collection.all("per_page" => "1")
+      previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page
       previous_to_second_page.should == first_page
     end
   end

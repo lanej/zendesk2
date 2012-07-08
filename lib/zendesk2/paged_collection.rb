@@ -14,12 +14,13 @@ module Zendesk2::PagedCollection
   def all(params={})
     body = connection.send(collection_method, params).body
 
-    load(body[collection_root])
-    merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+    collection = self.clone.load(body[collection_root])
+    collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+    collection
   end
 
   def get(id)
-    if data = connection.send(model_method, {"id" => id}).body[self.model_root]
+    if data = self.connection.send(model_method, {"id" => id}).body[self.model_root]
       new(data)
     end
   end
