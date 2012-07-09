@@ -79,7 +79,7 @@ class Zendesk2::Client::User < Cistern::Model
       'hash'      => Digest::MD5.hexdigest(hash_str)
     }
     unless Zendesk2.blank?(return_to)
-      query_values['return_to'] = return_to
+      query_values['return_to']= return_to
     end
     uri.query_values = query_values
 

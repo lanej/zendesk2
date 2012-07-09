@@ -35,5 +35,7 @@ describe "users" do
 
       user.should_not be_destroyed
     end
+
+    it "should form login url"
   end
 end
