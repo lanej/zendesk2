@@ -12,8 +12,8 @@ class Zendesk2::Client::Organizations < Cistern::Collection
     new(connection.get_current_organization.body["organization"])
   end
 
-  def search(term)
-    body = connection.search_organization("query" => term).body
+  def search(parameters)
+    body = connection.search(parameters.merge("type" => "organization")).body
     if data = body.delete("results")
       load(data)
     end

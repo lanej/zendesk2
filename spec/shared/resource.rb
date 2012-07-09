@@ -47,4 +47,6 @@ shared_examples "a resource" do |_collection, _params, _update_params|
     record.destroy
     record.should be_destroyed
   end
+
+  it "should search"
 end
