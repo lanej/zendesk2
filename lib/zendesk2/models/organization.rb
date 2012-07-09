@@ -20,9 +20,7 @@ class Zendesk2::Client::Organization < Cistern::Model
   end
 
   def destroyed?
-    self.reload
-  rescue not_found
-    true
+    !self.reload
   end
 
   def save

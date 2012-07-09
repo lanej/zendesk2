@@ -43,9 +43,7 @@ class Zendesk2::Client::Ticket < Cistern::Model
   end
 
   def destroyed?
-    self.reload
-  rescue not_found
-    true
+    !self.reload
   end
 
   def params
