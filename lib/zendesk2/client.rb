@@ -44,13 +44,10 @@ class Zendesk2::Client < Cistern::Service
         subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
 
         host ||= "#{subdomain}.zendesk.com"
-
-        path   = options[:path] || "api/v2"
         scheme = options[:scheme] || "https"
-
         port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}/#{path}"
+        "#{scheme}://#{host}:#{port}"
       end
 
       @url  = URI.parse(url).to_s
@@ -81,7 +78,7 @@ class Zendesk2::Client < Cistern::Service
 
     def request(options={})
       method  = options[:method] || :get
-      url     = File.join(@url, options[:path])
+      url     = File.join(@url, "/api/v2", options[:path])
       params  = options[:params] || {}
       body    = options[:body]
       headers = options[:headers] || {}
@@ -127,13 +124,10 @@ class Zendesk2::Client < Cistern::Service
       url = options[:url] || begin
         host   = options[:host]
         host ||= "#{options[:subdomain] || "mock"}.zendesk.com"
-
-        path   = options[:path] || "api/v2"
         scheme = options[:scheme] || "https"
-
         port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}/#{path}"
+        "#{scheme}://#{host}:#{port}"
       end
 
       @url  = url
@@ -152,7 +146,7 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def url_for(path)
-      File.join(@url, path)
+      File.join(@url, "/api/v2", path)
     end
 
     def page(params, collection, path, collection_root, options={})
