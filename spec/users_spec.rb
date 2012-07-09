@@ -15,6 +15,7 @@ describe "users" do
 
   describe do
     let(:user) { client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
+
     it "should get requested tickets" do
       ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
@@ -25,6 +26,14 @@ describe "users" do
       ticket = client.tickets.create(collaborators: [user], subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       user.ccd_tickets.should include ticket
+    end
+
+    it "cannot destroy a user with a ticket" do
+      ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+
+      user.destroy.should be_false
+
+      user.should_not be_destroyed
     end
   end
 end

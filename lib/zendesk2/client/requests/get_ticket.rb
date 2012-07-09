@@ -23,11 +23,11 @@ class Zendesk2::Client
           },
         )
       else 
-        r = response(
+        response(
           :path   => path,
-          :status => 404
+          :status => 404,
+          :body => {"error" => "RecordNotFound", "description" => "Not found"},
         )
-        raise not_found!(nil, r)
       end
     end
   end # Mock

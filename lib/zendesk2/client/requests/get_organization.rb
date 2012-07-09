@@ -22,11 +22,10 @@ class Zendesk2::Client
           },
         )
       else 
-        r = response(
+        response(
           :path   => "/organizations/#{id}.json",
           :status => 404
         )
-        raise not_found!(nil, r)
       end
     end
   end # Mock

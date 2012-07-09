@@ -10,6 +10,7 @@ require 'time'
 
 module Zendesk2
   require 'zendesk2/errors'
+  require 'zendesk2/error'
   autoload :Client, "zendesk2/client"
   autoload :PagedCollection, "zendesk2/paged_collection"
 

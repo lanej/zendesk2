@@ -24,7 +24,7 @@ module Zendesk2::PagedCollection
     if data = self.connection.send(model_method, {"id" => id}).body[self.model_root]
       new(data)
     end
-  rescue not_found
+  rescue Zendesk2::Error
     nil
   end
 

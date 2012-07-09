@@ -1,7 +1,7 @@
 class Zendesk2::Client < Cistern::Service
 
-  model_path "zendesk2/models"
-  request_path "zendesk2/requests"
+  model_path "zendesk2/client/models"
+  request_path "zendesk2/client/requests"
 
   model :organization
   collection :organizations
@@ -91,8 +91,9 @@ class Zendesk2::Client < Cistern::Service
         req.params.merge!(params)
         req.body= body
       end
+    rescue Faraday::Error::ClientError => e
+      raise Zendesk2::Error.new(e)
     end
-
   end
 
   class Mock
@@ -181,8 +182,8 @@ class Zendesk2::Client < Cistern::Service
       }
 
       response(
-        body: body,
-        path: path
+        :body => body,
+        :path => path
       )
     end
 
@@ -194,15 +195,18 @@ class Zendesk2::Client < Cistern::Service
 
       url = options[:url] || url_for(path)
 
-      Faraday::Response.new(
-        :method          => method,
-        :status          => status,
-        :url             => url,
-        :body            => body,
-        :request_headers => {
-          "Content-Type"   => "application/json; charset=utf-8"
+      env = {
+        :method           => method,
+        :status           => status,
+        :url              => url,
+        :body             => body,
+        :response_headers => {
+          "Content-Type"  => "application/json; charset=utf-8"
         },
-      )
+      }
+      Faraday::Response::RaiseError.new.on_complete(env) || Faraday::Response.new(env)
+    rescue Faraday::Error::ClientError => e
+      raise Zendesk2::Error.new(e)
     end
   end
 end

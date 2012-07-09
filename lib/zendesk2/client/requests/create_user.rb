@@ -14,10 +14,11 @@ class Zendesk2::Client
       identity = self.class.new_id
 
       record = {
-        "id"              => identity,
-        "url"             => url_for("/users/#{identity}.json"),
-        "created_at"      => Time.now.iso8601,
-        "updated_at"      => Time.now.iso8601
+        "id"         => identity,
+        "url"        => url_for("/users/#{identity}.json"),
+        "created_at" => Time.now.iso8601,
+        "updated_at" => Time.now.iso8601,
+        "active"     => true,
       }.merge(params)
 
       self.data[:users][identity]= record

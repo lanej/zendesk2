@@ -1,4 +1,5 @@
 class Zendesk2::Client::User < Cistern::Model
+  include Zendesk2::Errors
   identity :id,                     type: :id
   attribute :url
   attribute :external_id
@@ -41,7 +42,7 @@ class Zendesk2::Client::User < Cistern::Model
     end
   end
 
-  def destroy
+  def destroy!
     requires :identity
     raise "don't nuke yourself" if self.email == connection.username
 
@@ -49,8 +50,14 @@ class Zendesk2::Client::User < Cistern::Model
     merge_attributes(data)
   end
 
+  def destroy
+    destroy!
+  rescue Zendesk2::Error => e
+    false
+  end
+
   def destroyed?
-    !self.active
+    !reload || !self.active
   end
 
   def login_url(timestamp, options={})
