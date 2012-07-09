@@ -4,7 +4,6 @@ require 'cistern'
 require 'addressable/uri'
 require 'faraday'
 require 'faraday_middleware'
-require 'uuidtools'
 
 require 'time'
 
@@ -32,7 +31,7 @@ module Zendesk2
   end
 
   def self.uuid
-    UUIDTools::UUID.random_create.to_s
+    [8,4,4,4,12].map{|i| Cistern::Mock.random_hex(i)}.join("-")
   end
 
   def self.stringify_keys(hash)
