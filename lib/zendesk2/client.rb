@@ -36,7 +36,7 @@ class Zendesk2::Client < Cistern::Service
 
   class Real
 
-    attr_reader :username, :url
+    attr_reader :username, :url, :token
 
     def initialize(options={})
       url = options[:url] || begin
