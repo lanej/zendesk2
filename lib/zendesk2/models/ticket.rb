@@ -42,16 +42,16 @@ class Zendesk2::Client::Ticket < Cistern::Model
     connection.destroy_ticket("id" => self.identity)
   end
 
+  def collaborators
+    self.collaborator_ids.map{|cid| self.connection.users.get(cid)}
+  end
+
+  def collaborators=(collaborators)
+    self.collaborator_ids= collaborators.map(&:identity)
+  end
+
   def destroyed?
     !self.reload
-  end
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "external_id", "via", "requester_id", "submitter_id", "assignee_id", "organization_id", "subject", "description", "fields", "recipient", "status")
-  end
-
-  def submitter
-    self.connection.users.get(submitter_id)
   end
 
   def requester=(requester)
@@ -61,4 +61,15 @@ class Zendesk2::Client::Ticket < Cistern::Model
   def requester
     self.connection.users.get(self.requester_id)
   end
+
+  def submitter
+    self.connection.users.get(submitter_id)
+  end
+
+  private
+
+  def params
+    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "external_id", "via", "requester_id", "submitter_id", "assignee_id", "organization_id", "subject", "description", "fields", "recipient", "status", "collaborator_ids")
+  end
+
 end

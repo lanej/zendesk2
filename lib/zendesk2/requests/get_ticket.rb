@@ -13,17 +13,18 @@ class Zendesk2::Client
   class Mock
     def get_ticket(params={})
       id   = params["id"]
-      if body = self.data[:tickets][id]
+      path = "/tickets/#{id}.json"
 
+      if body = self.data[:tickets][id]
         response(
-          :path  => "/tickets/#{id}.json",
-          :body  => {
+          :path => path,
+          :body => {
             "ticket" => body
           },
         )
       else 
         r = response(
-          :path   => "/tickets/#{id}.json",
+          :path   => path,
           :status => 404
         )
         raise not_found!(nil, r)

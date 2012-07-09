@@ -53,14 +53,6 @@ class Zendesk2::Client::User < Cistern::Model
     !self.active
   end
 
-  def organization=(organization)
-    self.organization_id= organization.id
-  end
-
-  def organization
-    self.connection.organizations.get(self.organization_id)
-  end
-
   def login_url(timestamp, options={})
     requires :name, :email
 
@@ -85,6 +77,30 @@ class Zendesk2::Client::User < Cistern::Model
     uri.query_values = query_values
 
     uri.to_s
+  end
+
+  def requested_tickets
+    requires :identity
+
+    data = connection.get_requested_tickets("id" => self.identity).body["tickets"]
+
+    connection.tickets.load(data)
+  end
+
+  def ccd_tickets
+    requires :identity
+
+    data = connection.get_ccd_tickets("id" => self.identity).body["tickets"]
+
+    connection.tickets.load(data)
+  end
+
+  def organization=(organization)
+    self.organization_id= organization.id
+  end
+
+  def organization
+    self.connection.organizations.get(self.organization_id)
   end
 
   private

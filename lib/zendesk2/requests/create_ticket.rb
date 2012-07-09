@@ -14,10 +14,11 @@ class Zendesk2::Client
       identity = self.class.new_id
 
       record = {
-        "id"         => identity,
-        "url"        => url_for("/tickets/#{identity}.json"),
-        "created_at" => Time.now.iso8601,
-        "updated_at" => Time.now.iso8601,
+        "id"               => identity,
+        "url"              => url_for("/tickets/#{identity}.json"),
+        "created_at"       => Time.now.iso8601,
+        "updated_at"       => Time.now.iso8601,
+        "collaborator_ids" => [],
       }.merge(params)
 
       record["requester_id"] ||= @current_user_id
@@ -34,4 +35,4 @@ class Zendesk2::Client
       )
     end
   end # Mock
-end
+end # Zendesk2::Client

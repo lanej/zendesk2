@@ -23,6 +23,8 @@ class Zendesk2::Client < Cistern::Service
   request :get_ticket
   request :get_user
   request :get_organizations
+  request :get_requested_tickets
+  request :get_ccd_tickets
   request :get_tickets
   request :get_users
   request :update_organization
@@ -55,15 +57,15 @@ class Zendesk2::Client < Cistern::Service
       logger             = options[:logger]
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
-      username           = options[:username] || Zendesk2.defaults[:username]
+      @username          = options[:username] || Zendesk2.defaults[:username]
       password           = options[:password] || Zendesk2.defaults[:password]
       @token             = options[:token]
 
-      raise "Missing required options: [:username, :password]" unless username && password
+      raise "Missing required options: [:username, :password]" unless @username && password
 
       @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
         # response
-        builder.use Faraday::Request::BasicAuthentication, username, password
+        builder.use Faraday::Request::BasicAuthentication, @username, password
         builder.use Faraday::Response::RaiseError
         builder.use Faraday::Response::Logger, logger if logger
         builder.response :json
