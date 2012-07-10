@@ -1,5 +1,4 @@
 class Zendesk2::Client::Organization < Cistern::Model
-  include Zendesk2::Errors
   identity :id,               type: :integer
   attribute :created_at,      type: :time
   attribute :details,         type: :string

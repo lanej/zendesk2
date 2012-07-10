@@ -1,5 +1,4 @@
 class Zendesk2::Client::Ticket < Cistern::Model
-  include Zendesk2::Errors
   identity :id,                type: :id
   attribute :external_id
   attribute :via

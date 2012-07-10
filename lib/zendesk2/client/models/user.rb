@@ -1,5 +1,4 @@
 class Zendesk2::Client::User < Cistern::Model
-  include Zendesk2::Errors
   identity :id,                     type: :id
   attribute :url
   attribute :external_id

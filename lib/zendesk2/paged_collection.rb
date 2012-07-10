@@ -3,7 +3,6 @@ module Zendesk2::PagedCollection
     klass.send(:attribute, :count)
     klass.send(:attribute, :next_page_link, {:aliases => "next_page"})
     klass.send(:attribute, :previous_page_link, {:aliases => "previous_page"})
-    klass.send(:include, Zendesk2::Errors)
     klass.send(:extend, Zendesk2::PagedCollection::Attributes)
   end
 

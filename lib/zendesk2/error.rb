@@ -6,7 +6,7 @@ class Zendesk2::Error < StandardError
     message = if exception.response
                  "#{exception.response[:status]} #{exception.response[:body]}"
                else
-                 exception.message
+                 exception.inspect
                end
     super(message)
   end
