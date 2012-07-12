@@ -9,7 +9,7 @@ class Zendesk2::Client::Organization < Cistern::Model
   attribute :shared_tickets,  type: :boolean
   attribute :tags,            type: :array
   attribute :name,            type: :string
-  attribute :notes,           type: :array
+  attribute :notes,           type: :string
   attribute :updated_at,      type: :time
 
   def destroy!
@@ -56,6 +56,9 @@ class Zendesk2::Client::Organization < Cistern::Model
   private
 
   def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "id", "details", "domain_names", "external_id", "group_id", "shared_comments", "shared_tickets", "tags", "name", "notes")
+    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "id", "details", "domain_names", "external_id", "group_id", "shared_comments", "shared_tickets", "tags", "name", "notes")
+    writable_attributes.delete("external_id") if writable_attributes["external_id"].to_s == "0"
+    writable_attributes.delete("group_id") if writable_attributes["group_id"].to_s == "0"
+    writable_attributes
   end
 end
