@@ -65,7 +65,7 @@ class Zendesk2::Client < Cistern::Service
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, password
         builder.use Faraday::Response::RaiseError
-        builder.use Faraday::Response::Logger, logger if logger
+        builder.use Zendesk2::Logger, logger if logger
         builder.response :json
 
         # request

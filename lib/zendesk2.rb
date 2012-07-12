@@ -1,16 +1,19 @@
 require "zendesk2/version"
 
+# dependencies
 require 'cistern'
 require 'addressable/uri'
 require 'faraday'
 require 'faraday_middleware'
 
+# stdlib
 require 'time'
 
 module Zendesk2
-  require 'zendesk2/error'
-  autoload :Client, "zendesk2/client"
-  autoload :PagedCollection, "zendesk2/paged_collection"
+  autoload :Error, 'zendesk2/error'
+  autoload :Client, 'zendesk2/client'
+  autoload :PagedCollection, 'zendesk2/paged_collection'
+  autoload :Logger, 'zendesk2/logger'
 
   def self.defaults
     @defaults ||= if File.exists?(File.expand_path("~/.zendesk2"))
