@@ -15,6 +15,7 @@ describe "users" do
 
   describe do
     let(:user) { client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
+    after(:all) { user.destroy }
 
     it "should get requested tickets" do
       ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
@@ -34,6 +35,12 @@ describe "users" do
       user.destroy.should be_false
 
       user.should_not be_destroyed
+    end
+
+    it "should hate non-unique emails" do
+      email = "zendesk2+#{Zendesk2.uuid}@example.org"
+      client.users.create(email: email, name: Zendesk2.uuid)
+      lambda { client.users.create(email: email, name: Zendesk2.uuid) }.should raise_exception(Zendesk2::Error)
     end
 
     it "should form login url"
