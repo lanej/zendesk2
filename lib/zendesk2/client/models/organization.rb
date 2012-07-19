@@ -1,4 +1,5 @@
 class Zendesk2::Client::Organization < Cistern::Model
+  PARAMS = %w[id details domain_names external_id group_id shared_comments shared_tickets tags name notes]
   identity :id,               type: :integer
   attribute :created_at,      type: :time
   attribute :details,         type: :string
@@ -56,7 +57,7 @@ class Zendesk2::Client::Organization < Cistern::Model
   private
 
   def params
-    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "id", "details", "domain_names", "external_id", "group_id", "shared_comments", "shared_tickets", "tags", "name", "notes")
+    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
     writable_attributes.delete("external_id") if writable_attributes["external_id"].to_s == "0"
     writable_attributes.delete("group_id") if writable_attributes["group_id"].to_s == "0"
     writable_attributes

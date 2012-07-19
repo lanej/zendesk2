@@ -1,4 +1,8 @@
 class Zendesk2::Client::User < Cistern::Model
+  extend Zendesk2::Attributes
+
+  PARAMS = %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
+
   identity :id,                     type: :id
   attribute :url
   attribute :external_id
@@ -28,6 +32,8 @@ class Zendesk2::Client::User < Cistern::Model
   attribute :suspended,             type: :boolean
   attribute :photo
   attribute :authenticity_token
+
+  assoc_accessor :organization
 
   def save
     if new_record?
@@ -101,18 +107,10 @@ class Zendesk2::Client::User < Cistern::Model
     connection.tickets.load(data)
   end
 
-  def organization=(organization)
-    self.organization_id= organization.id
-  end
-
-  def organization
-    self.connection.organizations.get(self.organization_id)
-  end
-
   private
 
   def params
-    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "name", "email", "organization_id", "external_id", "alias", "verified", "locate_id", "time_zone", "phone", "signature", "details", "notes", "role", "custom_role_id", "moderator", "ticket_restriction", "only_private_comments")
+    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
     writable_attributes.delete("organization_id") if writable_attributes["organization_id"] == 0
     writable_attributes.delete("custom_role_id") if writable_attributes["custom_role_id"] == 0
     writable_attributes

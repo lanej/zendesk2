@@ -1,4 +1,8 @@
 class Zendesk2::Client::Ticket < Cistern::Model
+  extend Zendesk2::Attributes
+
+  PARAMS = %w[external_id via requester_id submitter_id assignee_id organization_id subject description fields recipient status collaborator_ids]
+
   identity :id,                type: :id
   attribute :external_id
   attribute :via
@@ -22,6 +26,10 @@ class Zendesk2::Client::Ticket < Cistern::Model
   attribute :due_at,           type: :time
   attribute :tags,             type: :array
   attribute :fields,           type: :array
+
+  assoc_reader :organization
+  assoc_accessor :requester
+  assoc_reader :submitter
 
   def save
     if new_record?
@@ -53,22 +61,10 @@ class Zendesk2::Client::Ticket < Cistern::Model
     !self.reload
   end
 
-  def requester=(requester)
-    self.requester_id= requester.id
-  end
-
-  def requester
-    self.connection.users.get(self.requester_id)
-  end
-
-  def submitter
-    self.connection.users.get(submitter_id)
-  end
-
   private
 
   def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "external_id", "via", "requester_id", "submitter_id", "assignee_id", "organization_id", "subject", "description", "fields", "recipient", "status", "collaborator_ids")
+    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
   end
 
 end

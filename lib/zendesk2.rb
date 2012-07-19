@@ -10,6 +10,7 @@ require 'faraday_middleware'
 require 'time'
 
 module Zendesk2
+  autoload :Attributes, 'zendesk2/attributes'
   autoload :Error, 'zendesk2/error'
   autoload :Client, 'zendesk2/client'
   autoload :PagedCollection, 'zendesk2/paged_collection'

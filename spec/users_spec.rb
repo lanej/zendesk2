@@ -5,7 +5,7 @@ describe "users" do
   it_should_behave_like "a resource", 
     :users,
     lambda { {email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true} },
-    lambda { {name: Zendesk2.uuid} }
+  lambda { {name: Zendesk2.uuid} }
 
   it "should get current user" do
     current_user = client.users.current
@@ -16,6 +16,13 @@ describe "users" do
   describe do
     let(:user) { client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
     after(:all) { user.destroy }
+
+    it "should update organization" do
+      organization = client.organizations.create(name: Zendesk2.uuid)
+      user.organization= organization
+      user.save.should be_true
+      user.organization.should == organization
+    end
 
     it "should get requested tickets" do
       ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
