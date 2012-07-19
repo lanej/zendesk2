@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["me@joshualane.com"]
   gem.description   = %q{Zendesk V2 API client}
   gem.summary       = %q{Zendesk V2 API client}
-  gem.homepage      = ""
+  gem.homepage      = "http://joshualane.com/zendesk2"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

@@ -12,6 +12,7 @@ shared_examples "a resource" do |_collection, _params, _update_params|
     before(:each) do
       2.times.each { collection.create(instance_exec(&_params)) }
     end
+
     it "by retrieving the first page" do
       collection.all("per_page" => "1").size.should == 1
     end
@@ -48,5 +49,8 @@ shared_examples "a resource" do |_collection, _params, _update_params|
     record.should be_destroyed
   end
 
-  it "should search"
+  it "should search" do
+    record = collection.create(params)
+    collection.search(params).should include(record)
+  end
 end

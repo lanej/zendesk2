@@ -14,6 +14,7 @@ module Zendesk2
   autoload :Error, 'zendesk2/error'
   autoload :Client, 'zendesk2/client'
   autoload :PagedCollection, 'zendesk2/paged_collection'
+  autoload :Searchable, 'zendesk2/searchable'
   autoload :Logger, 'zendesk2/logger'
 
   def self.defaults
