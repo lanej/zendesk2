@@ -43,7 +43,7 @@ class Zendesk2::Client < Cistern::Service
 
   class Real
 
-    attr_reader :username, :url, :token
+    attr_accessor :username, :url, :token, :logger
 
     def initialize(options={})
       url = options[:url] || begin
@@ -59,7 +59,7 @@ class Zendesk2::Client < Cistern::Service
 
       @url  = URI.parse(url).to_s
 
-      logger             = options[:logger]
+      @logger            = options[:logger] || Logger.new(nil)
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
       @username          = options[:username] || Zendesk2.defaults[:username]
@@ -72,13 +72,13 @@ class Zendesk2::Client < Cistern::Service
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, password
         builder.use Faraday::Response::RaiseError
-        builder.use Zendesk2::Logger, logger if logger
         builder.response :json
 
         # request
         builder.request :multipart
         builder.request :json
 
+        builder.use Zendesk2::Logger, @logger
         builder.adapter adapter
       end
     end

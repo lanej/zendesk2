@@ -8,6 +8,7 @@ require 'faraday_middleware'
 
 # stdlib
 require 'time'
+require 'logger'
 
 module Zendesk2
   autoload :Attributes, 'zendesk2/attributes'

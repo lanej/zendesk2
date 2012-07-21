@@ -1,6 +1,7 @@
 class Zendesk2::Client::Organization < Cistern::Model
   PARAMS = %w[id details domain_names external_id group_id shared_comments shared_tickets tags name notes]
   identity :id,               type: :integer
+  attribute :url,             type: :string
   attribute :created_at,      type: :time
   attribute :details,         type: :string
   attribute :domain_names,    type: :array

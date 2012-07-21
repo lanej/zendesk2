@@ -43,13 +43,16 @@ shared_examples "a resource" do |_collection, _params, _update_params|
   end
 
   it "by destroy a record" do
+    pending if _collection == :forums
     record = collection.create(params)
     record.identity.should_not be_nil
     record.destroy
     record.should be_destroyed
   end
 
+  # Search index takes 2-3 minutes according to the docs
   it "should search" do
+    pending unless Zendesk2::Client.mocking?
     record = collection.create(params)
     collection.search(params).should include(record)
   end
