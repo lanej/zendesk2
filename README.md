@@ -20,22 +20,25 @@ Or install it yourself as:
 
 Default credentials will be read in from `~/.zendesk2` file in YAML format.
 
-	---
-	:subdomain: zendeskdev
-	:username: zendeskedge@example.com
-	:password: wickedsecurepassword
+```yaml
+---
+:subdomain: zendeskdev
+:username: zendeskedge@example.com
+:password: wickedsecurepassword
+```
 
 ### Creating the client
 
 Either the absolute url or the subdomain is required.  Username and password is always required.
-
-	Zendesk2::Client.new(subdomain: "engineyard", username: "orchestra", password: "gwoo")
-	=> #<Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …>
-
+```ruby
+Zendesk2::Client.new(subdomain: "engineyard", username: "orchestra", password: "gwoo")
+=> #<Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …>
+```
 or
-
-	=> #<Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @password="bambilla", …>
-
+```ruby
+Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate", password: "bambilla")
+=> #<Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @password="bambilla", …>
+```
 ### Resources
 
 #### Collections
@@ -45,22 +48,23 @@ Currently support resources
 * User
 * Ticket
 * Organization
+* Forums
 
 All collection are accessed like so:
-
-    client.users.all
-     =>   <Zendesk2::Client::Users
-    count=1779,
-    next_page_link="https://dev.zendesk.com/api/v2/users.json?page=2",
-    previous_page_link=nil
-    [
-      <Zendesk2::Client::User
-        id=125394183,
-        url="https://dev.zendesk.com/api/v2/users/125394183.json",
-        ...
-       >
-    ]
-
+```ruby
+client.users.all
+=>   <Zendesk2::Client::Users
+	count=1779,
+	next_page_link="https://dev.zendesk.com/api/v2/users.json?page=2",
+	previous_page_link=nil
+	[
+		<Zendesk2::Client::User
+			id=125394183,
+			url="https://dev.zendesk.com/api/v2/users/125394183.json",
+      ...
+		>
+	]
+```
 Collections also respond to `create` and `new`
 
 	client.users.create(email: "ohhai@example.org", name: "lulz")
