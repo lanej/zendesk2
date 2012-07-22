@@ -45,6 +45,7 @@ Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate
 
 Currently support resources
 
+* Categories
 * User
 * Ticket
 * Organization

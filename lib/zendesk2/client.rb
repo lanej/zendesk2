@@ -3,6 +3,8 @@ class Zendesk2::Client < Cistern::Service
   model_path "zendesk2/client/models"
   request_path "zendesk2/client/requests"
 
+  model :category
+  collection :categories
   model :forum
   collection :forums
   model :organization
@@ -12,21 +14,25 @@ class Zendesk2::Client < Cistern::Service
   model :user
   collection :users
 
+  request :create_category
   request :create_forum
   request :create_organization
   request :create_ticket
   request :create_user
+  request :destroy_category
   request :destroy_forum
   request :destroy_organization
   request :destroy_ticket
   request :destroy_user
   request :get_current_user
+  request :get_category
   request :get_forum
   request :get_organization
   request :get_organization_tickets
   request :get_organization_users
   request :get_ticket
   request :get_user
+  request :get_categories
   request :get_forums
   request :get_organizations
   request :get_requested_tickets
@@ -34,6 +40,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_tickets
   request :get_users
   request :search
+  request :update_category
   request :update_forum
   request :update_organization
   request :update_ticket
@@ -111,6 +118,7 @@ class Zendesk2::Client < Cistern::Service
         :organizations => {},
         :tickets       => {},
         :forums        => {},
+        :categories    => {},
       }
     end
 
@@ -187,6 +195,11 @@ class Zendesk2::Client < Cistern::Service
         :body => body,
         :path => path
       )
+    end
+
+    def pluralize(word)
+      [[/y$/, 'ies'], [/$/, 's']].find{|regex, replace| word.gsub!(regex, replace) if word.match(regex)}
+      word
     end
 
     def response(options={})

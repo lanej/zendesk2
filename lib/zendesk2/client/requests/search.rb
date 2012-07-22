@@ -13,7 +13,7 @@ class Zendesk2::Client
   class Mock
     def search(query)
       type       = query.delete("type")
-      collection = type.nil? ? self.data.values : self.data["#{type}s".to_sym]
+      collection = type.nil? ? self.data.values : self.data[pluralize(type).to_sym]
 
       results = collection.select{|k,v| query.all?{|term, condition| v[term.to_s] == condition}}.values
 
