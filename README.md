@@ -50,6 +50,7 @@ Currently support resources
 * Ticket
 * Organization
 * Forums
+* Topics
 
 All collection are accessed like so:
 ```ruby
