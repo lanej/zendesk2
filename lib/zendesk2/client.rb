@@ -9,6 +9,8 @@ class Zendesk2::Client < Cistern::Service
   collection :forums
   model :topic
   collection :topics
+  model :topic_comment
+  collection :topic_comments
   model :organization
   collection :organizations
   model :ticket
@@ -19,12 +21,14 @@ class Zendesk2::Client < Cistern::Service
   request :create_category
   request :create_forum
   request :create_topic
+  request :create_topic_comment
   request :create_organization
   request :create_ticket
   request :create_user
   request :destroy_category
   request :destroy_forum
   request :destroy_topic
+  request :destroy_topic_comment
   request :destroy_organization
   request :destroy_ticket
   request :destroy_user
@@ -32,6 +36,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_category
   request :get_forum
   request :get_topic
+  request :get_topic_comment
   request :get_organization
   request :get_organization_tickets
   request :get_organization_users
@@ -40,6 +45,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_categories
   request :get_forums
   request :get_topics
+  request :get_topic_comments
   request :get_organizations
   request :get_requested_tickets
   request :get_ccd_tickets
@@ -49,6 +55,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_category
   request :update_forum
   request :update_topic
+  request :update_topic_comment
   request :update_organization
   request :update_ticket
   request :update_user
@@ -121,12 +128,13 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :users         => {},
-        :organizations => {},
-        :tickets       => {},
-        :forums        => {},
-        :topics        => {},
-        :categories    => {},
+        :users          => {},
+        :organizations  => {},
+        :tickets        => {},
+        :forums         => {},
+        :topics         => {},
+        :categories     => {},
+        :topic_comments => {},
       }
     end
 
