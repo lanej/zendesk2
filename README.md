@@ -30,15 +30,19 @@ Default credentials will be read in from `~/.zendesk2` file in YAML format.
 ### Creating the client
 
 Either the absolute url or the subdomain is required.  Username and password is always required.
+
 ```ruby
 Zendesk2::Client.new(subdomain: "engineyard", username: "orchestra", password: "gwoo")
 => #<Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …>
 ```
+
 or
+
 ```ruby
 Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate", password: "bambilla")
 => #<Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @password="bambilla", …>
 ```
+
 ### Resources
 
 #### Collections
@@ -53,6 +57,7 @@ Currently support resources
 * User
 
 All collection are accessed like so:
+
 ```ruby
 client.users.all
 => <Zendesk2::Client::Users
@@ -67,7 +72,9 @@ client.users.all
     >
   ]
 ```
+
 Collections also respond to `create` and `new`
+
 ```ruby
 client.users.create(email: "ohhai@example.org", name: "lulz")
 => <Zendesk2::Client::User
@@ -90,9 +97,11 @@ client.users.new(email: "ohhai@example.org")
   ...
   >
 ```
+
 #### Paging
 
 Paged collections respond to `next_page` and `previous_page` when appropriate.  `page_size` and `page` can be passed directly to the collection to control size and index.
+
 ```ruby
 page = client.users.all("per_page" => 1, "page" => 4)
 => <Zendesk2::Client::Users
@@ -109,6 +118,7 @@ page = client.users.all("per_page" => 1, "page" => 4)
     >
   ]
 ```
+
 ```ruby
 page.next_page
 => <Zendesk2::Client::Users
@@ -125,6 +135,7 @@ page.next_page
     >
   ]
 ```
+
 ```ruby
 page.previous_page
 => <Zendesk2::Client::Users
@@ -141,13 +152,16 @@ page.previous_page
     >
   ]
 ```
+
 #### Models
 
 All models respond to `destroy` and `save` if applicable.  `save` performs a 'create' operation if there is no identity provided or an 'update' if there is an identity.
+
 ```ruby
 Zendesk2::Client::Ticket.new.save        # performs a create
 Zendesk2::Client::Ticket.new(id: 1).save # performs an update
 ```
+
 Attributes can be enumerated by the `attributes` method.
 
 ## Releasing
