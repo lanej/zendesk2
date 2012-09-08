@@ -214,8 +214,9 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def pluralize(word)
-      [[/y$/, 'ies'], [/$/, 's']].find{|regex, replace| word.gsub!(regex, replace) if word.match(regex)}
-      word
+      pluralized = word.dup
+      [[/y$/, 'ies'], [/$/, 's']].find{|regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex)}
+      pluralized
     end
 
     def response(options={})
