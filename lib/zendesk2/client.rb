@@ -177,7 +177,7 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def url_for(path)
-      File.join(@url, "/api/v2", path)
+      File.join(@url, "/api/v2", path.to_s)
     end
 
     def page(params, collection, path, collection_root, options={})
