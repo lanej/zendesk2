@@ -28,8 +28,8 @@ class Zendesk2::Client::Ticket < Cistern::Model
   attribute :fields,           type: :array
 
   assoc_reader :organization
-  assoc_accessor :requester
-  assoc_reader :submitter
+  assoc_accessor :requester, collection: :users
+  assoc_reader :submitter, collection: :users
 
   def save
     if new_record?
