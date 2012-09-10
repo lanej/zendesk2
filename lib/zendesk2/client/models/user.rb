@@ -33,9 +33,10 @@ class Zendesk2::Client::User < Cistern::Model
   attribute :photo
   attribute :authenticity_token
 
+  attr_accessor :errors
   assoc_accessor :organization
 
-  def save
+  def save!
     if new_record?
       requires :name, :email
       data = connection.create_user(params).body["user"]
@@ -45,6 +46,13 @@ class Zendesk2::Client::User < Cistern::Model
       data = connection.update_user(params.merge("id" => self.identity)).body["user"]
       merge_attributes(data)
     end
+  end
+
+  def save
+    save!
+  rescue Zendesk2::Error => e
+    self.errors= e.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"]})} rescue nil
+    self
   end
 
   def destroy!

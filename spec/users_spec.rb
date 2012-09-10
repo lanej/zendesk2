@@ -14,8 +14,11 @@ describe "users" do
   end
 
   describe do
-    let(:user) { client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
-    after(:all) { user.destroy }
+    before(:each) do
+      @user =  client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
+    end
+
+    let(:user) { @user }
 
     it "should update organization" do
       organization = client.organizations.create(name: Zendesk2.uuid)
@@ -47,7 +50,9 @@ describe "users" do
     it "should hate non-unique emails" do
       email = "zendesk2+#{Zendesk2.uuid}@example.org"
       client.users.create(email: email, name: Zendesk2.uuid)
-      lambda { client.users.create(email: email, name: Zendesk2.uuid) }.should raise_exception(Zendesk2::Error)
+      lambda { client.users.create!(email: email, name: Zendesk2.uuid) }.should raise_exception(Zendesk2::Error)
+      user = client.users.create(email: email, name: Zendesk2.uuid)
+      user.errors.should == {"email" => ["#{email} is already being used by another user"]}
     end
 
     it "should form login url"

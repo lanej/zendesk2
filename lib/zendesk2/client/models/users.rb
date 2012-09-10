@@ -13,4 +13,9 @@ class Zendesk2::Client::Users < Cistern::Collection
   def current
     new(connection.get_current_user.body["user"])
   end
+
+  def create!(attributes={})
+    model = self.new(attributes)
+    model.save!
+  end
 end

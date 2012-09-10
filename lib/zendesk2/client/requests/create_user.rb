@@ -22,17 +22,18 @@ class Zendesk2::Client
       }.merge(params)
 
       path = "/users.json"
-      if record["email"] && self.data[:users].find{|k,u| u["email"] == record["email"] && k != identity}
+      if (email = record["email"]) && self.data[:users].find{|k,u| u["email"] == email && k != identity}
         response(
           :method => :put,
           :path   => path,
           :status => 422,
           :body   => {
             "error"       => "RecordInvalid",
-            "description" => "Record validation errors", "details" => {
-              "email"       => [ {
-                "type"        => "#{record["email"]} is already being used by another user",
-                "description" => "Email: #{record["email"]} is already being used by another user"
+            "description" => "Record validation errors",
+            "details" => {
+              "email" => [ {
+                "type"        => "#{email} is already being used by another user",
+                "description" => "Email: #{email} is already being used by another user"
               } ]
             }
           }
