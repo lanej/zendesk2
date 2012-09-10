@@ -1,4 +1,4 @@
-class Zendesk2::Client::User < Cistern::Model
+class Zendesk2::Client::User < Zendesk2::Model
   extend Zendesk2::Attributes
 
   PARAMS = %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
@@ -46,13 +46,6 @@ class Zendesk2::Client::User < Cistern::Model
       data = connection.update_user(params.merge("id" => self.identity)).body["user"]
       merge_attributes(data)
     end
-  end
-
-  def save
-    save!
-  rescue Zendesk2::Error => e
-    self.errors= e.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"]})} rescue nil
-    self
   end
 
   def destroy!

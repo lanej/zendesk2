@@ -1,4 +1,4 @@
-class Zendesk2::Client::Organizations < Cistern::Collection
+class Zendesk2::Client::Organizations < Zendesk2::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 

@@ -52,6 +52,7 @@ describe "users" do
       client.users.create(email: email, name: Zendesk2.uuid)
       lambda { client.users.create!(email: email, name: Zendesk2.uuid) }.should raise_exception(Zendesk2::Error)
       user = client.users.create(email: email, name: Zendesk2.uuid)
+      user.identity.should be_false
       user.errors.should == {"email" => ["#{email} is already being used by another user"]}
     end
 

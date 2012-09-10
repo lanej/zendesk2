@@ -17,6 +17,8 @@ module Zendesk2
   autoload :PagedCollection, 'zendesk2/paged_collection'
   autoload :Searchable, 'zendesk2/searchable'
   autoload :Logger, 'zendesk2/logger'
+  autoload :Model, 'zendesk2/model'
+  autoload :Collection, 'zendesk2/collection'
 
   def self.defaults
     @defaults ||= if File.exists?(File.expand_path("~/.zendesk2"))

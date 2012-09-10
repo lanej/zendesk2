@@ -20,8 +20,10 @@ describe "organizations" do
       organization.tickets.should include ticket
     end
 
-    it "should raise on name conflict" do
-      lambda { client.organizations.create(name: organization.name) }.should raise_exception(Zendesk2::Error)
+    it "should hate non-unique names" do
+      lambda { client.organizations.create!(name: organization.name) }.should raise_exception(Zendesk2::Error)
+      model = client.organizations.create(name: organization.name)
+      model.errors.should == {"name" => ["Name: has already been taken"]}
     end
   end
 end

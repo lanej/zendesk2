@@ -1,4 +1,4 @@
-class Zendesk2::Client::Users < Cistern::Collection
+class Zendesk2::Client::Users < Zendesk2::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
@@ -12,10 +12,5 @@ class Zendesk2::Client::Users < Cistern::Collection
 
   def current
     new(connection.get_current_user.body["user"])
-  end
-
-  def create!(attributes={})
-    model = self.new(attributes)
-    model.save!
   end
 end

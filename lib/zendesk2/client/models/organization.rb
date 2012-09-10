@@ -1,4 +1,4 @@
-class Zendesk2::Client::Organization < Cistern::Model
+class Zendesk2::Client::Organization < Zendesk2::Model
   PARAMS = %w[id details domain_names external_id group_id shared_comments shared_tickets tags name notes]
 
   identity :id,               type: :integer
@@ -31,7 +31,7 @@ class Zendesk2::Client::Organization < Cistern::Model
     !self.reload
   end
 
-  def save
+  def save!
     data = if new_record?
              requires :name
              connection.create_organization(params).body["organization"]
