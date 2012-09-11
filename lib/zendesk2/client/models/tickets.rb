@@ -1,4 +1,4 @@
-class Zendesk2::Client::Tickets < Cistern::Collection
+class Zendesk2::Client::Tickets < Zendesk2::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 

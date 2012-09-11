@@ -1,4 +1,4 @@
-class Zendesk2::Client::TopicComment < Cistern::Model
+class Zendesk2::Client::TopicComment < Zendesk2::Model
   extend Zendesk2::Attributes
 
   PARAMS = %w[id topic_id user_id body informative]
@@ -26,7 +26,7 @@ class Zendesk2::Client::TopicComment < Cistern::Model
     !self.reload
   end
 
-  def save
+  def save!
     data = if new_record?
              requires :topic_id, :user_id, :body
              connection.create_topic_comment(params).body["topic_comment"]

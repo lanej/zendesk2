@@ -1,4 +1,4 @@
-class Zendesk2::Client::Category < Cistern::Model
+class Zendesk2::Client::Category < Zendesk2::Model
   PARAMS = %w[id name description position]
 
   identity  :id, type: :integer         # ro[yes] mandatory[no]  Automatically assigned during creation
@@ -19,7 +19,7 @@ class Zendesk2::Client::Category < Cistern::Model
     !self.reload
   end
 
-  def save
+  def save!
     data = if new_record?
              requires :name
              connection.create_category(params).body["category"]

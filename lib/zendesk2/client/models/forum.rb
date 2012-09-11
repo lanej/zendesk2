@@ -1,4 +1,4 @@
-class Zendesk2::Client::Forum < Cistern::Model
+class Zendesk2::Client::Forum < Zendesk2::Model
   extend Zendesk2::Attributes
 
   PARAMS = %w[id name description category_id organization_id locale_id locked position forum_type access]
@@ -31,7 +31,7 @@ class Zendesk2::Client::Forum < Cistern::Model
     !self.reload
   end
 
-  def save
+  def save!
     data = if new_record?
              requires :name
              connection.create_forum(params).body["forum"]

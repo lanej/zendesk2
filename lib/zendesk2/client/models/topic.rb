@@ -1,4 +1,4 @@
-class Zendesk2::Client::Topic < Cistern::Model
+class Zendesk2::Client::Topic < Zendesk2::Model
   extend Zendesk2::Attributes
 
   PARAMS = %w[id title body submitter_id updater_id forum_id locked pinned highlighted position tags]
@@ -34,7 +34,7 @@ class Zendesk2::Client::Topic < Cistern::Model
     !self.reload
   end
 
-  def save
+  def save!
     data = if new_record?
              requires :title, :body
              connection.create_topic(params).body["topic"]

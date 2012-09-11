@@ -1,4 +1,4 @@
-class Zendesk2::Client::Topics < Cistern::Collection
+class Zendesk2::Client::Topics < Zendesk2::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 

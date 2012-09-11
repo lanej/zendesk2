@@ -1,4 +1,4 @@
-class Zendesk2::Client::Ticket < Cistern::Model
+class Zendesk2::Client::Ticket < Zendesk2::Model
   extend Zendesk2::Attributes
 
   PARAMS = %w[external_id via requester_id submitter_id assignee_id organization_id subject description fields recipient status collaborator_ids]
@@ -31,7 +31,7 @@ class Zendesk2::Client::Ticket < Cistern::Model
   assoc_accessor :requester, collection: :users
   assoc_reader :submitter, collection: :users
 
-  def save
+  def save!
     if new_record?
       requires :subject, :description
       data = connection.create_ticket(params).body["ticket"]
