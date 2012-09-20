@@ -56,6 +56,10 @@ describe "users" do
       user.errors.should == {"email" => ["#{email} is already being used by another user"]}
     end
 
-    it "should form login url"
+    it "should form login url" do
+      return_to = "http://engineyard.com"
+      uri = Addressable::URI.parse(user.login_url(Time.now.to_s, return_to: return_to))
+      uri.query_values["return_to"].should == return_to
+    end
   end
 end
