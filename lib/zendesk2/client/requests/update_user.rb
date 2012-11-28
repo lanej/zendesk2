@@ -25,7 +25,6 @@ class Zendesk2::Client
             "error"       => "RecordInvalid",
             "description" => "Record validation errors", "details" => {
             "email"       => [ {
-                "type"        => "#{params["email"]} is already being used by another user",
                 "description" => "Email: #{params["email"]} is already being used by another user"
               } ]
             }
