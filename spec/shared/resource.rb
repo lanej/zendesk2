@@ -1,11 +1,18 @@
-shared_examples "a resource" do |_collection, _params, _update_params|
-  let(:collection) { client.send(_collection) }
-  let(:params) { instance_exec(&_params) || {} }
+shared_examples "a resource" do |_collection, _params, _update_params, _options|
+  let(:options)       { _options || {} }
+  let(:collection)    { options[:collection] ? instance_exec(&options[:collection]) : client.send(_collection) }
+  let(:params)        { instance_exec(&_params) || {} }
   let(:update_params) { instance_exec(&_update_params) }
+  let(:fetch_params)  { options[:fetch_params] || lambda {|r| r.identity} }
 
   it "by creating a record" do
-    record = collection.create(params)
+    record = collection.create!(params)
     record.identity.should_not be_nil
+  end
+
+  it "by fetching a specific record" do
+    record = collection.create(params)
+    collection.get(*fetch_params.call(record)).should == record
   end
 
   context "that is paged" do
@@ -28,11 +35,6 @@ shared_examples "a resource" do |_collection, _params, _update_params|
       previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page
       previous_to_second_page.should == first_page
     end
-  end
-
-  it "by fetching a specific record" do
-    record = collection.create(params)
-    collection.get(record.identity).should == record
   end
 
   it "by updating a record" do

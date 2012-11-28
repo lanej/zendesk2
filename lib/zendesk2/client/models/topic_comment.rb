@@ -19,11 +19,7 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
   def destroy
     requires :identity
 
-    connection.destroy_topic_comment("id" => self.identity)
-  end
-
-  def destroyed?
-    !self.reload
+    connection.destroy_topic_comment("id" => self.identity, "topic_id" => self.topic_id)
   end
 
   def save!
@@ -35,6 +31,16 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
              connection.update_topic_comment(params).body["topic_comment"]
            end
     merge_attributes(data)
+  end
+
+  def reload
+    requires :identity
+
+    if data = collection.get(topic_id, identity)
+      new_attributes = data.attributes
+      merge_attributes(new_attributes)
+      self
+    end
   end
 
   private

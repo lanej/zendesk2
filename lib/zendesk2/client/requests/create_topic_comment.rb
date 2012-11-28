@@ -1,10 +1,11 @@
 class Zendesk2::Client
   class Real
     def create_topic_comment(params={})
+      topic_id = params.delete("topic_id")
       request(
         :body   => {"topic_comment" => params},
         :method => :post,
-        :path   => "/topic_comments.json",
+        :path   => "/topics/#{topic_id}/comments.json",
       )
     end
   end # Real

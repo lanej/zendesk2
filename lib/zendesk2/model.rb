@@ -8,4 +8,8 @@ class Zendesk2::Model < Cistern::Model
     self.errors= e.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"] || e["description"]})} rescue nil
     self
   end
+
+  def destroyed?
+    !self.reload
+  end
 end

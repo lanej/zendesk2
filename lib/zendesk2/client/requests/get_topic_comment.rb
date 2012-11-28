@@ -1,11 +1,12 @@
 class Zendesk2::Client
   class Real
     def get_topic_comment(params={})
-      id = params["id"]
+      id       = params["id"]
+      topic_id = params["topic_id"]
 
       request(
         :method => :get,
-        :path => "/topic_comments/#{id}.json"
+        :path => "/topics/#{topic_id}/comments/#{id}.json"
       )
     end
   end # Real

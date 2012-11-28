@@ -45,6 +45,10 @@ class Zendesk2::Client::Topic < Zendesk2::Model
     merge_attributes(data)
   end
 
+  def comments
+    self.topic_comments(topic_id: topic_id)
+  end
+
   private
 
   def params
