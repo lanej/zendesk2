@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Zendesk2::VERSION
 
-  gem.add_dependency "cistern", "~> 0.1.1"
+  gem.add_dependency "cistern", "~> 0.1.3"
   gem.add_dependency "faraday"
   gem.add_dependency "faraday_middleware"
   gem.add_dependency "addressable"
