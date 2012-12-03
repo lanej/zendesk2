@@ -13,4 +13,10 @@ class Zendesk2::Client::Users < Zendesk2::Collection
   def current
     new(connection.get_current_user.body["user"])
   end
+
+  def search_by_email(email)
+    response = connection.search_users_by_email(:email => email).body['users']
+    return new(response.first) if response.size > 0
+    nil
+  end
 end

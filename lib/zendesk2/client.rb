@@ -52,6 +52,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_tickets
   request :get_users
   request :search
+  request :search_users
   request :update_category
   request :update_forum
   request :update_topic
