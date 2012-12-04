@@ -66,7 +66,14 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
   end
 
   def comments
-    audits.select { |a| a['type'] == 'Comment' }
+    comments = []
+    audits.each do |audit|
+      events = audit['events'].select { |e| e['type'] == 'Comment' }
+      events.each do |event|
+        comments << event.merge({'created_at' => audit['created_at']})
+      end
+    end
+    comments
   end
 
   private

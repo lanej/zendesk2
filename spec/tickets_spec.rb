@@ -30,8 +30,8 @@ describe "tickets" do
 
     it "lists comments" do
       ticket.comments.size.should == 0
-      client.data[:ticket_audits][2] = {'ticket_id' => ticket.id, 'type' => 'Comment'}
-      client.data[:ticket_audits][3] = {'ticket_id' => ticket.id, 'type' => 'Change'}
+      client.data[:ticket_audits][2] = {'ticket_id' => ticket.id, 'events' => [{'type' => 'Comment'}]}
+      client.data[:ticket_audits][3] = {'ticket_id' => ticket.id, 'events' => [{'type' => 'Change'}]}
       ticket.comments.size.should == 1
     end
   end
