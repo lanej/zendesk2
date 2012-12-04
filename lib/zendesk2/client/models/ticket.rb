@@ -61,6 +61,14 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     !self.reload
   end
 
+  def audits
+    connection.get_audits('ticket_id' => id).body['audits']
+  end
+
+  def comments
+    audits.select { |a| a['type'] == 'Comment' }
+  end
+
   private
 
   def params

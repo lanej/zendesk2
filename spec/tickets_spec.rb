@@ -17,4 +17,22 @@ describe "tickets" do
       ticket.submitter.should == client.users.current
     end
   end
+
+  describe "comments" do
+    let(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
+    before(:each) { client.data[:ticket_audits] = {} }
+
+    it "lists audits" do
+      ticket.audits.size.should == 0
+      client.data[:ticket_audits][1] = {'ticket_id' => ticket.id}
+      ticket.audits.size.should == 1
+    end
+
+    it "lists comments" do
+      ticket.comments.size.should == 0
+      client.data[:ticket_audits][2] = {'ticket_id' => ticket.id, 'type' => 'Comment'}
+      client.data[:ticket_audits][3] = {'ticket_id' => ticket.id, 'type' => 'Change'}
+      ticket.comments.size.should == 1
+    end
+  end
 end
