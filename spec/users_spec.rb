@@ -13,6 +13,12 @@ describe "users" do
     current_user.email.should == client.username
   end
 
+  it "should find users by email" do
+    current_user = client.users.current
+    user = client.users.search_by_email(current_user.email)
+    user.email.should == current_user.email
+  end
+
   describe do
     before(:each) do
       @user =  client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
