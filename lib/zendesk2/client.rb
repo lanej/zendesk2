@@ -32,6 +32,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_organization
   request :destroy_ticket
   request :destroy_user
+  request :get_audits
   request :get_current_user
   request :get_category
   request :get_forum
