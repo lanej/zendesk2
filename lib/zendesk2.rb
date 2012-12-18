@@ -46,6 +46,6 @@ module Zendesk2
   end
 
   def self.blank?(string)
-    !string || string == ""
+    string.nil? || string == ""
   end
 end

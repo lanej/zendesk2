@@ -8,5 +8,7 @@ gem 'cistern'
 
 group :test do
   gem 'guard-rspec'
+  gem 'guard-bundler'
   gem 'rspec'
+  gem 'rb-fsevent'
 end
