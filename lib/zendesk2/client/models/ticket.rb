@@ -76,6 +76,17 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     comments
   end
 
+  def comment(message, is_public=true)
+    requires :identity
+
+    connection.update_ticket({
+      "comment" => {
+        "body" => message,
+        "public" => is_public
+      }
+    }.merge("id" => self.identity))
+  end
+
   private
 
   def params
