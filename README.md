@@ -164,6 +164,23 @@ Zendesk2::Client::Ticket.new(id: 1).save # performs an update
 
 Attributes can be enumerated by the `attributes` method.
 
+## Testing
+### Running
+
+    $ bundle exec rspec
+
+### Testing Live
+
+Run against a real Zendesk installation by setting ```MOCK_ZENDESK=false```
+
+    $ MOCK_ZENDESK=false bundle exec rspec
+
+Credentials are sourced from your ```~/.zendesk2``` file
+
+Raw responses and requests can be echoed to STDOUT by adding ```VERBOSE=true```
+
+    $ VERBOSE=true bundle exec rspec
+
 ## Releasing
 
     $ gem install gem-release
