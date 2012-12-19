@@ -4,11 +4,13 @@ Bundler.require(:test)
 
 require File.expand_path("../../lib/zendesk2", __FILE__)
 
-Dir["./spec/{support,shared}/**/*.rb"].each {|f| require f}
+Dir[File.expand_path("../{support,shared}/**/*.rb", __FILE__)].each {|f| require f}
 
 if ENV["MOCK_ZENDESK"] == 'true'
   Zendesk2::Client.mock!
 end
+
+Cistern.formatter = Cistern::Formatter::AwesomePrint
 
 RSpec.configure do |config|
   config.before(:all) do

@@ -11,4 +11,5 @@ group :test do
   gem 'guard-bundler'
   gem 'rspec'
   gem 'rb-fsevent'
+  gem 'awesome_print'
 end
