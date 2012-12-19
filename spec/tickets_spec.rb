@@ -18,17 +18,20 @@ describe "tickets" do
     end
   end
 
-  describe "comments" do
+  # TODO: [lanej] [Wed Dec 19 14:43:34 PST 2012] should make ticket updates and assert audit trail instead of manipulating mock data directly
+  describe "comments", :mock_only => true do
     let(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
     before(:each) { client.data[:ticket_audits] = {} }
 
     it "lists audits" do
+      pending unless Zendesk2::Client.mocking?
       ticket.audits.size.should == 0
       client.data[:ticket_audits][1] = {'ticket_id' => ticket.id}
       ticket.audits.size.should == 1
     end
 
     it "lists comments" do
+      pending unless Zendesk2::Client.mocking?
       ticket.comments.size.should == 0
       client.data[:ticket_audits][2] = {'ticket_id' => ticket.id, 'events' => [{'type' => 'Comment'}]}
       client.data[:ticket_audits][3] = {'ticket_id' => ticket.id, 'events' => [{'type' => 'Change'}]}
