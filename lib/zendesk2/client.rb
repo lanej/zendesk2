@@ -1,4 +1,5 @@
 class Zendesk2::Client < Cistern::Service
+  USER_AGENT = "ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}) zendesk2/#{Zendesk2::VERSION} faraday/#{Faraday::VERSION}".freeze
 
   model_path "zendesk2/client/models"
   request_path "zendesk2/client/requests"
@@ -110,13 +111,13 @@ class Zendesk2::Client < Cistern::Service
       url     = File.join(@url, "/api/v2", options[:path])
       params  = options[:params] || {}
       body    = options[:body]
-      headers = options[:headers] || {}
+      headers = {"User-Agent" => USER_AGENT}.merge(options[:headers] || {})
 
       @connection.send(method) do |req|
         req.url url
         req.headers.merge!(headers)
         req.params.merge!(params)
-        req.body= body
+        req.body = body
       end
     rescue Faraday::Error::ClientError => e
       raise Zendesk2::Error.new(e)
