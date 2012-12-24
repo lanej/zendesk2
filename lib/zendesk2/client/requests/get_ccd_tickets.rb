@@ -16,7 +16,7 @@ class Zendesk2::Client
     def get_ccd_tickets(params={})
       id = params["id"]
 
-      page(params, :tickets, "/ccds/#{id}/tickets.json", "tickets", filter: lambda{|c| c.select{|u| u["collaborator_ids"].include?(id)}})
+      page(params, :tickets, "/users/#{id}/tickets/ccd.json", "tickets", filter: lambda{|c| c.select{|u| u["collaborator_ids"].include?(id)}})
     end
   end # Mock
 end

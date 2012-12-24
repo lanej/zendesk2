@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-gem 'cistern'
 
 group :test do
   gem 'guard-rspec'
@@ -12,4 +11,5 @@ group :test do
   gem 'rspec'
   gem 'rb-fsevent'
   gem 'awesome_print'
+  gem 'pry-nav'
 end

@@ -1,65 +1,70 @@
 class Zendesk2::Client < Cistern::Service
-  USER_AGENT = "ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}) zendesk2/#{Zendesk2::VERSION} faraday/#{Faraday::VERSION}".freeze
+  USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
 
   model_path "zendesk2/client/models"
   request_path "zendesk2/client/requests"
 
-  model :category
   collection :categories
-  model :forum
   collection :forums
-  model :topic
-  collection :topics
-  model :topic_comment
-  collection :topic_comments
-  model :organization
   collection :organizations
-  model :ticket
+  collection :ticket_audits
   collection :tickets
-  model :user
+  collection :topic_comments
+  collection :topics
   collection :users
+  model :audit_event
+  model :category
+  model :forum
+  model :organization
+  model :ticket
+  model :ticket_audit
+  model :topic
+  model :topic_comment
+  model :user
 
   request :create_category
   request :create_forum
-  request :create_topic
-  request :create_topic_comment
   request :create_organization
   request :create_ticket
+  request :create_topic
+  request :create_topic_comment
   request :create_user
   request :destroy_category
   request :destroy_forum
-  request :destroy_topic
-  request :destroy_topic_comment
   request :destroy_organization
   request :destroy_ticket
+  request :destroy_topic
+  request :destroy_topic_comment
   request :destroy_user
   request :get_audits
-  request :get_current_user
+  request :get_categories
   request :get_category
+  request :get_ccd_tickets
+  request :get_current_user
   request :get_forum
-  request :get_topic
-  request :get_topic_comment
+  request :get_forums
   request :get_organization
   request :get_organization_tickets
   request :get_organization_users
-  request :get_ticket
-  request :get_user
-  request :get_categories
-  request :get_forums
-  request :get_topics
-  request :get_topic_comments
   request :get_organizations
   request :get_requested_tickets
-  request :get_ccd_tickets
+  request :get_ticket
+  request :get_ticket_audit
+  request :get_ticket_audits
   request :get_tickets
+  request :get_topic
+  request :get_topic_comment
+  request :get_topic_comments
+  request :get_topics
+  request :get_user
   request :get_users
   request :search
   request :update_category
   request :update_forum
-  request :update_topic
-  request :update_topic_comment
   request :update_organization
   request :update_ticket
+  request :update_topic
+  request :update_topic_comment
   request :update_user
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token
@@ -126,7 +131,7 @@ class Zendesk2::Client < Cistern::Service
 
   class Mock
 
-    attr_reader :username, :url, :token
+    attr_reader :username, :url, :token, :current_user_id
 
     def self.data
       @data ||= {
@@ -137,6 +142,7 @@ class Zendesk2::Client < Cistern::Service
         :topics         => {},
         :categories     => {},
         :topic_comments => {},
+        :ticket_audits  => {},
       }
     end
 

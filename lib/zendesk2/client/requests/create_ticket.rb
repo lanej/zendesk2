@@ -21,12 +21,14 @@ class Zendesk2::Client
         "collaborator_ids" => [],
       }.merge(params)
 
-      record["requester_id"] ||= @current_user_id
-      record["submitter_id"]= @current_user_id
+      record["requester_id"] ||= current_user_id
+      record["submitter_id"] = current_user_id
+
+      # FIXME: throw error if user doesn't exist?
       requester = self.data[:users][record["requester_id"]]
-      # TODO: throw error if user doesn't exist?
-      record["organization_id"]= requester["organization_id"]
-      self.data[:tickets][identity]= record
+      record["organization_id"] = requester["organization_id"]
+
+      self.data[:tickets][identity] = record
 
       response(
         :method => :post,
