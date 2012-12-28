@@ -12,6 +12,7 @@ class Zendesk2::Client < Cistern::Service
   collection :topic_comments
   collection :topics
   collection :users
+  collection :user_identities
   model :audit_event
   model :category
   model :forum
@@ -21,6 +22,7 @@ class Zendesk2::Client < Cistern::Service
   model :topic
   model :topic_comment
   model :user
+  model :user_identity
 
   request :create_category
   request :create_forum
@@ -29,6 +31,7 @@ class Zendesk2::Client < Cistern::Service
   request :create_topic
   request :create_topic_comment
   request :create_user
+  request :create_user_identity
   request :destroy_category
   request :destroy_forum
   request :destroy_organization
@@ -36,6 +39,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_topic
   request :destroy_topic_comment
   request :destroy_user
+  request :destroy_user_identity
   request :get_audits
   request :get_categories
   request :get_category
@@ -57,8 +61,11 @@ class Zendesk2::Client < Cistern::Service
   request :get_topic_comments
   request :get_topics
   request :get_user
+  request :get_user_identities
+  request :get_user_identity
   request :get_users
   request :search
+  request :mark_user_identity_primary
   request :update_category
   request :update_forum
   request :update_organization
@@ -66,6 +73,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_topic
   request :update_topic_comment
   request :update_user
+  request :update_user_identity
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token
 
@@ -135,14 +143,15 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :users          => {},
-        :organizations  => {},
-        :tickets        => {},
-        :forums         => {},
-        :topics         => {},
         :categories     => {},
-        :topic_comments => {},
+        :forums         => {},
+        :identities     => {},
+        :organizations  => {},
         :ticket_audits  => {},
+        :tickets        => {},
+        :topic_comments => {},
+        :topics         => {},
+        :users          => {},
       }
     end
 

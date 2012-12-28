@@ -66,6 +66,9 @@ class Zendesk2::Client::User < Zendesk2::Model
     !reload || !self.active
   end
 
+  # @param [Time] timestamp time sent with intial handshake
+  # @return [String] remote authentication login url
+  # @see http://www.zendesk.com/support/api/remote-authentication
   def login_url(timestamp, options={})
     requires :name, :email
 
@@ -85,13 +88,14 @@ class Zendesk2::Client::User < Zendesk2::Model
       'hash'      => Digest::MD5.hexdigest(hash_str)
     }
     unless Zendesk2.blank?(return_to)
-      query_values['return_to']= return_to
+      query_values['return_to'] = return_to
     end
     uri.query_values = query_values
 
     uri.to_s
   end
 
+  # @return [Zendesk2::Client::Tickets] tickets this user requested
   def requested_tickets
     requires :identity
 
@@ -100,12 +104,18 @@ class Zendesk2::Client::User < Zendesk2::Model
     connection.tickets.load(data)
   end
 
+  # @return [Zendesk2::Client::Tickets] tickets this user is CC'eD
   def ccd_tickets
     requires :identity
 
     data = connection.get_ccd_tickets("id" => self.identity).body["tickets"]
 
     connection.tickets.load(data)
+  end
+
+  # @return [Zendesk2::Client::UserIdentities] the identities of this user
+  def identities
+    self.connection.user_identities("user_id" => self.identity)
   end
 
   private

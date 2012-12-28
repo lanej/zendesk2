@@ -2,9 +2,9 @@ class Zendesk2::Client::TopicComments < Zendesk2::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
-  attribute :topic_id
-
   model Zendesk2::Client::TopicComment
+
+  attribute :topic_id
 
   self.collection_method = :get_topic_comments
   self.collection_root   = "topic_comments"

@@ -47,6 +47,53 @@ describe "users" do
       user.should_not be_destroyed
     end
 
+    it "should list identities" do
+      identities = user.identities.all
+      identities.size.should == 1
+
+      identity = identities.first
+      identity.primary.should be_true
+      identity.verified.should be_false
+      identity.type.should == "email"
+      identity.value.should == user.email
+    end
+
+    it "should create a new identity" do
+      email = "ey+#{Zendesk2.uuid}@example.org"
+
+      new_identity = user.identities.create!(type: "email", value: email)
+      new_identity.primary.should be_false
+      new_identity.verified.should be_false
+      new_identity.type.should == "email"
+      new_identity.value.should == email
+    end
+
+    it "should mark remaining identity as primary" do
+      email = "ey+#{Zendesk2.uuid}@example.org"
+
+      initial_identity = user.identities.all.first
+      new_identity     = user.identities.create!(type: "email", value: email)
+
+      initial_identity.destroy
+
+      new_identity.reload.primary.should be_false
+
+      new_identity.primary!
+      new_identity.reload.primary.should be_true
+    end
+
+    it "should not allow multiple primary identities" do
+      email = "ey+#{Zendesk2.uuid}@example.org"
+
+      initial_identity = user.identities.all.first
+      new_identity     = user.identities.create!(type: "email", value: email)
+      new_identity.primary!
+      new_identity.primary.should be_true
+      new_identity.reload.primary.should be_true
+
+      initial_identity.reload.primary.should be_false
+    end
+
     it "should hate non-unique emails" do
       email = "zendesk2+#{Zendesk2.uuid}@example.org"
       client.users.create(email: email, name: Zendesk2.uuid)
