@@ -52,12 +52,16 @@ Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate
 
 Currently support resources
 
+* Audit Events
 * Categories
 * Forums
 * Organization
-* Ticket
+* Ticket Audits
+* Tickets
+* Topic Comments
 * Topics
-* User
+* User Identities
+* Users
 
 All collection are accessed like so:
 
