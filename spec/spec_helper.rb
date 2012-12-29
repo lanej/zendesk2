@@ -16,5 +16,6 @@ RSpec.configure do |config|
   config.before(:each) do
     Zendesk2::Client.reset! if Zendesk2::Client.mocking?
   end
+  config.order = "random"
   config.filter_run_excluding(:mock_only => true) unless Zendesk2::Client.mocking?
 end
