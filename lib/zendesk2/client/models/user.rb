@@ -3,35 +3,63 @@ class Zendesk2::Client::User < Zendesk2::Model
 
   PARAMS = %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
 
-  identity :id,                     type: :id
-  attribute :url
-  attribute :external_id
-  attribute :name
-  attribute :alias
-  attribute :created_at,            type: :time
-  attribute :updated_at,            type: :time
-  attribute :active,                type: :boolean
-  attribute :verified,              type: :boolean
-  attribute :shared,                type: :boolean
-  attribute :locale_id,             type: :integer
-  attribute :locale
-  attribute :time_zone
-  attribute :last_login_at,         type: :time
-  attribute :email
-  attribute :phone
-  attribute :signature
-  attribute :details,               type: :string
-  attribute :notes
-  attribute :organization_id,       type: :integer
-  attribute :role
-  attribute :custom_role_id,        type: :integer
-  attribute :moderator,             type: :boolean
-  attribute :ticket_restriction
+  # @return [Integer] Automatically assigned when creating users
+  identity :id, type: :integer
+
+  # @return [Boolean] Users that have been deleted will have the value false here
+  attribute :active, type: :boolean
+  # @return [String] Agents can have an alias that is displayed to end-users
+  attribute :alias, type: :string
+  # @return [Time] The time the user was created
+  attribute :created_at, type: :time
+  # @return [Integer] A custom role on the user if the user is an agent on the entreprise plan
+  attribute :custom_role_id, type: :integer
+  # @return [String] In this field you can store any details obout the user. e.g. the address
+  attribute :details, type: :string
+  # @return [String] The primary email address of this user
+  attribute :email, type: :string
+  # @return [String] A unique id you can set on a user
+  attribute :external_id, type: :string
+  # @return [Array] Array of user identities (e.g. email and Twitter) associated with this user. See User Identities
+  attribute :identities, type: :array
+  # @return [Time] A time-stamp of the last time this user logged in to Zendesk
+  attribute :last_login_at, type: :time
+  # @return [Integer] The language identifier for this user
+  attribute :locale_id, type: :integer
+  # @return [Boolean] Designates whether this user has forum moderation capabilities
+  attribute :moderator, type: :boolean
+  # @return [String] The name of the user
+  attribute :name, type: :string
+  # @return [String] In this field you can store any notes you have about the user
+  attribute :notes, type: :string
+  # @return [Boolean] true if this user only can create private comments
   attribute :only_private_comments, type: :boolean
-  attribute :tags,                  type: :array
-  attribute :suspended,             type: :boolean
-  attribute :photo
-  attribute :authenticity_token
+  # @return [Integer] The id of the organization this user is associated with
+  attribute :organization_id, type: :integer
+  # @return [String] The primary phone number of this user
+  attribute :phone, type: :string
+  # @return [Attachment] The user's profile picture represented as an Attachment object
+  attribute :photo, type: :Attachment
+  # @return [String] The role of the user. Possible values: "end-user", "agent", "admin"
+  attribute :role, type: :string
+  # @return [Boolean] If this user is shared from a different Zendesk, ticket sharing accounts only
+  attribute :shared, type: :boolean
+  # @return [String] The signature of this user. Only agents and admins can have signatures
+  attribute :signature, type: :string
+  # @return [Boolean] Tickets from suspended users are also suspended, and these users cannot log in to the end-user portal
+  attribute :suspended, type: :boolean
+  # @return [Array] The tags of the user. Only present if your account has user tagging enabled
+  attribute :tags, type: :array
+  # @return [String] Specified which tickets this user has access to. Possible values are: "organization", "groups", "assigned", "requested", null
+  attribute :ticket_restriction, type: :string
+  # @return [String] The time-zone of this user
+  attribute :time_zone, type: :string
+  # @return [Time] The time of the last update of the user
+  attribute :updated_at, type: :time
+  # @return [String] The API url of this user
+  attribute :url, type: :string
+  # @return [Boolean] Zendesk has verified that this user is who he says he is
+  attribute :verified, type: :boolean
 
   attr_accessor :errors
   assoc_accessor :organization
