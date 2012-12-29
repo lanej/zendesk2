@@ -59,8 +59,9 @@ class Zendesk2::Collection < Cistern::Collection
   # @example Fetch a record with contextual scoping
   #   self.identities("user_id" => 2).get(4) # context defined in collection
   #   user.identities.get(4) # context defined by encapsulating model
-  #  @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
-  def get(identity_or_hash)
+  # @raise [Zendesk2::Error] if the record cannot be found or other request error
+  # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
+  def get!(identity_or_hash)
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
     if identity_or_hash.is_a?(Hash)
       scoped_attributes.merge!(identity_or_hash)
@@ -70,12 +71,21 @@ class Zendesk2::Collection < Cistern::Collection
     if data = self.connection.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
     end
+  end
+
+  # Quiet version of {#get!}
+  # @see {#get!}
+  # @return [Zendesk2::Model] Fetched model when successful
+  # @return [NilClass] return nothing if record cannot be found
+  def get(*args)
+    get!(*args)
   rescue Zendesk2::Error
     nil
   end
 
   module ClassMethods
     attr_accessor :collection_method, :collection_root, :model_method, :model_root
+
     def scope_to(attribute)
       scopes << attribute
     end
