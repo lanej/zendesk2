@@ -1,4 +1,5 @@
-# @abstract adds {#create!} method
+# @abstract Subclass and set #{collection_method}, #{collection_root}, #{model_method}, #{model_root} and #{model}
+# adds {#create!} method to {Cistern::Collection}.
 class Zendesk2::Collection < Cistern::Collection
   def self.inherited(klass)
     klass.send(:attribute, :count)

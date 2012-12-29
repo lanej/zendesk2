@@ -55,6 +55,7 @@ Currently support resources
 * Audit Events
 * Categories
 * Forums
+* Groups
 * Organization
 * Ticket Audits
 * Tickets

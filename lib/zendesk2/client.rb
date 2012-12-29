@@ -6,6 +6,7 @@ class Zendesk2::Client < Cistern::Service
 
   collection :categories
   collection :forums
+  collection :groups
   collection :organizations
   collection :ticket_audits
   collection :tickets
@@ -16,6 +17,7 @@ class Zendesk2::Client < Cistern::Service
   model :audit_event
   model :category
   model :forum
+  model :group
   model :organization
   model :ticket
   model :ticket_audit
@@ -24,8 +26,10 @@ class Zendesk2::Client < Cistern::Service
   model :user
   model :user_identity
 
+  request :get_assignable_groups
   request :create_category
   request :create_forum
+  request :create_group
   request :create_organization
   request :create_ticket
   request :create_topic
@@ -34,6 +38,7 @@ class Zendesk2::Client < Cistern::Service
   request :create_user_identity
   request :destroy_category
   request :destroy_forum
+  request :destroy_group
   request :destroy_organization
   request :destroy_ticket
   request :destroy_topic
@@ -47,6 +52,8 @@ class Zendesk2::Client < Cistern::Service
   request :get_current_user
   request :get_forum
   request :get_forums
+  request :get_group
+  request :get_groups
   request :get_organization
   request :get_organization_tickets
   request :get_organization_users
@@ -69,6 +76,7 @@ class Zendesk2::Client < Cistern::Service
   request :mark_user_identity_primary
   request :update_category
   request :update_forum
+  request :update_group
   request :update_organization
   request :update_ticket
   request :update_topic
@@ -146,6 +154,7 @@ class Zendesk2::Client < Cistern::Service
       @data ||= {
         :categories     => {},
         :forums         => {},
+        :groups         => {},
         :identities     => {},
         :organizations  => {},
         :ticket_audits  => {},
