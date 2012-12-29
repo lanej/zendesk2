@@ -10,14 +10,9 @@ class Zendesk2::Client
 
   class Mock
     def get_current_user
-      body = self.data[:users][@current_user_id]
+      current_user # re-seed if necessary
 
-      response(
-        :path  => "/users/me.json",
-        :body  => {
-          "user" => body
-        },
-      )
+      get_user("id" => @current_user["id"])
     end
   end # Mock
 end

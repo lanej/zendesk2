@@ -23,7 +23,7 @@ class Zendesk2::Client
           "id"         => audit_id,
           "ticket_id"  => ticket_id,
           "created_at" => Time.now,
-          "author_id"  => current_user_id,
+          "author_id"  => current_user["id"],
           "via"        => {
             "channel" => "api",
             "source"  => {
@@ -45,7 +45,7 @@ class Zendesk2::Client
           "events" => [
             "id"          => self.class.new_id,
             "type"        => "Comment",
-            "author_id"   => current_user_id,
+            "author_id"   => current_user["id"],
             "body"        => comment["body"],
             "html_body"   => "<p>#{comment["body"]}</p>",
             "public"      => comment["public"].nil? ? true : comment["public"],

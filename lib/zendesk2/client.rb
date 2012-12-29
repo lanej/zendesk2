@@ -65,6 +65,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_user_identity
   request :get_users
   request :search
+  request :search_user
   request :mark_user_identity_primary
   request :update_category
   request :update_forum
@@ -139,7 +140,7 @@ class Zendesk2::Client < Cistern::Service
 
   class Mock
 
-    attr_reader :username, :url, :token, :current_user_id
+    attr_reader :username, :url, :token
 
     def self.data
       @data ||= {
@@ -183,14 +184,17 @@ class Zendesk2::Client < Cistern::Service
       @username, @password = options[:username], options[:password]
       @token = options[:token]
 
-      @current_user_id = self.class.new_id
+      @current_user ||= self.create_user("email" => @username, "name" => "Mock Agent").body["user"]
+      @current_user_identity ||= self.data[:identities].values.first
+    end
 
-      self.data[:users][@current_user_id]= {
-        "id"    => @current_user_id,
-        "email" => @username,
-        "name"  => "Mock Agent",
-        "url"   => url_for("/users/#{@current_user_id}.json"),
-      }
+    # Lazily re-seeds data after reset
+    # @return [Hash] current user response
+    def current_user
+      self.data[:users][@current_user["id"]] ||= @current_user
+      self.data[:identities][@current_user_identity["id"]] ||= @current_user_identity
+
+      @current_user
     end
 
     def url_for(path)

@@ -12,6 +12,7 @@ class Zendesk2::Client
   class Mock
     def create_user(params={})
       user_id = self.class.new_id
+      path    = "/users.json"
 
       record = {
         "id"         => user_id,
@@ -21,7 +22,6 @@ class Zendesk2::Client
         "active"     => true,
       }.merge(params)
 
-      path = "/users.json"
       if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
         response(
           :method => :put,
@@ -53,7 +53,7 @@ class Zendesk2::Client
         }
 
         self.data[:identities][user_identity_id] = user_identity
-        self.data[:users][user_id] = record
+        self.data[:users][user_id] = record.reject{|k,v| k == "email"}
 
         response(
           :method => :post,

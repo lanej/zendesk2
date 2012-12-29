@@ -9,7 +9,6 @@ describe "users" do
 
   it "should get current user" do
     current_user = client.users.current
-    current_user.should be_a(Zendesk2::Client::User)
     current_user.email.should == client.username
   end
 
@@ -101,6 +100,25 @@ describe "users" do
       user = client.users.create(email: email, name: Zendesk2.uuid)
       user.identity.should be_false
       user.errors.should == {"email" => ["Email: #{email} is already being used by another user"]}
+    end
+
+    it "should create another identity when updating email" do
+      original_email = user.email
+      user.email = (new_email = "zendesk2+#{Zendesk2.uuid}@example.org")
+      user.save!
+
+      (identities = user.identities.all).size.should == 2
+      new_identity = identities.find{|i| i.value == new_email}
+      new_identity.should_not be_nil
+
+      new_identity.primary.should be_false
+
+      original_identity = identities.find{|i| i.value == original_email}
+      original_identity.should_not be_nil
+
+      original_identity.primary.should be_true
+
+      user.reload.email.should == original_email
     end
 
     it "should form login url" do
