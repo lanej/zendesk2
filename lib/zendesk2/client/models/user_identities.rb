@@ -11,5 +11,5 @@ class Zendesk2::Client::UserIdentities < Zendesk2::Collection
   self.model_root        = "identity"
   self.search_type       = "identity"
 
-  scope_to :user_id
+  scopes << :user_id
 end

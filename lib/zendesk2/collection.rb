@@ -48,17 +48,17 @@ class Zendesk2::Collection < Cistern::Collection
   end
 
   # Fetch a single of resource
-  # @overload get(identity)
+  # @overload get!(identity)
   #   fetch a un-namespaced specific record or a namespaced record under the current {#scopes}
   #   @param [Integer] identity identity of the record
-  # @overload get(scope)
+  # @overload get!(scope)
   #   directly fetch a namespaced record
   #   @param [Hash] scope parameters to fetch record
   # @example Fetch a record without contextual scoping
   #   self.identities.all("user_id" => 2, "id" => 4) # context defined directly
   # @example Fetch a record with contextual scoping
   #   self.identities("user_id" => 2).get(4) # context defined in collection
-  #   user.identities.get(4) # context defined by encapsulating model
+  #   user.identities.get(4)                 # context defined by encapsulating model
   # @raise [Zendesk2::Error] if the record cannot be found or other request error
   # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
   def get!(identity_or_hash)
@@ -74,7 +74,7 @@ class Zendesk2::Collection < Cistern::Collection
   end
 
   # Quiet version of {#get!}
-  # @see {#get!}
+  # @see #get!
   # @return [Zendesk2::Model] Fetched model when successful
   # @return [NilClass] return nothing if record cannot be found
   def get(*args)
@@ -85,10 +85,6 @@ class Zendesk2::Collection < Cistern::Collection
 
   module ClassMethods
     attr_accessor :collection_method, :collection_root, :model_method, :model_root
-
-    def scope_to(attribute)
-      scopes << attribute
-    end
 
     def scopes
       @scopes ||= []
