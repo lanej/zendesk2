@@ -46,7 +46,7 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
   def reload
     requires :identity
 
-    if data = collection.get(topic_id, identity)
+    if data = self.connection.topic_comments("topic_id" => topic_id).get(identity)
       new_attributes = data.attributes
       merge_attributes(new_attributes)
       self

@@ -1,5 +1,4 @@
 class Zendesk2::Client::TicketAudits < Zendesk2::Collection
-  include Zendesk2::PagedCollection
 
   model Zendesk2::Client::TicketAudit
 

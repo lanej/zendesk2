@@ -8,7 +8,7 @@ describe "user_identities" do
     lambda { {value: "ey+#{Zendesk2.uuid}@example.org", type: "email", user_id: user.id} },
     lambda { {verified: true} },
     {
-      :fetch_params => lambda {|uc| [uc.user_id, uc.id]},
+      :fetch_params => lambda {|uc| {"user_id" => uc.user_id, "id" => uc.id}},
       :collection   => lambda { client.user_identities(user_id: user.id) },
     }
 end

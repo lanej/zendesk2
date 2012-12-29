@@ -1,5 +1,4 @@
 class Zendesk2::Client::Users < Zendesk2::Collection
-  include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::User

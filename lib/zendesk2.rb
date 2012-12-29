@@ -9,12 +9,12 @@ require 'faraday_middleware'
 # stdlib
 require 'time'
 require 'logger'
+require 'forwardable'
 
 module Zendesk2
   autoload :Attributes, 'zendesk2/attributes'
   autoload :Error, 'zendesk2/error'
   autoload :Client, 'zendesk2/client'
-  autoload :PagedCollection, 'zendesk2/paged_collection'
   autoload :Searchable, 'zendesk2/searchable'
   autoload :Logger, 'zendesk2/logger'
   autoload :Model, 'zendesk2/model'

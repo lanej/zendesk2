@@ -1,27 +1,22 @@
-require 'forwardable'
-
 class Zendesk2::Logger < Faraday::Response::Middleware
   extend Forwardable
 
   def initialize(app, logger = nil)
     super(app)
-    @logger = logger || begin
-    require 'logger'
-    ::Logger.new(STDOUT)
-    end
+    @logger = logger || ::Logger.new(STDOUT)
   end
 
   def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
   def call(env)
-    info "#{env[:method]} #{env[:url].to_s}"
+    info("#{env[:method]} => #{env[:url].to_s}")
     debug('request') { dump_headers env[:request_headers] }
     debug('request.body') { env[:body] }
     super
   end
 
   def on_complete(env)
-    info('Status') { env[:status].to_s }
+    info("#{env[:status]} <= #{env[:url].to_s}")
     debug('response') { dump_headers env[:response_headers] }
     debug('response.body') { env[:body] }
   end

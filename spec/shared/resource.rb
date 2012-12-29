@@ -12,7 +12,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
 
   it "by fetching a specific record" do
     record = collection.create(params)
-    collection.get(*fetch_params.call(record)).should == record
+    collection.get(fetch_params.call(record)).should == record
   end
 
   context "that is paged" do

@@ -46,7 +46,7 @@ class Zendesk2::Client::UserIdentity < Zendesk2::Model
   def reload
     requires :identity
 
-    if data = collection.get(user_id, identity)
+    if data = self.connection.user_identities("user_id" => user_id).get(identity)
       new_attributes = data.attributes
       merge_attributes(new_attributes)
       self
