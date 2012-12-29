@@ -12,14 +12,6 @@ class Zendesk2::Client::UserIdentities < Zendesk2::Collection
   self.model_root        = "identity"
   self.search_type       = "identity"
 
-  def create(attributes={})
-    super(attributes.merge("user_id" => self.user_id))
-  end
-
-  def create!(attributes={})
-    super(attributes.merge("user_id" => self.user_id))
-  end
-
   def all(params={})
     body = connection.send(collection_method, params.merge("user_id" => self.user_id)).body
 

@@ -20,14 +20,6 @@ class Zendesk2::Client::TopicComments < Zendesk2::Collection
     collection
   end
 
-  def create(attributes={})
-    super(attributes.merge("topic_id" => self.topic_id))
-  end
-
-  def create!(attributes={})
-    super(attributes.merge("topic_id" => self.topic_id))
-  end
-
   def get(topic_id, topic_comment_id)
     if data = self.connection.send(model_method, {"topic_id" => topic_id, "id" => topic_comment_id}).body[self.model_root]
       new(data)
