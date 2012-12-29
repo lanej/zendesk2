@@ -11,18 +11,18 @@ class Zendesk2::Client
 
   class Mock
     def create_user(params={})
-      identity = self.class.new_id
+      user_id = self.class.new_id
 
       record = {
-        "id"         => identity,
-        "url"        => url_for("/users/#{identity}.json"),
+        "id"         => user_id,
+        "url"        => url_for("/users/#{user_id}.json"),
         "created_at" => Time.now.iso8601,
         "updated_at" => Time.now.iso8601,
         "active"     => true,
       }.merge(params)
 
       path = "/users.json"
-      if (email = record["email"]) && self.data[:users].find{|k,u| u["email"] == email && k != identity}
+      if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
         response(
           :method => :put,
           :path   => path,
@@ -38,22 +38,22 @@ class Zendesk2::Client
           }
         )
       else
-        user_identity_identity = self.class.new_id # ugh
+        user_identity_id = self.class.new_id # ugh
 
         user_identity = {
-          "id"         => user_identity_identity,
-          "url"        => url_for("/users/#{identity}/identities/#{user_identity_identity}.json"),
+          "id"         => user_identity_id,
+          "url"        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
           "created_at" => Time.now.iso8601,
           "updated_at" => Time.now.iso8601,
           "type"       => "email",
           "value"      => record["email"],
           "verified"   => false,
           "primary"    => true,
-          "user_id"    => identity,
+          "user_id"    => user_id,
         }
 
-        self.data[:identities][user_identity_identity] = user_identity
-        self.data[:users][identity] = record
+        self.data[:identities][user_identity_id] = user_identity
+        self.data[:users][user_id] = record
 
         response(
           :method => :post,
