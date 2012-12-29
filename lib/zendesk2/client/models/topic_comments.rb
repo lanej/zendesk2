@@ -4,7 +4,7 @@ class Zendesk2::Client::TopicComments < Zendesk2::Collection
 
   model Zendesk2::Client::TopicComment
 
-  attribute :topic_id
+  attribute :topic_id, type: :integer
 
   self.collection_method = :get_topic_comments
   self.collection_root   = "topic_comments"
@@ -18,6 +18,14 @@ class Zendesk2::Client::TopicComments < Zendesk2::Collection
     collection = self.clone.load(body[collection_root])
     collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     collection
+  end
+
+  def create(attributes={})
+    super(attributes.merge("topic_id" => self.topic_id))
+  end
+
+  def create!(attributes={})
+    super(attributes.merge("topic_id" => self.topic_id))
   end
 
   def get(topic_id, topic_comment_id)

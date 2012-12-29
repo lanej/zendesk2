@@ -13,7 +13,7 @@ describe "users" do
 
   describe do
     before(:each) do
-      @user = client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
+      @user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
     end
 
     let(:user) { @user }
