@@ -3,15 +3,25 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
 
   PARAMS = %w[id topic_id user_id body informative]
 
-  identity  :id,          type: :integer # ro[integer] mandatory [yes] Automatically assigned upon creation
-  attribute :url,         type: :string  # ro[yes]     mandatory [no]  The API url of this topic comment
-  attribute :topic_id,    type: :integer # ro[no]      mandatory [yes] The id of the topic this comment was made on
-  attribute :user_id,     type: :integer # ro[no]      mandatory [yes] The id of the user making the topic comment
-  attribute :body,        type: :string  # ro[no]      mandatory [yes] The comment body
-  attribute :informative, type: :boolean # ro[no]      mandatory [no]  If the comment has been flagged as informative
-  attribute :attachments, type: :array   # ro[yes]     mandatory [no]  Attachments to this comment as Attachment objects
-  attribute :created_at,  type: :date    # ro[yes]     mandatory [no]  The time the topic_comment was created
-  attribute :updated_at,  type: :date    # ro[yes]     mandatory [no]  The time of the last update of the topic_comment
+  # @return [Integer] Automatically assigned upon creation
+  identity :id, type: :integer
+
+  # @return [Array] Attachments to this comment as Attachment objects
+  attribute :attachments, type: :array
+  # @return [String] The comment body
+  attribute :body, type: :string
+  # @return [Time] The time the topic_comment was created
+  attribute :created_at, type: :time
+  # @return [Boolean] If the comment has been flagged as informative
+  attribute :informative, type: :boolean
+  # @return [Integer] The id of the topic this comment was made on
+  attribute :topic_id, type: :integer
+  # @return [Time] The time of the last update of the topic_comment
+  attribute :updated_at, type: :time
+  # @return [String] The API url of this topic comment
+  attribute :url, type: :string
+  # @return [Integer] The id of the user making the topic comment
+  attribute :user_id, type: :integer
 
   assoc_accessor :user
   assoc_accessor :topic

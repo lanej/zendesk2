@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe "users" do
   let(:client) { create_client }
-  it_should_behave_like "a resource", 
-    :users,
+  it_should_behave_like "a resource", :users,
     lambda { {email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true} },
   lambda { {name: Zendesk2.uuid} }
 
