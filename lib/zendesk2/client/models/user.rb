@@ -95,6 +95,7 @@ class Zendesk2::Client::User < Zendesk2::Model
   end
 
   # @param [Time] timestamp time sent with intial handshake
+  # @option options [String] :return_to (nil) url to return to after handshake
   # @return [String] remote authentication login url
   # @see http://www.zendesk.com/support/api/remote-authentication
   def login_url(timestamp, options={})

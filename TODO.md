@@ -1,2 +1,4 @@
 # yarddoc
-  * change attribute enumerations to use yarddoc format
+  * forum
+  * organization
+  * topic
