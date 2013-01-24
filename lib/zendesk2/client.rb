@@ -133,7 +133,7 @@ class Zendesk2::Client < Cistern::Service
 
     def request(options={})
       method  = options[:method] || :get
-      url     = File.join(@url, "/api/v2", options[:path])
+      url     = options[:url] || File.join(@url, "/api/v2", options[:path])
       params  = options[:params] || {}
       body    = options[:body]
       headers = {"User-Agent" => USER_AGENT}.merge(options[:headers] || {})
