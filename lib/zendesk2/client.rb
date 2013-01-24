@@ -8,6 +8,7 @@ class Zendesk2::Client < Cistern::Service
   collection :forums
   collection :groups
   collection :organizations
+  collection :requests
   collection :ticket_audits
   collection :tickets
   collection :topic_comments
@@ -19,6 +20,7 @@ class Zendesk2::Client < Cistern::Service
   model :forum
   model :group
   model :organization
+  model :request
   model :ticket
   model :ticket_audit
   model :topic
@@ -26,11 +28,11 @@ class Zendesk2::Client < Cistern::Service
   model :user
   model :user_identity
 
-  request :get_assignable_groups
   request :create_category
   request :create_forum
   request :create_group
   request :create_organization
+  request :create_request
   request :create_ticket
   request :create_topic
   request :create_topic_comment
@@ -40,11 +42,13 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_forum
   request :destroy_group
   request :destroy_organization
+  request :destroy_request
   request :destroy_ticket
   request :destroy_topic
   request :destroy_topic_comment
   request :destroy_user
   request :destroy_user_identity
+  request :get_assignable_groups
   request :get_audits
   request :get_categories
   request :get_category
@@ -58,7 +62,9 @@ class Zendesk2::Client < Cistern::Service
   request :get_organization_tickets
   request :get_organization_users
   request :get_organizations
+  request :get_request
   request :get_requested_tickets
+  request :get_requests
   request :get_ticket
   request :get_ticket_audit
   request :get_ticket_audits
@@ -71,13 +77,14 @@ class Zendesk2::Client < Cistern::Service
   request :get_user_identities
   request :get_user_identity
   request :get_users
+  request :mark_user_identity_primary
   request :search
   request :search_user
-  request :mark_user_identity_primary
   request :update_category
   request :update_forum
   request :update_group
   request :update_organization
+  request :update_request
   request :update_ticket
   request :update_topic
   request :update_topic_comment
@@ -160,6 +167,7 @@ class Zendesk2::Client < Cistern::Service
         :groups         => {},
         :identities     => {},
         :organizations  => {},
+        :requests       => {},
         :ticket_audits  => {},
         :tickets        => {},
         :topic_comments => {},
@@ -179,6 +187,7 @@ class Zendesk2::Client < Cistern::Service
 
     def self.reset!
       @data = nil
+      @new_id = 0
     end
 
     def initialize(options={})
@@ -196,7 +205,8 @@ class Zendesk2::Client < Cistern::Service
       @username, @password = options[:username], options[:password]
       @token = options[:token]
 
-      @current_user ||= self.create_user("email" => @username, "name" => "Mock Agent").body["user"]
+      @current_organization ||= self.create_organization("name" => "Mock Organization").body["organization"]
+      @current_user ||= self.create_user("email" => @username, "name" => "Mock Agent", "organization_id" => @current_organization["id"]).body["user"]
       @current_user_identity ||= self.data[:identities].values.first
     end
 
@@ -204,6 +214,7 @@ class Zendesk2::Client < Cistern::Service
     # @return [Hash] current user response
     def current_user
       self.data[:users][@current_user["id"]] ||= @current_user
+      self.data[:organizations][@current_organization["id"]] ||= @current_organization
       self.data[:identities][@current_user_identity["id"]] ||= @current_user_identity
 
       @current_user

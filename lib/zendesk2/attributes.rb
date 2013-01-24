@@ -3,6 +3,8 @@ module Zendesk2::Attributes
     assoc_key  = options[:key] || "#{name}_id"
     collection = options[:collection] || "#{name}s"
     define_method(name) do
+      requires assoc_key
+
       self.connection.send(collection).get(self.send(assoc_key))
     end
   end
