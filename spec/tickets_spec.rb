@@ -33,6 +33,8 @@ describe "tickets" do
 
       event = events.first
       event.body.should == body
+      event.should be_a(Zendesk2::Client::TicketComment)
+      event.ticket_audit.should == audit
     end
 
     it "lists comments" do

@@ -4,6 +4,8 @@ class Zendesk2::Client < Cistern::Service
   model_path "zendesk2/client/models"
   request_path "zendesk2/client/requests"
 
+  require 'zendesk2/client/models/audit_event' # so special
+
   collection :categories
   collection :forums
   collection :groups
@@ -14,13 +16,18 @@ class Zendesk2::Client < Cistern::Service
   collection :topics
   collection :users
   collection :user_identities
-  model :audit_event
   model :category
   model :forum
   model :group
   model :organization
   model :ticket
   model :ticket_audit
+  model :ticket_change
+  model :ticket_comment
+  model :ticket_comment_privacy_change
+  model :ticket_create
+  model :ticket_notification
+  model :ticket_voice_comment
   model :topic
   model :topic_comment
   model :user

@@ -1,4 +1,4 @@
-# @abstract subclass and implement {#save!}
+# @abstract subclass and implement {#save!} and {#destroy!}
 class Zendesk2::Model < Cistern::Model
   attr_accessor :errors
 
