@@ -6,9 +6,10 @@ module Zendesk2::Searchable
   def search(parameters)
     body = connection.send(self.class.search_request, parameters.merge("type" => self.class.search_type)).body
     if data = body.delete("results")
-      load(data)
+      collection = self.clone.load(data)
+      collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+      collection
     end
-    merge_attributes(body)
   end
 
   module Attributes
