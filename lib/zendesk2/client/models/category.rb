@@ -17,14 +17,10 @@ class Zendesk2::Client::Category < Zendesk2::Model
   # @return [String] The API url of this category
   attribute :url, type: :string
 
-  def destroy
+  def destroy!
     requires :id
 
     connection.destroy_category("id" => self.id)
-  end
-
-  def destroyed?
-    !self.reload
   end
 
   def save!

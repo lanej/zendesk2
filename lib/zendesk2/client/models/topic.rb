@@ -24,14 +24,10 @@ class Zendesk2::Client::Topic < Zendesk2::Model
   assoc_accessor :forum
 
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_topic("id" => self.identity)
-  end
-
-  def destroyed?
-    !self.reload
   end
 
   def save!

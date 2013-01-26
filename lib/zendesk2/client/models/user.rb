@@ -84,12 +84,6 @@ class Zendesk2::Client::User < Zendesk2::Model
     merge_attributes(data)
   end
 
-  def destroy
-    destroy!
-  rescue Zendesk2::Error => e
-    false
-  end
-
   def destroyed?
     !reload || !self.active
   end

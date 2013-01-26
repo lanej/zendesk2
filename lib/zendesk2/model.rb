@@ -20,4 +20,10 @@ class Zendesk2::Model < Cistern::Model
   def destroyed?
     !self.reload
   end
+
+  def destroy
+    destroy!
+  rescue Zendesk2::Error
+    false
+  end
 end

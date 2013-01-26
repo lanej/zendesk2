@@ -21,16 +21,6 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     connection.destroy_organization("id" => self.identity)
   end
 
-  def destroy
-    destroy!
-  rescue Zendesk2::Error
-    false
-  end
-
-  def destroyed?
-    !self.reload
-  end
-
   def save!
     data = if new_record?
              requires :name

@@ -75,7 +75,7 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     merge_attributes(data)
   end
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_ticket("id" => self.identity)

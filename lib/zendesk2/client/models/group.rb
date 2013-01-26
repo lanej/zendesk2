@@ -29,7 +29,7 @@ class Zendesk2::Client::Group < Zendesk2::Model
     merge_attributes(data)
   end
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_group("id" => self.identity)

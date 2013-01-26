@@ -26,7 +26,7 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
   assoc_accessor :user
   assoc_accessor :topic
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_topic_comment("id" => self.identity, "topic_id" => self.topic_id)
