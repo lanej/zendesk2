@@ -119,13 +119,14 @@ class Zendesk2::Client::User < Zendesk2::Model
   end
 
   # @return [Zendesk2::Client::Tickets] tickets this user requested
-  def requested_tickets
+  def tickets
     requires :identity
 
     data = connection.get_requested_tickets("id" => self.identity).body["tickets"]
 
     connection.tickets.load(data)
   end
+  alias requested_tickets tickets
 
   # @return [Zendesk2::Client::Tickets] tickets this user is CC'eD
   def ccd_tickets
