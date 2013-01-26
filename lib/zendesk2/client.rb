@@ -110,8 +110,8 @@ class Zendesk2::Client < Cistern::Service
       @username          = options[:username] || Zendesk2.defaults[:username]
       token              = options[:token] || Zendesk2.defaults[:token]
       password           = options[:password] || Zendesk2.defaults[:password]
-      @username         += "/token" if token
-      @auth_token        = token || password
+      @auth_token        = password || token
+      @username         += "/token" if @auth_token == token
 
       raise "Missing required options: :username" unless @username 
       raise "Missing required options: :password or :token" unless password || token
