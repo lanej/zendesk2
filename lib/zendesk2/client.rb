@@ -91,7 +91,7 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :username, :url, :token, :logger
 
     def initialize(options={})
-      url = options[:url] || begin
+      url = options[:url] || Zendesk2.defaults[:url] || begin
         host      = options[:host]
         subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
 
