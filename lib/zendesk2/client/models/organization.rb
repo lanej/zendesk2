@@ -32,6 +32,7 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     merge_attributes(data)
   end
 
+  # @return [Zendesk2::Client::Users] users associated with this organization
   def users
     requires :identity
     data = connection.get_organization_users("id" => self.identity).body["users"]
@@ -39,6 +40,7 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     connection.users.load(data)
   end
 
+  # @return [Zendesk2::Client::Tickets] tickets associated with this organization
   def tickets
     requires :identity
     data = connection.get_organization_tickets("id" => self.identity).body["tickets"]
