@@ -6,7 +6,7 @@ class Zendesk2::Client::Organization < Zendesk2::Model
   attribute :created_at,      type: :time
   attribute :details,         type: :string
   attribute :domain_names,    type: :array
-  attribute :external_id,     type: :integer
+  attribute :external_id,     type: :string
   attribute :group_id,        type: :integer
   attribute :shared_comments, type: :boolean
   attribute :shared_tickets,  type: :boolean
