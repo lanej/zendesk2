@@ -65,15 +65,17 @@ class Zendesk2::Client::User < Zendesk2::Model
   assoc_accessor :organization
 
   def save!
-    if new_record?
-      requires :name, :email
-      data = connection.create_user(params).body["user"]
-      merge_attributes(data)
-    else
-      requires :identity
-      data = connection.update_user(params.merge("id" => self.identity)).body["user"]
-      merge_attributes(data)
-    end
+    data = if new_record?
+             requires :name, :email
+
+             connection.create_user(params).body["user"]
+           else
+             requires :identity
+
+             connection.update_user(params.merge("id" => self.identity)).body["user"]
+           end
+
+    merge_attributes(data)
   end
 
   def destroy!
