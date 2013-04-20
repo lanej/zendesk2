@@ -22,7 +22,7 @@ describe "organizations" do
     it "should hate non-unique names" do
       lambda { client.organizations.create!(name: organization.name) }.should raise_exception(Zendesk2::Error)
       model = client.organizations.create(name: organization.name)
-      model.errors.should == {"name" => ["Name: has already been taken"]}
+      model.errors.should == {"name" => ["Name has already been taken"]}
     end
   end
 end

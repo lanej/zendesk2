@@ -32,7 +32,7 @@ class Zendesk2::Client
             "description" => "Record validation errors",
             "details" => {
               "email" => [ {
-                "description" => "Email: #{email} is already being used by another user"
+                "description" => "Email #{email} is already being used by another user"
               } ]
             }
           }
