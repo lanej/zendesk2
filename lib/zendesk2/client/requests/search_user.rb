@@ -4,7 +4,7 @@ class Zendesk2::Client
   end # Real
 
   class Mock
-    def search_user(query)
+    def search_user(query, search_options = {})
       query.delete("type") # context already provided
 
       collection = self.data[:users].values
