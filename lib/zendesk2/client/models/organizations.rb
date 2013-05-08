@@ -8,4 +8,9 @@ class Zendesk2::Client::Organizations < Zendesk2::Collection
   self.model_method      = :get_organization
   self.model_root        = "organization"
   self.search_type       = "organization"
+  self.search_options    = {
+    direct_query:            true,
+    path:                    "/organizations/search.json",
+    results_collection_name: "organizations",
+  }
 end
