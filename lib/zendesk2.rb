@@ -1,15 +1,16 @@
 require "zendesk2/version"
 
 # dependencies
-require 'cistern'
 require 'addressable/uri'
+require 'cistern'
 require 'faraday'
 require 'faraday_middleware'
 
 # stdlib
-require 'time'
-require 'logger'
 require 'forwardable'
+require 'logger'
+require 'time'
+require 'yaml'
 
 module Zendesk2
   autoload :Attributes, 'zendesk2/attributes'

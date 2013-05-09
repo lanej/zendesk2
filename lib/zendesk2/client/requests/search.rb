@@ -4,7 +4,7 @@ class Zendesk2::Client
       term = query.map{|k,v| "#{k}:#{v}"}.join(" ")
       request(
         :method => :get,
-        :params => {query: "\"#{term}\""},
+        :params => {query: term},
         :path   => "/search.json",
       )
     end
