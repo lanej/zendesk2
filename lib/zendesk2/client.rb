@@ -92,11 +92,11 @@ class Zendesk2::Client < Cistern::Service
   request :update_user
   request :update_user_identity
 
-  recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token
+  recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token, :jwt_token
 
   class Real
 
-    attr_accessor :username, :url, :token, :logger
+    attr_accessor :username, :url, :token, :logger, :jwt_token
 
     def initialize(options={})
       url = options[:url] || Zendesk2.defaults[:url] || begin
@@ -116,13 +116,14 @@ class Zendesk2::Client < Cistern::Service
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
       @username          = options[:username] || Zendesk2.defaults[:username]
-      token              = options[:token] || Zendesk2.defaults[:token]
+      @token             = options[:token] || Zendesk2.defaults[:token]
       password           = options[:password] || Zendesk2.defaults[:password]
-      @auth_token        = password || token
-      @username         += "/token" if @auth_token == token
+      @auth_token        = password || @token
+      @username         += "/token" if @auth_token == @token
+      @jwt_token         = options[:jwt_token]
 
       raise "Missing required options: :username" unless @username 
-      raise "Missing required options: :password or :token" unless password || token
+      raise "Missing required options: :password or :token" unless password || @token
 
       @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
         # response
@@ -159,7 +160,7 @@ class Zendesk2::Client < Cistern::Service
 
   class Mock
 
-    attr_reader :username, :url, :token
+    attr_reader :username, :url, :token, :jwt_token
 
     def self.data
       @data ||= {
@@ -203,6 +204,7 @@ class Zendesk2::Client < Cistern::Service
       @path = URI.parse(url).path
       @username, @password = options[:username], options[:password]
       @token = options[:token]
+      @jwt_token = options[:jwt_token]
 
       @current_user ||= self.create_user("email" => @username, "name" => "Mock Agent").body["user"]
       @current_user_identity ||= self.data[:identities].values.first

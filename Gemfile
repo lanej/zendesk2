@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
+#To avoid warnings from JWT
+gem 'json', '~> 1.7.7'
 
 group :test do
   gem 'guard-rspec'

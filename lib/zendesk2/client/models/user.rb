@@ -93,6 +93,7 @@ class Zendesk2::Client::User < Zendesk2::Model
   # @param [Time] timestamp time sent with intial handshake
   # @option options [String] :return_to (nil) url to return to after handshake
   # @return [String] remote authentication login url
+  # Using this method requires you to implement the additional (user-defined) /handshake endpoint
   # @see http://www.zendesk.com/support/api/remote-authentication
   def login_url(timestamp, options={})
     requires :name, :email
@@ -111,6 +112,39 @@ class Zendesk2::Client::User < Zendesk2::Model
       'email'     => email,
       'timestamp' => timestamp,
       'hash'      => Digest::MD5.hexdigest(hash_str)
+    }
+    unless Zendesk2.blank?(return_to)
+      query_values['return_to'] = return_to
+    end
+    uri.query_values = query_values
+
+    uri.to_s
+  end
+
+  # @option options [String] :return_to (nil) url to return to after initial auth
+  # @return [String] url to redirect your user's browser to for login
+  # @see https://support.zendesk.com/entries/23675367-Setting-up-single-sign-on-with-JWT-JSON-Web-Token-
+  # Cargo-culted from: https://github.com/zendesk/zendesk_jwt_sso_examples/blob/master/ruby_on_rails_jwt.rb
+  def jwt_login_url(options = {})
+    requires :name, :email
+
+    return_to = options[:return_to]
+    jwt_token = self.connection.jwt_token || options[:jwt_token]
+
+    uri       = Addressable::URI.parse(self.connection.url)
+    uri.path  = "/access/jwt"
+
+    iat = Time.now.to_i
+    jti = "#{iat}/#{rand(36**64).to_s(36)}"
+    payload = JWT.encode({
+      :iat    => iat, # Seconds since epoch, determine when this token is stale
+      :jti    => jti, # Unique token id, helps prevent replay attacks
+      :name   => self.name,
+      :email  => self.email,
+    }, jwt_token)
+
+    query_values = {
+      'jwt' => payload
     }
     unless Zendesk2.blank?(return_to)
       query_values['return_to'] = return_to

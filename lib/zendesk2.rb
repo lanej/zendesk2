@@ -5,7 +5,7 @@ require 'addressable/uri'
 require 'cistern'
 require 'faraday'
 require 'faraday_middleware'
-
+require 'jwt'
 # stdlib
 require 'forwardable'
 require 'logger'
