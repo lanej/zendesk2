@@ -24,5 +24,15 @@ describe "organizations" do
       model = client.organizations.create(name: organization.name)
       model.errors.should == {"name" => ["Name has already been taken"]}
     end
+
+    it "should be able to find organizations by external id" do
+      o = organization
+      external_id = o.name + "_foo"
+      o.external_id = external_id
+      o.save
+      found = client.organizations.find_by_external_id(external_id).first
+      found.should === o
+    end
+
   end
 end

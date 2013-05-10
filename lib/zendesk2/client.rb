@@ -62,6 +62,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_group
   request :get_groups
   request :get_organization
+  request :get_organization_by_external_id
   request :get_organization_tickets
   request :get_organization_users
   request :get_organizations
