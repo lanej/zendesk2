@@ -120,10 +120,25 @@ describe "users" do
       user.reload.email.should == original_email
     end
 
-    it "should form login url" do
+    it "should form 'legacy' login url" do
       return_to = "http://engineyard.com"
-      uri = Addressable::URI.parse(user.login_url(Time.now.to_s, return_to: return_to))
+      uri = Addressable::URI.parse(user.login_url(Time.now.to_s, return_to: return_to, token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)"))
       uri.query_values["return_to"].should == return_to
+      uri.query_values["name"].should eq user.name
+      uri.query_values["email"].should eq user.email
+      uri.query_values["hash"].should_not be_nil
     end
+
+    it "should form jwt login url" do
+      return_to = "http://engineyard.com"
+      uri = Addressable::URI.parse(user.jwt_login_url(return_to: return_to, jwt_token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)"))
+      uri.query_values["return_to"].should == return_to
+      uri.query_values["name"].should be_nil
+      uri.query_values["email"].should be_nil
+      uri.query_values["jwt"].should_not be_nil
+
+      #TODO: try JWT.decode
+    end
+
   end
 end
