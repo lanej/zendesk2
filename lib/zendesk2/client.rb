@@ -116,7 +116,7 @@ class Zendesk2::Client < Cistern::Service
       adapter            = options[:adapter] || :net_http
       connection_options = options[:connection_options] || {ssl: {verify: false}}
       @username          = options[:username] || Zendesk2.defaults[:username]
-      token              = options[:token] || Zendesk2.defaults[:token]
+      @token             = options[:token] || Zendesk2.defaults[:token]
       password           = options[:password] || Zendesk2.defaults[:password]
       @auth_token        = password || token
       @username         += "/token" if @auth_token == token
