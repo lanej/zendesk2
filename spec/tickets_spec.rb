@@ -2,10 +2,17 @@ require 'spec_helper'
 
 describe "tickets" do
   let(:client) { create_client }
-  it_should_behave_like "a resource", 
+  it_should_behave_like "a resource",
     :tickets,
     lambda { {subject: Zendesk2.uuid, description: Zendesk2.uuid} },
     lambda { {subject: Zendesk2.uuid} }
+
+  describe "when creating a ticket" do
+    let(:ticket) { client.create_ticket(subject: Zendesk2.uuid, description: Zendesk2.uuid, 'requester' => {'email' => "newuser@example.org"}) }
+    it "should create requester" do
+      ticket.body["ticket"]["requester_id"].should_not == client.users.current.id
+    end
+  end
 
   describe "with a created ticket" do
     let(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
