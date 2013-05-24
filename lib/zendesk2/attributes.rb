@@ -3,14 +3,21 @@ module Zendesk2::Attributes
     assoc_key  = options[:key] || "#{name}_id"
     collection = options[:collection] || "#{name}s"
     define_method(name) do
-      self.connection.send(collection).get(self.send(assoc_key))
+      if assoc_id = self.send(assoc_key)
+        self.connection.send(collection).get(assoc_id)
+      else self.instance_variable_get("@#{name}")
+      end
     end
   end
 
   def assoc_writer(name, options={})
     assoc_key = options[:key] || "#{name}_id"
     define_method("#{name}=") do |assoc|
-      self.send("#{assoc_key}=", assoc.id)
+      if assoc.is_a?(Cistern::Model)
+        self.send("#{assoc_key}=", assoc.identity)
+      else
+        self.instance_variable_set("@#{name}", assoc)
+      end
     end
   end
 

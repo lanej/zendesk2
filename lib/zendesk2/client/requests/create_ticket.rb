@@ -13,15 +13,15 @@ class Zendesk2::Client
     def create_ticket(params={})
       identity = self.class.new_id
 
-      if requester = params['requester']
-        user = search_user(:email => requester['email'])
-        user_id = user.body['results'].first['id'] rescue nil
-        if !user_id
-          user = create_user requester
-          user_id = user.body['user']['id']
-        end
+      if requester = params.delete('requester')
+        user_id = if known_user = self.users.search(email: requester['email']).first
+                    known_user.identity
+                  else
+                    # name is not required in this case
+                    create_user(requester).body["user"]["id"]
+                  end
+
         params['requester_id'] = user_id
-        params.delete('requester')
       end
 
       record = {

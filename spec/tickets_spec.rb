@@ -8,9 +8,14 @@ describe "tickets" do
     lambda { {subject: Zendesk2.uuid} }
 
   describe "when creating a ticket" do
-    let(:ticket) { client.create_ticket(subject: Zendesk2.uuid, description: Zendesk2.uuid, 'requester' => {'email' => "newuser@example.org"}) }
+    let!(:requester_email) { "newuser@example.org" }
+    let!(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email}) }
+
     it "should create requester" do
-      ticket.body["ticket"]["requester_id"].should_not == client.users.current.id
+      requester = client.users.search(email: requester_email).first
+      requester.should_not be_nil
+
+      ticket.requester.should == requester
     end
   end
 

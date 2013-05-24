@@ -66,7 +66,10 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
   def save!
     data = if new_record?
              requires :subject, :description
-             connection.create_ticket(params).body["ticket"]
+
+             with_requester = @requester && Zendesk2.stringify_keys(@requester)
+
+             connection.create_ticket(params.merge("requester" => with_requester)).body["ticket"]
            else
              requires :identity
              connection.update_ticket(params.merge("id" => self.identity)).body["ticket"]
@@ -109,7 +112,7 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
 
   # @return [Zendesk2::Client::TicketAudits] all audits for this ticket
   def audits
-    self.connection.ticket_audits(:ticket_id => self.identity).all
+    self.connection.ticket_audits(ticket_id: self.identity).all
   end
 
   # @return [Array<Zendesk2::Client::AuditEvent>] audit events of type 'Comment'
