@@ -86,6 +86,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_forum
   request :update_group
   request :update_organization
+  request :update_request
   request :update_ticket
   request :update_topic
   request :update_topic_comment
