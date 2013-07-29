@@ -14,11 +14,11 @@ class Zendesk2::Collection < Cistern::Collection
   def model_root; self.class.model_root; end
 
   def next_page
-    all("url" => next_page_link) if next_page_link
+    clone.clear.all("url" => next_page_link) if next_page_link
   end
 
   def previous_page
-    all("url" => previous_page_link) if previous_page_link
+    clone.clear.all("url" => previous_page_link) if previous_page_link
   end
 
   # Attempt creation of resource and explode if unsuccessful
@@ -31,7 +31,7 @@ class Zendesk2::Collection < Cistern::Collection
 
   # Quietly attempt creation of resource. Check {#new_record?} and {#errors} for success
   # @see {#create!} to raise an exception on failure
-  # @return [Cistern::Model]
+  # @return [Cistern::Model, FalseClass]
   def create(attributes={})
     model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
     model.save
@@ -43,7 +43,7 @@ class Zendesk2::Collection < Cistern::Collection
     scoped_attributes.merge!(params)
     body = connection.send(collection_method, scoped_attributes).body
 
-    collection = self.clone.load(body[collection_root])
+    collection = self.load(body[collection_root])
     collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     collection
   end

@@ -8,10 +8,10 @@ gem 'rake'
 gem 'json', '~> 1.7.7'
 
 group :test do
-  gem 'guard-rspec'
-  gem 'guard-bundler'
-  gem 'rspec'
-  gem 'rb-fsevent'
   gem 'awesome_print'
+  gem 'guard-bundler'
+  gem 'guard-rspec'
   gem 'pry-nav'
+  gem 'rb-fsevent'
+  gem 'rspec'
 end
