@@ -115,6 +115,11 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     self.connection.ticket_audits(ticket_id: self.identity).all
   end
 
+  # @return [Zendesk2::Client::TicketMetric] metrics for this ticket
+  def metrics
+    Zendesk2::Client::TicketMetric.new(self.connection.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
+  end
+
   # @return [Array<Zendesk2::Client::TicketComment>] all comments for this ticket
   def comments
     self.connection.ticket_comments(ticket_id: self.identity).all

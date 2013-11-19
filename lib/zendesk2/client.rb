@@ -11,6 +11,7 @@ class Zendesk2::Client < Cistern::Service
   collection :groups
   collection :organizations
   collection :ticket_audits
+  collection :ticket_metrics
   collection :tickets
   collection :ticket_comments
   collection :topic_comments
@@ -23,6 +24,7 @@ class Zendesk2::Client < Cistern::Service
   model :organization
   model :ticket
   model :ticket_audit
+  model :ticket_metric
   model :ticket_change
   model :ticket_comment
   model :ticket_comment_privacy_change
@@ -72,6 +74,8 @@ class Zendesk2::Client < Cistern::Service
   request :get_ticket_audit
   request :get_ticket_audits
   request :get_ticket_comments
+  request :get_ticket_metric
+  request :get_ticket_metrics
   request :get_tickets
   request :get_topic
   request :get_topic_comment
@@ -167,17 +171,18 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :categories      => {},
-        :forums          => {},
-        :groups          => {},
-        :identities      => {},
-        :organizations   => {},
-        :ticket_audits   => {},
+        :categories     => {},
+        :forums         => {},
+        :groups         => {},
+        :identities     => {},
+        :organizations  => {},
+        :ticket_audits  => {},
         :ticket_comments => {},
-        :tickets         => {},
-        :topic_comments  => {},
-        :topics          => {},
-        :users           => {},
+        :ticket_metrics => {},
+        :tickets        => {},
+        :topic_comments => {},
+        :topics         => {},
+        :users          => {},
       }
     end
 
