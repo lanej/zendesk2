@@ -12,6 +12,7 @@ class Zendesk2::Client < Cistern::Service
   collection :organizations
   collection :ticket_audits
   collection :tickets
+  collection :ticket_comments
   collection :topic_comments
   collection :topics
   collection :users
@@ -70,6 +71,7 @@ class Zendesk2::Client < Cistern::Service
   request :get_ticket
   request :get_ticket_audit
   request :get_ticket_audits
+  request :get_ticket_comments
   request :get_tickets
   request :get_topic
   request :get_topic_comment
@@ -165,16 +167,17 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :categories     => {},
-        :forums         => {},
-        :groups         => {},
-        :identities     => {},
-        :organizations  => {},
-        :ticket_audits  => {},
-        :tickets        => {},
-        :topic_comments => {},
-        :topics         => {},
-        :users          => {},
+        :categories      => {},
+        :forums          => {},
+        :groups          => {},
+        :identities      => {},
+        :organizations   => {},
+        :ticket_audits   => {},
+        :ticket_comments => {},
+        :tickets         => {},
+        :topic_comments  => {},
+        :topics          => {},
+        :users           => {},
       }
     end
 

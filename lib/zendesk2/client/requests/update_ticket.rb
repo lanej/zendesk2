@@ -18,6 +18,18 @@ class Zendesk2::Client
       body      = self.data[:tickets][ticket_id].merge!(params)
 
       if comment = params["comment"]
+        comment_id = self.class.new_id
+        comment_data = self.data[:ticket_comments][comment_id] = {
+            "id"          => comment_id,
+            "type"        => "Comment",
+            "author_id"   => current_user["id"],
+            "body"        => comment["body"],
+            "html_body"   => "<p>#{comment["body"]}</p>",
+            "public"      => comment["public"].nil? ? true : comment["public"],
+            "trusted"     => comment["trusted"].nil? ? true : comment["trusted"],
+            "attachments" => comment["attachments"] || [],
+        }
+
         audit_id = self.class.new_id
         self.data[:ticket_audits][audit_id] = {
           "id"         => audit_id,
@@ -42,16 +54,7 @@ class Zendesk2::Client
             },
             "custom" => {},
           },
-          "events" => [
-            "id"          => self.class.new_id,
-            "type"        => "Comment",
-            "author_id"   => current_user["id"],
-            "body"        => comment["body"],
-            "html_body"   => "<p>#{comment["body"]}</p>",
-            "public"      => comment["public"].nil? ? true : comment["public"],
-            "trusted"     => comment["trusted"].nil? ? true : comment["trusted"],
-            "attachments" => comment["attachments"] || [],
-          ]
+          "events" => [comment_data]
         }
       end
 
