@@ -115,9 +115,9 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     self.connection.ticket_audits(ticket_id: self.identity).all
   end
 
-  # @return [Array<Zendesk2::Client::AuditEvent>] audit events of type 'Comment'
+  # @return [Array<Zendesk2::Client::TicketComment>] all comments for this ticket
   def comments
-    audits.map{|audit| audit.events.select{|e| e.type == "Comment"}}.flatten
+    self.connection.ticket_comments(ticket_id: self.identity).all
   end
 
   private
