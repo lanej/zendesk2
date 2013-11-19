@@ -171,17 +171,18 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :categories      => {},
-        :forums          => {},
-        :groups          => {},
-        :identities      => {},
-        :organizations   => {},
-        :ticket_audits   => {},
+        :categories     => {},
+        :forums         => {},
+        :groups         => {},
+        :identities     => {},
+        :organizations  => {},
+        :ticket_audits  => {},
         :ticket_comments => {},
-        :tickets         => {},
-        :topic_comments  => {},
-        :topics          => {},
-        :users           => {},
+        :ticket_metrics => {},
+        :tickets        => {},
+        :topic_comments => {},
+        :topics         => {},
+        :users          => {},
       }
     end
 
