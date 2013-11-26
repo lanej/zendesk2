@@ -3,10 +3,11 @@ require File.expand_path('../lib/zendesk2/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Josh Lane"]
-  gem.email         = ["me@joshualane.com"]
   gem.description   = %q{Zendesk V2 API client}
-  gem.summary       = %q{Zendesk V2 API client}
+  gem.email         = ["me@joshualane.com"]
   gem.homepage      = "http://joshualane.com/zendesk2"
+  gem.license       = "MIT"
+  gem.summary       = %q{Zendesk V2 API client}
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
