@@ -1,19 +1,35 @@
 class Zendesk2::Client::Organization < Zendesk2::Model
-  PARAMS = %w[id details domain_names external_id group_id shared_comments shared_tickets tags name notes]
+  PARAMS = %w[id details domain_names external_id group_id organization_fields shared_comments shared_tickets tags name notes]
 
-  identity :id,               type: :integer
-  attribute :url,             type: :string
-  attribute :created_at,      type: :time
-  attribute :details,         type: :string
-  attribute :domain_names,    type: :array
-  attribute :external_id,     type: :string
-  attribute :group_id,        type: :integer
-  attribute :shared_comments, type: :boolean
-  attribute :shared_tickets,  type: :boolean
-  attribute :tags,            type: :array
-  attribute :name,            type: :string
-  attribute :notes,           type: :string
-  attribute :updated_at,      type: :time
+  # @return [integer] Automatically assigned when creating organization
+  identity :id, type: :integer # ro[yes] required[no]
+
+  # @return [Date] The time the organization was created
+  attribute :created_at, type: :date # ro[yes] required[no]
+  # @return [String] In this field you can store any details obout the organization. e.g. the address
+  attribute :details, type: :string # ro[no] required[no]
+  # @return [Array] An array of domain names associated with this organization
+  attribute :domain_names, type: :array # ro[no] required[no]
+  # @return [String] A unique external id, you can use this to associate organizations to an external record
+  attribute :external_id, type: :string # ro[no] required[no]
+  # @return [Integer] New tickets from users in this organization will automatically be put in this group
+  attribute :group_id, type: :integer # ro[no] required[no]
+  # @return [String] The name of the organization
+  attribute :name, type: :string # ro[no] required[yes]
+  # @return [String] In this field you can store any notes you have about the organization
+  attribute :notes, type: :string # ro[no] required[no]
+  # @return [Hash] Custom fields for this organization
+  attribute :organization_fields, type: :hash # ro[no] required[no]
+  # @return [Boolean] End users in this organization are able to see each other's comments on tickets
+  attribute :shared_comments, type: :boolean # ro[no] required[no]
+  # @return [Boolean] End users in this organization are able to see each other's tickets
+  attribute :shared_tickets, type: :boolean # ro[no] required[no]
+  # @return [Array] The tags of the organization
+  attribute :tags, type: :array # ro[no] required[no]
+  # @return [Date] The time of the last update of the organization
+  attribute :updated_at, type: :date # ro[yes] required[no]
+  # @return [String] The API url of this organization
+  attribute :url, type: :string # ro[yes] required[no]
 
   def destroy!
     requires :identity
@@ -56,4 +72,4 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     writable_attributes.delete("group_id") if writable_attributes["group_id"].to_s == "0"
     writable_attributes
   end
-end
+  end
