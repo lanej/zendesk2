@@ -13,12 +13,19 @@ class Zendesk2::Collection < Cistern::Collection
   def model_method; self.class.model_method; end
   def model_root; self.class.model_root; end
 
+  def new_page
+    page = self.clone
+    %w[count next_page_link previous_page_link].each { |k| page.attributes.delete(k) }
+    page.records = []
+    page
+  end
+
   def next_page
-    clone.clear.all("url" => next_page_link) if next_page_link
+    new_page.all("url" => next_page_link) if next_page_link
   end
 
   def previous_page
-    clone.clear.all("url" => previous_page_link) if previous_page_link
+    new_page.all("url" => previous_page_link) if previous_page_link
   end
 
   # Attempt creation of resource and explode if unsuccessful
@@ -39,13 +46,12 @@ class Zendesk2::Collection < Cistern::Collection
 
   # Fetch a collection of resources
   def all(params={})
-    scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
-    scoped_attributes.merge!(params)
+    scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
     body = connection.send(collection_method, scoped_attributes).body
 
-    collection = self.load(body[collection_root])
-    collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
-    collection
+    self.load(body[collection_root])
+    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+    self
   end
 
   # Fetch a single of resource

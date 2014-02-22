@@ -17,7 +17,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
 
   context "that is paged" do
     before(:each) do
-      2.times.each { collection.create(instance_exec(&_params)) }
+      3.times.each { collection.create(instance_exec(&_params)) }
     end
 
     it "by retrieving the first page" do
