@@ -1,7 +1,7 @@
 class Zendesk2::Client::Ticket < Zendesk2::Model
   extend Zendesk2::Attributes
 
-  PARAMS = %w[external_id via requester_id submitter_id assignee_id organization_id subject description fields recipient status collaborator_ids tags]
+  PARAMS = %w[external_id via requester_id submitter_id assignee_id organization_id subject description custom_fields recipient status collaborator_ids tags]
 
   # @return [Integer] Automatically assigned when creating tickets
   identity :id, type: :integer

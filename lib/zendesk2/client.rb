@@ -11,6 +11,7 @@ class Zendesk2::Client < Cistern::Service
   collection :groups
   collection :organizations
   collection :ticket_audits
+  collection :ticket_fields
   collection :ticket_metrics
   collection :tickets
   collection :ticket_comments
@@ -29,6 +30,7 @@ class Zendesk2::Client < Cistern::Service
   model :ticket_comment
   model :ticket_comment_privacy_change
   model :ticket_create
+  model :ticket_field
   model :ticket_notification
   model :ticket_voice_comment
   model :topic
@@ -42,6 +44,7 @@ class Zendesk2::Client < Cistern::Service
   request :create_group
   request :create_organization
   request :create_ticket
+  request :create_ticket_field
   request :create_topic
   request :create_topic_comment
   request :create_user
@@ -51,6 +54,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_group
   request :destroy_organization
   request :destroy_ticket
+  request :destroy_ticket_field
   request :destroy_topic
   request :destroy_topic_comment
   request :destroy_user
@@ -74,6 +78,8 @@ class Zendesk2::Client < Cistern::Service
   request :get_ticket_audit
   request :get_ticket_audits
   request :get_ticket_comments
+  request :get_ticket_field
+  request :get_ticket_fields
   request :get_ticket_metric
   request :get_ticket_metrics
   request :get_tickets
@@ -94,6 +100,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_organization
   request :update_request
   request :update_ticket
+  request :update_ticket_field
   request :update_topic
   request :update_topic_comment
   request :update_user
@@ -129,7 +136,7 @@ class Zendesk2::Client < Cistern::Service
       @username         += "/token" if @auth_token == @token
       @jwt_token         = options[:jwt_token]
 
-      raise "Missing required options: :username" unless @username 
+      raise "Missing required options: :username" unless @username
       raise "Missing required options: :password or :token" unless password || @token
 
       @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
@@ -171,18 +178,19 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :categories     => {},
-        :forums         => {},
-        :groups         => {},
-        :identities     => {},
-        :organizations  => {},
-        :ticket_audits  => {},
+        :categories      => {},
+        :forums          => {},
+        :groups          => {},
+        :identities      => {},
+        :organizations   => {},
+        :ticket_audits   => {},
         :ticket_comments => {},
-        :ticket_metrics => {},
-        :tickets        => {},
-        :topic_comments => {},
-        :topics         => {},
-        :users          => {},
+        :ticket_fields   => {},
+        :ticket_metrics  => {},
+        :tickets         => {},
+        :topic_comments  => {},
+        :topics          => {},
+        :users           => {},
       }
     end
 
