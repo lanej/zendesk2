@@ -28,6 +28,10 @@ describe "tickets" do
     it "should get submitter" do
       ticket.submitter.should == client.users.current
     end
+
+    it "should have empty custom fields by default" do
+      ticket.custom_fields.should == []
+    end
   end
 
   describe "comments" do

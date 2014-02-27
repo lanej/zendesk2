@@ -30,6 +30,7 @@ class Zendesk2::Client
         "created_at"       => Time.now.iso8601,
         "updated_at"       => Time.now.iso8601,
         "collaborator_ids" => [],
+        "custom_fields"    => [],
       }.merge(params)
 
       record["requester_id"] ||= current_user["id"]
