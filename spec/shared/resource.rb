@@ -44,7 +44,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
     update_params.each {|k,v| record.send(k).should == v}
   end
 
-  it "by destroy a record" do
+  it "by destroying a record" do
     pending if _collection == :forums
     record = collection.create(params)
     record.identity.should_not be_nil
