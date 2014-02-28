@@ -14,6 +14,22 @@ class Zendesk2::Client
       identity = self.class.new_id
 
       if requester = params.delete('requester')
+        if !requester['name'] || requester['name'].size < 1
+          response(
+            :path   => "/tickets.json",
+            :method => :post,
+            :status => 422,
+            :body   => {
+              "error"       => "RecordInvalid",
+              "description" => "Record validation errors",
+              "details"     => {
+                "requester" => [
+                  {
+                    "description" => "Requester Name:  is too short (minimum is 1 characters)"
+                  }
+                ]}})
+        end
+
         user_id = if known_user = self.users.search(email: requester['email']).first
                     known_user.identity
                   else

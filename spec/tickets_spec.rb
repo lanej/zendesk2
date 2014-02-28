@@ -2,20 +2,29 @@ require 'spec_helper'
 
 describe "tickets" do
   let(:client) { create_client }
-  it_should_behave_like "a resource",
-    :tickets,
+  it_should_behave_like "a resource", :tickets,
     lambda { {subject: Zendesk2.uuid, description: Zendesk2.uuid} },
     lambda { {subject: Zendesk2.uuid} }
 
   describe "when creating a ticket" do
-    let!(:requester_email) { "newuser@example.org" }
-    let!(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email}) }
+    let!(:requester_email) { "#{Zendesk2.uuid}@example.org" }
 
     it "should create requester" do
-      requester = client.users.search(email: requester_email).first
-      requester.should_not be_nil
+      ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {name: "Josh Lane", email: requester_email})
+      if Zendesk2::Client.mocking? # this takes some time for realsies
+        requester = client.users.search(email: requester_email).first
+        requester.should_not be_nil
 
-      ticket.requester.should == requester
+        ticket.reload.requester.should == requester
+      else
+        ticket.reload.requester.should_not be_nil
+      end
+    end
+
+    it "should require requester name" do
+      expect {
+        client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email})
+      }.to raise_exception(Zendesk2::Error, /Requester Name: .* too short/)
     end
   end
 
