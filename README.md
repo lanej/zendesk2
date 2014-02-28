@@ -59,6 +59,7 @@ Currently support resources
 * Groups
 * Organization
 * Ticket Audits
+* Ticket Fields
 * Tickets
 * Topic Comments
 * Topics
