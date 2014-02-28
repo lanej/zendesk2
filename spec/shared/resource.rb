@@ -11,13 +11,13 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
   end
 
   it "by fetching a specific record" do
-    record = collection.create(params)
+    record = collection.create!(params)
     collection.get(fetch_params.call(record)).should == record
   end
 
   context "that is paged" do
     before(:each) do
-      3.times.each { collection.create(instance_exec(&_params)) }
+      3.times.each { collection.create!(instance_exec(&_params)) }
     end
 
     it "by retrieving the first page" do
@@ -38,7 +38,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
   end
 
   it "by updating a record" do
-    record = collection.create(params)
+    record = collection.create!(params)
     record.merge_attributes(update_params)
     record.save
     update_params.each {|k,v| record.send(k).should == v}
@@ -46,7 +46,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
 
   it "by destroying a record" do
     pending if _collection == :forums
-    record = collection.create(params)
+    record = collection.create!(params)
     record.identity.should_not be_nil
     record.destroy
     record.should be_destroyed
@@ -55,7 +55,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
   # Search index takes 2-3 minutes according to the docs
   it "should search" do
     pending unless Zendesk2::Client.mocking?
-    record = collection.create(params)
+    record = collection.create!(params)
     collection.search(params).should include(record)
   end
 end

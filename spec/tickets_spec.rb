@@ -9,7 +9,7 @@ describe "tickets" do
 
   describe "when creating a ticket" do
     let!(:requester_email) { "newuser@example.org" }
-    let!(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email}) }
+    let!(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email}) }
 
     it "should create requester" do
       requester = client.users.search(email: requester_email).first
@@ -20,7 +20,7 @@ describe "tickets" do
   end
 
   describe "with a created ticket" do
-    let(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
+    let(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
     it "should get requester" do
       ticket.requester.should == client.users.current
     end
@@ -35,7 +35,7 @@ describe "tickets" do
   end
 
   describe "comments" do
-    let(:ticket) { client.tickets.create(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
+    let(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
 
     it "lists audits" do
       body = Zendesk2.uuid
@@ -58,6 +58,22 @@ describe "tickets" do
       ticket.comment(body)
 
       (comment = ticket.comments.find{|c| c.body == body}).should_not be_nil
+    end
+  end
+
+  describe "custom fields" do
+    let!(:ticket_field) { client.ticket_fields.create!(title: Zendesk2.uuid, type: "textbox") }
+
+    it "should be based on ticket_fields" do
+      ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
+      custom_field.should_not be_nil
+      custom_field["value"].should be_nil
+
+      ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, custom_fields: [{"id" => ticket_field.identity, "value" => "jessicaspacekat"}])
+      custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
+      custom_field.should_not be_nil
+      custom_field["value"].should == "jessicaspacekat"
     end
   end
 end

@@ -49,8 +49,6 @@ class Zendesk2::Client::TicketField < Zendesk2::Model
     data = if new_record?
              requires :type, :title
 
-             self.custom_field_options ||= []
-
              connection.create_ticket_field(params).body["ticket_field"]
            else
              requires :identity

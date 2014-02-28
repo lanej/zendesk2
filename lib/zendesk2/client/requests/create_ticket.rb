@@ -24,13 +24,20 @@ class Zendesk2::Client
         params['requester_id'] = user_id
       end
 
+      custom_fields = (params.delete("custom_fields") || [])
+
+      self.data[:ticket_fields].each do |field_id, field|
+        custom_fields.find { |cf| cf["id"] == field_id } ||
+          custom_fields << {"id" => field_id, "value" => nil }
+      end
+
       record = {
         "id"               => identity,
         "url"              => url_for("/tickets/#{identity}.json"),
         "created_at"       => Time.now.iso8601,
         "updated_at"       => Time.now.iso8601,
         "collaborator_ids" => [],
-        "custom_fields"    => [],
+        "custom_fields"    => custom_fields,
       }.merge(params)
 
       record["requester_id"] ||= current_user["id"]
