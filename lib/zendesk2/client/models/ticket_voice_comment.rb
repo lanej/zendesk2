@@ -1,6 +1,7 @@
+puts "required"
 class Zendesk2::Client
   class TicketVoiceComment < AuditEvent
-    # @return [integer] Automatically assigned when creating events
+    # @return [Integer] Automatically assigned when creating events
     identity :id, type: :integer
 
     # @return [Array] The attachments on this comment as Attachment objects
@@ -18,8 +19,6 @@ class Zendesk2::Client
     # @return [String] The actual comment made by the author formatted to HTML
     attribute :html_body, type: :string
     # @return [Boolean] If this is a public comment or an internal agents only note
-    attribute :public, type: :boolean
-    # @return [Boolean] If true, the ticket requester can see this comment
     attribute :public, type: :boolean
     # @return [Boolean] If this comment is trusted or marked as being potentially fraudulent
     attribute :trusted, type: :boolean

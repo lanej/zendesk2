@@ -39,6 +39,8 @@ describe "tickets" do
     end
 
     it "should have empty custom fields by default" do
+      pending if !Zendesk2::Client.mocking?
+
       ticket.custom_fields.should == []
     end
   end
@@ -66,7 +68,7 @@ describe "tickets" do
       body = Zendesk2.uuid
       ticket.comment(body)
 
-      (comment = ticket.comments.find{|c| c.body == body}).should_not be_nil
+      ticket.comments.find{|c| c.body == body}.should_not be_nil
     end
   end
 
