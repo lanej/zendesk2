@@ -1,7 +1,7 @@
 class Zendesk2::Client
   class Real
     def create_membership(params={})
-      user_id     = params["user_id"]
+      user_id = params["user_id"]
 
       request(
         :body   => {"organization_membership" => params },
@@ -16,7 +16,24 @@ class Zendesk2::Client
       user_id         = params["user_id"]
       organization_id = params["organization_id"]
 
-      raise NotImplementedError
+      resource_id = self.class.new_id
+
+      default_membership = true # @todo
+
+      resource = {
+        "id"             => resource_id,
+        "user_id"        => user_id,
+        "organzation_id" => organization_id,
+        "default"        => default_membership,
+      }
+
+      self.data[:memberships][resource_id] = resource
+
+      response(
+        :method => :post,
+        :body   => { "organization_membership" => resource },
+        :path   => "/users/#{user_id}/organization_memberships.json",
+      )
     end
   end # Mock
 end

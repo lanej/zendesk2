@@ -9,6 +9,7 @@ class Zendesk2::Client < Cistern::Service
   collection :categories
   collection :forums
   collection :groups
+  collection :memberships
   collection :organizations
   collection :ticket_audits
   collection :ticket_fields
@@ -22,6 +23,7 @@ class Zendesk2::Client < Cistern::Service
   model :category
   model :forum
   model :group
+  model :membership
   model :organization
   model :ticket
   model :ticket_audit
@@ -42,6 +44,7 @@ class Zendesk2::Client < Cistern::Service
   request :create_category
   request :create_forum
   request :create_group
+  request :create_membership
   request :create_organization
   request :create_ticket
   request :create_ticket_field
@@ -52,6 +55,7 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_category
   request :destroy_forum
   request :destroy_group
+  request :destroy_membership
   request :destroy_organization
   request :destroy_ticket
   request :destroy_ticket_field
@@ -68,6 +72,9 @@ class Zendesk2::Client < Cistern::Service
   request :get_forums
   request :get_group
   request :get_groups
+  request :get_membership
+  request :get_user_memberships
+  request :get_organization_memberships
   request :get_organization
   request :get_organization_by_external_id
   request :get_organization_tickets
@@ -182,6 +189,7 @@ class Zendesk2::Client < Cistern::Service
         :forums          => {},
         :groups          => {},
         :identities      => {},
+        :memberships     => {},
         :organizations   => {},
         :ticket_audits   => {},
         :ticket_comments => {},

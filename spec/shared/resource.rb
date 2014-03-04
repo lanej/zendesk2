@@ -38,6 +38,8 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
   end
 
   it "by updating a record" do
+    pending unless update_params
+
     record = collection.create!(params)
     record.merge_attributes(update_params)
     record.save
@@ -55,6 +57,7 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
   # Search index takes 2-3 minutes according to the docs
   it "should search" do
     pending unless Zendesk2::Client.mocking?
+    pending unless collection.is_a?(Zendesk2::Searchable)
     record = collection.create!(params)
     collection.search(params).should include(record)
   end
