@@ -50,4 +50,22 @@ describe "memberships" do
     user.memberships.to_a.should == [user_membership]
     another_user.memberships.size.should == 2
   end
+
+  describe "create_membership" do
+    it "should error when organization does not exist" do
+      expect {
+        client.create_membership("user_id" => user.identity, "organization_id" => 99)
+      }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
+    end
+
+    it "should error when missing parameters" do
+      expect { client.create_membership({}) }.to raise_exception(ArgumentError, "missing parameters: user_id, organization_id")
+    end
+
+    it "should error when user does not exist" do
+      expect {
+        client.create_membership("user_id" => 99, "organization_id" => organization.identity)
+      }.to raise_exception(Zendesk2::Error, /RecordNotFound/)
+    end
+  end
 end

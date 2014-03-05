@@ -1,6 +1,8 @@
 class Zendesk2::Client
   class Real
     def create_membership(params={})
+      require_parameters(params, "user_id", "organization_id")
+
       user_id = params["user_id"]
 
       request(
@@ -13,8 +15,13 @@ class Zendesk2::Client
 
   class Mock
     def create_membership(params={})
+      require_parameters(params, "user_id", "organization_id")
+
       user_id         = params["user_id"]
       organization_id = params["organization_id"]
+
+      find!(:users, user_id)
+      find!(:organizations, organization_id, error: :invalid, details: { "organization" => [ { "description" => "Organization cannot be blank" } ] })
 
       resource_id = self.class.new_id
 

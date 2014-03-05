@@ -116,7 +116,16 @@ class Zendesk2::Client < Cistern::Service
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token, :jwt_token
 
+  module Shared
+    def require_parameters(params, *requirements)
+      if (missing = requirements - params.keys).any?
+        raise ArgumentError, "missing parameters: #{missing.join(", ")}"
+      end
+    end
+  end
+
   class Real
+    include Shared
 
     attr_accessor :username, :url, :token, :logger, :jwt_token
 
@@ -181,6 +190,7 @@ class Zendesk2::Client < Cistern::Service
   end
 
   class Mock
+    include Shared
 
     attr_reader :username, :url, :token, :jwt_token
 
@@ -286,6 +296,33 @@ class Zendesk2::Client < Cistern::Service
       pluralized = word.dup
       [[/y$/, 'ies'], [/$/, 's']].find{|regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex)}
       pluralized
+    end
+
+    def self.error_map
+      @@error_map ||= {
+        :invalid => [422, {
+          "error"       => "RecordInvalid",
+          "description" => "Record validation errors",
+        }],
+        :not_found => [404, {
+          "error"       => "RecordNotFound",
+          "description" => "Not found",
+        }],
+      }
+    end
+
+    def find!(collection, identity, options={})
+      if resource = self.data[collection][identity]
+        resource
+      else
+        status, body = self.class.error_map[options[:error] || :not_found]
+        body.merge!("details" => options[:details]) if options[:details]
+
+        response(
+          :status => status,
+          :body   => body,
+        )
+      end
     end
 
     def response(options={})
