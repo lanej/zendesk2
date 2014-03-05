@@ -19,6 +19,18 @@ Or install it yourself as:
 
 ## Usage
 
+### Mock it!
+
+All support resources have basic mocks.  Error conditions and messaging are constantly changing. Please contribute updates or fixes to the mock if you encounter inconsistencies.
+
+```ruby
+Zendesk2::Client.mock!
+
+client = Zendesk2::Client.new(...) # Zendesk2::Client::Mock
+client.organizations.create!(name: "foo") # Zendesk2::Client::Organization
+client.organizations.create!(name: "foo") # Zendesk2::Error => Name has already been taken
+```
+
 ### Defaults
 
 Default credentials will be read in from `~/.zendesk2` file in YAML format.
@@ -57,6 +69,7 @@ Currently support resources
 * Categories
 * Forums
 * Groups
+* Memberships
 * Organization
 * Ticket Audits
 * Ticket Fields

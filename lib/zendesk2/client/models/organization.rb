@@ -40,9 +40,11 @@ class Zendesk2::Client::Organization < Zendesk2::Model
   def save!
     data = if new_record?
              requires :name
+
              connection.create_organization(params).body["organization"]
            else
              requires :identity
+
              connection.update_organization(params).body["organization"]
            end
     merge_attributes(data)
