@@ -1,4 +1,3 @@
-puts "required"
 class Zendesk2::Client
   class TicketVoiceComment < AuditEvent
     # @return [Integer] Automatically assigned when creating events
