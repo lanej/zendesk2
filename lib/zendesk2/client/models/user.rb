@@ -178,6 +178,11 @@ class Zendesk2::Client::User < Zendesk2::Model
     self.connection.user_identities("user_id" => self.identity)
   end
 
+  # @return [Zendesk2::Client::Memberships] the organization memberships of this user
+  def memberships
+    self.connection.memberships(user: self)
+  end
+
   private
 
   def params

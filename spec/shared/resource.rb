@@ -1,4 +1,4 @@
-shared_examples "a resource" do |_collection, _params, _update_params, _options|
+shared_examples "a resource" do |_collection, _params, _update_params, _options={}|
   let(:options)       { _options || {} }
   let(:collection)    { options[:collection] ? instance_exec(&options[:collection]) : client.send(_collection) }
   let(:params)        { instance_exec(&_params) || {} }
@@ -12,38 +12,40 @@ shared_examples "a resource" do |_collection, _params, _update_params, _options|
 
   it "by fetching a specific record" do
     record = collection.create!(params)
-    collection.get(fetch_params.call(record)).should == record
+    collection.get!(fetch_params.call(record)).should == record
   end
 
-  context "that is paged" do
-    before(:each) do
-      3.times.each { collection.create!(instance_exec(&_params)) }
-    end
+  if _options.fetch(:paged, true)
+    context "that is paged" do
+      before(:each) do
+        3.times.each { collection.create!(instance_exec(&_params)) }
+      end
 
-    it "by retrieving the first page" do
-      collection.all("per_page" => "1").size.should == 1
-    end
+      it "by retrieving the first page" do
+        collection.all("per_page" => "1").size.should == 1
+      end
 
-    it "by retrieving the next page" do
-      first_page = collection.all("per_page" => 1)
-      second_page = collection.all("per_page" => 1).next_page
-      second_page.should_not == first_page
-    end
+      it "by retrieving the next page" do
+        first_page = collection.all("per_page" => 1)
+        second_page = collection.all("per_page" => 1).next_page
+        second_page.should_not == first_page
+      end
 
-    it "by retrieving the previous page" do
-      first_page = collection.all("per_page" => "1")
-      previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page
-      previous_to_second_page.should == first_page
+      it "by retrieving the previous page" do
+        first_page = collection.all("per_page" => "1")
+        previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page
+        previous_to_second_page.should == first_page
+      end
     end
   end
 
-  it "by updating a record" do
-    pending unless update_params
-
-    record = collection.create!(params)
-    record.merge_attributes(update_params)
-    record.save
-    update_params.each {|k,v| record.send(k).should == v}
+  if _options.fetch(:update, true)
+    it "by updating a record" do
+      record = collection.create!(params)
+      record.merge_attributes(update_params)
+      record.save
+      update_params.each {|k,v| record.send(k).should == v}
+    end
   end
 
   it "by destroying a record" do

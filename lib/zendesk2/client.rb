@@ -98,9 +98,10 @@ class Zendesk2::Client < Cistern::Service
   request :get_user_identities
   request :get_user_identity
   request :get_users
+  request :mark_membership_default
+  request :mark_user_identity_primary
   request :search
   request :search_user
-  request :mark_user_identity_primary
   request :update_category
   request :update_forum
   request :update_group

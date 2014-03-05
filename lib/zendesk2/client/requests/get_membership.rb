@@ -1,24 +1,35 @@
 class Zendesk2::Client
   class Real
     def get_membership(params={})
-      user_id         = params["user_id"]
-      organization_id = params["organization_id"]
-      page_params = Zendesk2.paging_parameters(params)
+      id = params["id"]
 
       request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users/#{user_id}/organizations_memberships/#{organization_id}.json",
+        :method => :get,
+        :path   => "/organization_memberships/#{id}.json",
       )
     end
   end # Real
 
   class Mock
     def get_membership(params={})
-      user_id         = params["user_id"]
-      organization_id = params["organization_id"]
+      membership_id = params["id"]
 
-      page(params, :memberships, "/users/#{user_id}/organization_memberships/#{organization_id}.json", "organization_memberships", filter: lambda{|c| c.select { |a| a["user_id"] == user_id.to_i && a["organization_id"] == organization_id.to_i }})
+      path = "/organization_memberships/#{membership_id}.json"
+
+      if body = self.data[:memberships][membership_id]
+        response(
+          :path => path,
+          :body => {
+            "organization_membership" => body
+          },
+        )
+      else
+        response(
+          :path   => path,
+          :status => 404,
+          :body => {"error" => "RecordNotFound", "description" => "Not found"},
+        )
+      end
     end
   end # Mock
 end

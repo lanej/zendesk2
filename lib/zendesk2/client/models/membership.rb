@@ -8,14 +8,19 @@ class Zendesk2::Client::Membership < Zendesk2::Model
 
   # @return [Time] The time the identity got created
   attribute :created_at, type: :time
+  # @return [Boolean] Is membership the default
+  attribute :default, type: :boolean
+  # @return [Integer] The id of the organization
+  attribute :organization_id, type: :integer
   # @return [Time] The time the identity got updated
   attribute :updated_at, type: :time
   # @return [Integer] The id of the user
   attribute :user_id, type: :integer
-  # @return [Integer] The id of the organization
-  attribute :organization_id, type: :integer
-  # @return [Boolean] Is membership the default
-  attribute :default, type: :boolean
+  # @return [String] The API url of this identity
+  attribute :url, type: :string
+
+  assoc_accessor :organization
+  assoc_accessor :user
 
   def save!
     data = if new_record?
@@ -33,22 +38,14 @@ class Zendesk2::Client::Membership < Zendesk2::Model
   def destroy
     requires :identity
 
-    connection.destroy_user_identity("user_id" => self.user_id, "id" => self.identity)
+    connection.destroy_membership("id" => self.identity)
   end
 
-  def reload
-    requires :identity
+  def default!
+    requires :identity, :user_id
 
-    if data = self.connection.user_identities("user_id" => user_id).get(identity)
-      new_attributes = data.attributes
-      merge_attributes(new_attributes)
-      self
-    end
-  end
-
-  def primary!
-    self.connection.mark_user_identity_primary("user_id" => self.user_id, "id" => self.identity)
-    self.primary = true
+    self.connection.mark_membership_default("user_id" => self.user_id, "id" => self.identity)
+    self.default = true
   end
 
   private

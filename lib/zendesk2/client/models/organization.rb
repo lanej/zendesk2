@@ -56,6 +56,13 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     connection.users.load(data)
   end
 
+  # @return [Zendesk2::Client::Memberships] memberships associated with this organization
+  def memberships
+    requires :identity
+
+    connection.memberships(organization: self)
+  end
+
   # @return [Zendesk2::Client::Tickets] tickets associated with this organization
   def tickets
     requires :identity
@@ -72,4 +79,4 @@ class Zendesk2::Client::Organization < Zendesk2::Model
     writable_attributes.delete("group_id") if writable_attributes["group_id"].to_s == "0"
     writable_attributes
   end
-  end
+end

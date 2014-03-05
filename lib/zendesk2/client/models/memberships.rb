@@ -1,11 +1,15 @@
 class Zendesk2::Client::Memberships < Zendesk2::Collection
+  extend Zendesk2::Attributes
 
   model Zendesk2::Client::Membership
 
   attribute :user_id, type: :integer
   attribute :organization_id, type: :integer
 
-  self.collection_root   = "memberships"
+  assoc_accessor :organization
+  assoc_accessor :user
+
+  self.collection_root   = "organization_memberships"
   self.model_method      = :get_membership
   self.model_root        = "organization_membership"
 

@@ -5,7 +5,7 @@ class Zendesk2::Client
 
       request(
         :method => :delete,
-        :path   => "/memberships/#{id}.json"
+        :path   => "/organization_memberships/#{id}.json"
       )
     end
   end
@@ -17,7 +17,7 @@ class Zendesk2::Client
       body = self.data[:memberships].delete(id)
       response(
         :method => :delete,
-        :path   => path,
+        :path   => "/organization_memberships/#{id}.json",
         :body   => {
           "membership" => body,
         },

@@ -18,13 +18,13 @@ class Zendesk2::Client
 
       resource_id = self.class.new_id
 
-      default_membership = true # @todo
+      default_membership = false # !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
 
       resource = {
-        "id"             => resource_id,
-        "user_id"        => user_id,
-        "organzation_id" => organization_id,
-        "default"        => default_membership,
+        "id"              => resource_id,
+        "user_id"         => user_id,
+        "organization_id" => organization_id,
+        "default"         => default_membership,
       }
 
       self.data[:memberships][resource_id] = resource
