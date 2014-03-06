@@ -16,20 +16,12 @@ class Zendesk2::Client
 
       path = "/organization_memberships/#{membership_id}.json"
 
-      if body = self.data[:memberships][membership_id]
-        response(
-          :path => path,
-          :body => {
-            "organization_membership" => body
-          },
-        )
-      else
-        response(
-          :path   => path,
-          :status => 404,
-          :body => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path => path,
+        :body => {
+          "organization_membership" => find!(:memberships, membership_id)
+        },
+      )
     end
   end # Mock
 end

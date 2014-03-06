@@ -20,8 +20,8 @@ class Zendesk2::Client
       topic_id = params.delete("topic_id")
       path     = "/topics/#{topic_id}/comments/#{id}.json"
 
-      unless (topic_comment = self.data[:topic_comments][id]) && topic_comment["topic_id"] == topic_id
-        response(status: 404)
+      unless (topic_comment = self.find!(:topic_comments, id)) && topic_comment["topic_id"] == topic_id
+        error!(:not_found)
       else
         body = topic_comment.merge!(params)
         response(

@@ -12,21 +12,14 @@ class Zendesk2::Client
 
   class Mock
     def get_organization(params={})
-      id   = params["id"]
-      if body = self.data[:organizations][id]
+      id = params["id"]
 
-        response(
-          :path  => "/organizations/#{id}.json",
-          :body  => {
-            "organization" => body
-          },
-        )
-      else 
-        response(
-          :path   => "/organizations/#{id}.json",
-          :status => 404
-        )
-      end
+      response(
+        :path  => "/organizations/#{id}.json",
+        :body  => {
+          "organization" => find!(:organizations, id)
+        },
+      )
     end
   end # Mock
 end

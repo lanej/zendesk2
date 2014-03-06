@@ -15,21 +15,15 @@ class Zendesk2::Client
   end
   class Mock
     def update_group(params={})
-      id   = params.delete("id")
-      path = "/groups/#{id}.json"
+      id = params.delete("id")
 
-      if group = self.data[:groups][id]
-        group.merge!(params)
-        response(
-          :method => :put,
-          :path   => "/groups/#{id}.json",
-          :body   => {
-            "group" => group
-          },
-        )
-      else response(status: 404)
-      end
-
+      response(
+        :method => :put,
+        :path   => "/groups/#{id}.json",
+        :body   => {
+          "group" => find!(:groups, id).merge!(params)
+        },
+      )
     end
   end
 end

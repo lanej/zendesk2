@@ -15,20 +15,12 @@ class Zendesk2::Client
       id   = params["id"]
       path = "/groups/#{id}.json"
 
-      if body = self.data[:groups][id]
-        response(
-          :path => path,
-          :body => {
-            "group" => body
-          },
-        )
-      else 
-        response(
-          :path   => path,
-          :status => 404,
-          :body => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path => path,
+        :body => {
+          "group" => find!(:groups, id),
+        },
+      )
     end
   end # Mock
 end

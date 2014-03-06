@@ -19,7 +19,7 @@ class Zendesk2::Client
 
       path = "/users/#{user_id}/organization_memberships/#{id}/make_default.json"
 
-      if (membership = self.data[:memberships][id]) && membership["user_id"] == user_id
+      if (membership = self.find!(:memberships, id)) && membership["user_id"] == user_id
         # only one user can be default
         other_user_memberships = self.data[:memberships].values.select { |m| m["user_id"] == user_id }
         other_user_memberships.each { |i| i["default"] = false }
@@ -29,11 +29,7 @@ class Zendesk2::Client
           :method => :put,
           :path   => path
         )
-      else
-        response(
-          :path   => path,
-          :status => 404
-        )
+      else error!(:not_found)
       end
     end
   end

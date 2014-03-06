@@ -17,7 +17,7 @@ class Zendesk2::Client
       user_id = params.delete("user_id")
       path    = "/users/#{user_id}/identities/#{id}/make_primary.json"
 
-      user_identity = self.data[:identities][id]
+      user_identity = self.find!(:identities, id)
 
       if user_identity && user_identity["user_id"] == user_id
         # only one user can be primary
@@ -29,11 +29,8 @@ class Zendesk2::Client
           :method => :put,
           :path   => path
         )
-      else 
-        response(
-          :path   => path,
-          :status => 404
-        )
+      else
+        error!(:not_found)
       end
     end
   end

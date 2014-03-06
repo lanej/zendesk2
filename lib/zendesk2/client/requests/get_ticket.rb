@@ -15,20 +15,12 @@ class Zendesk2::Client
       id   = params["id"]
       path = "/tickets/#{id}.json"
 
-      if body = self.data[:tickets][id]
-        response(
-          :path => path,
-          :body => {
-            "ticket" => body
-          },
-        )
-      else 
-        response(
-          :path   => path,
-          :status => 404,
-          :body => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path => path,
+        :body => {
+          "ticket" => self.find!(:tickets, id)
+        },
+      )
     end
   end # Mock
 end

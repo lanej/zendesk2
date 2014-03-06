@@ -12,21 +12,14 @@ class Zendesk2::Client
 
   class Mock
     def get_category(params={})
-      id   = params["id"]
-      if body = self.data[:categories][id]
+      id = params["id"]
 
-        response(
-          :path  => "/categories/#{id}.json",
-          :body  => {
-            "category" => body
-          },
-        )
-      else 
-        response(
-          :path   => "/categories/#{id}.json",
-          :status => 404
-        )
-      end
+      response(
+        :path  => "/categories/#{id}.json",
+        :body  => {
+          "category" => find!(:categories, id)
+        },
+      )
     end
   end # Mock
 end

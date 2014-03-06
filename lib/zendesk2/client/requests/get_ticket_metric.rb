@@ -20,24 +20,13 @@ class Zendesk2::Client
   class Mock
     def get_ticket_metric(params={})
       id        = params["id"]
-      ticket_id = params["ticket_id"]
 
-      path = "/tickets_metrics/#{id}.json"
-
-      if body = self.data[:ticket_metrics][id]
-        response(
-          :path => path,
-          :body => {
-            "ticket_metric" => body
-          },
-        )
-      else
-        response(
-          :path   => path,
-          :status => 404,
-          :body   => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path => "/tickets_metrics/#{id}.json",
+        :body => {
+          "ticket_metric" => find!(:ticket_metrics, id)
+        },
+      )
     end
   end # Mock
 end

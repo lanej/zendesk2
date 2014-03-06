@@ -23,20 +23,10 @@ class Zendesk2::Client
       }.merge(params)
 
       if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
-        response(
-          :method => :put,
-          :path   => path,
-          :status => 422,
-          :body   => {
-            "error"       => "RecordInvalid",
-            "description" => "Record validation errors",
-            "details" => {
+        error!(:invalid, :details => {
               "email" => [ {
                 "description" => "Email #{email} is already being used by another user"
-              } ]
-            }
-          }
-        )
+              }]})
       else
         user_identity_id = self.class.new_id # ugh
 

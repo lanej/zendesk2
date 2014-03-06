@@ -13,22 +13,13 @@ class Zendesk2::Client
     def get_user_identity(params={})
       id      = params["id"]
       user_id = params["user_id"]
-      path    = "/users/#{user_id}/identities/#{id}.json"
 
-      if body = self.data[:identities][id]
-        response(
-          :path => path,
-          :body => {
-            "identity" => body
-          },
-        )
-      else 
-        response(
-          :path   => path,
-          :status => 404,
-          :body => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path =>  "/users/#{user_id}/identities/#{id}.json",
+        :body => {
+          "identity" => find!(:identities, id)
+        },
+      )
     end
   end # Mock
 end

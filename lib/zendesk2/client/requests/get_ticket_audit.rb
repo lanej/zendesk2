@@ -13,25 +13,14 @@ class Zendesk2::Client
 
   class Mock
     def get_ticket_audit(params={})
-      id        = params["id"]
-      ticket_id = params["ticket_id"]
+      id = params["id"]
 
-      path = "/ticket_audits/#{id}.json"
-
-      if body = self.data[:ticket_audits][id]
-        response(
-          :path => path,
-          :body => {
-            "ticket_audit" => body
-          },
-        )
-      else 
-        response(
-          :path   => path,
-          :status => 404,
-          :body => {"error" => "RecordNotFound", "description" => "Not found"},
-        )
-      end
+      response(
+        :path => "/ticket_audits/#{id}.json",
+        :body => {
+          "ticket_audit" => find!(:ticket_audits, id)
+        },
+      )
     end
   end # Mock
 end
