@@ -14,7 +14,7 @@ class Zendesk2::Client
     def get_organization_memberships(params={})
       organization_id = params["organization_id"]
 
-      page(params, :memberships, "/organizations/#{organization_id}/memberships.json", "organization_memberships", filter: lambda { |c| c.select { |m| m["organization_id"] == organization_id } })
+      resources(:memberships, "/organizations/#{organization_id}/memberships.json", "organization_memberships", filter: lambda { |c| c.select { |m| m["organization_id"] == organization_id } })
     end
   end # Mock
 end

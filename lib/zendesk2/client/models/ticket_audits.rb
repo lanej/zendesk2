@@ -1,4 +1,4 @@
-class Zendesk2::Client::TicketAudits < Zendesk2::Collection
+class Zendesk2::Client::TicketAudits < Zendesk2::PagedCollection
 
   model Zendesk2::Client::TicketAudit
 

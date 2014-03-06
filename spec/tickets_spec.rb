@@ -2,9 +2,12 @@ require 'spec_helper'
 
 describe "tickets" do
   let(:client) { create_client }
-  it_should_behave_like "a resource", :tickets,
-    lambda { {subject: Zendesk2.uuid, description: Zendesk2.uuid} },
-    lambda { {subject: Zendesk2.uuid} }
+
+  include_examples "zendesk resource", {
+    :collection => lambda { client.tickets },
+    :create_params => lambda { {subject: Zendesk2.uuid, description: Zendesk2.uuid} },
+    :update_params => lambda { {subject: Zendesk2.uuid} },
+  }
 
   describe "when creating a ticket" do
     let!(:requester_email) { "#{Zendesk2.uuid}@example.org" }

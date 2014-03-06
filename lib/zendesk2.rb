@@ -14,13 +14,15 @@ require 'time'
 require 'yaml'
 
 module Zendesk2
-  autoload :Attributes, 'zendesk2/attributes'
-  autoload :Error, 'zendesk2/error'
-  autoload :Client, 'zendesk2/client'
-  autoload :Searchable, 'zendesk2/searchable'
-  autoload :Logger, 'zendesk2/logger'
-  autoload :Model, 'zendesk2/model'
-  autoload :Collection, 'zendesk2/collection'
+  require 'zendesk2/attributes'
+  require 'zendesk2/attributes'
+  require 'zendesk2/error'
+  require 'zendesk2/client'
+  require 'zendesk2/searchable'
+  require 'zendesk2/logger'
+  require 'zendesk2/model'
+  require 'zendesk2/collection'
+  require 'zendesk2/paged_collection'
 
   def self.defaults
     @defaults ||= if File.exists?(File.expand_path("~/.zendesk2"))

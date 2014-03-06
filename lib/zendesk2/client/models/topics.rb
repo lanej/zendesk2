@@ -1,4 +1,4 @@
-class Zendesk2::Client::Topics < Zendesk2::Collection
+class Zendesk2::Client::Topics < Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::Topic

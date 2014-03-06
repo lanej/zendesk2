@@ -1,8 +1,10 @@
 # @abstract Subclass and set #{collection_method}, #{collection_root}, #{model_method}, #{model_root} and #{model}
 # adds {#create!} method to {Cistern::Collection}.
-class Zendesk2::Collection < Cistern::Collection
+class Zendesk2::PagedCollection < Zendesk2::Collection
   def self.inherited(klass)
     klass.send(:attribute, :count)
+    klass.send(:attribute, :next_page_link, {:aliases => "next_page"})
+    klass.send(:attribute, :previous_page_link, {:aliases => "previous_page"})
     klass.send(:extend, ClassMethods)
   end
 
@@ -10,6 +12,21 @@ class Zendesk2::Collection < Cistern::Collection
   def collection_root; self.class.collection_root; end
   def model_method; self.class.model_method; end
   def model_root; self.class.model_root; end
+
+  def new_page
+    page = self.clone
+    %w[count next_page_link previous_page_link].each { |k| page.attributes.delete(k) }
+    page.records = []
+    page
+  end
+
+  def next_page
+    new_page.all("url" => next_page_link) if next_page_link
+  end
+
+  def previous_page
+    new_page.all("url" => previous_page_link) if previous_page_link
+  end
 
   # Attempt creation of resource and explode if unsuccessful
   # @raise [Zendesk2::Error] if creation was unsuccessful
@@ -33,7 +50,7 @@ class Zendesk2::Collection < Cistern::Collection
     body = connection.send(collection_method, scoped_attributes).body
 
     self.load(body[collection_root])
-    self.merge_attributes(Cistern::Hash.slice(body, "count"))
+    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     self
   end
 

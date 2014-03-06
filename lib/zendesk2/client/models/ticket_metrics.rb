@@ -1,4 +1,4 @@
-class Zendesk2::Client::TicketMetrics < Zendesk2::Collection
+class Zendesk2::Client::TicketMetrics < Zendesk2::PagedCollection
   model Zendesk2::Client::TicketMetric
 
   attribute :ticket_id, type: :integer

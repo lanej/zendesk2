@@ -2,9 +2,12 @@ require 'spec_helper'
 
 describe "users" do
   let(:client) { create_client }
-  it_should_behave_like "a resource", :users,
-    lambda { {email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true} },
-  lambda { {name: Zendesk2.uuid} }
+
+  include_examples "zendesk resource", {
+    :collection    => lambda { client.users },
+    :create_params => lambda { { email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true } },
+    :update_params => lambda { { name: Zendesk2.uuid } },
+  }
 
   it "should get current user" do
     current_user = client.users.current
@@ -38,7 +41,7 @@ describe "users" do
     end
 
     it "cannot destroy a user with a ticket" do
-      ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       user.destroy.should be_false
 

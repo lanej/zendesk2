@@ -6,11 +6,11 @@ describe "memberships" do
   let(:organization)   { client.organizations.create!(name: Zendesk2.uuid) }
 
   include_examples "zendesk resource", {
-    :params       => lambda { {organization_id: organization.id, user_id: user.id} },
-    :collection   => lambda { client.memberships(user: user) },
-    :paged        => false,
-    :update       => false,
-    :search       => false,
+    :create_params => lambda { {organization_id: organization.id, user_id: user.id} },
+    :collection    => lambda { client.memberships(user: user) },
+    :paged         => false,
+    :update        => false,
+    :search        => false,
   }
 
   it "should be marked as default" do

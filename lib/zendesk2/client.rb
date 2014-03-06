@@ -259,6 +259,21 @@ class Zendesk2::Client < Cistern::Service
       File.join(@url, "/api/v2", path.to_s)
     end
 
+    def resources(collection, path, collection_root, options={})
+      filter    = options[:filter]
+      resources = self.data[collection].values
+      resources = filter.call(resources) if filter
+      count     = resources.size
+
+      response(
+        :body => {
+          collection_root => resources,
+          "count"         => count,
+        },
+        :path => path
+      )
+    end
+
     def page(params, collection, path, collection_root, options={})
       page_params = Zendesk2.paging_parameters(params)
       page_size   = (page_params["per_page"] || 50).to_i

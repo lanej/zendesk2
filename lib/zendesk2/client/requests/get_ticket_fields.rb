@@ -12,7 +12,7 @@ class Zendesk2::Client
   end
   class Mock
     def get_ticket_fields(params={})
-      page(params, :ticket_fields, "/ticket_fields.json", "ticket_fields")
+      collection(:ticket_fields, "/ticket_fields.json", "ticket_fields")
     end
   end
 end

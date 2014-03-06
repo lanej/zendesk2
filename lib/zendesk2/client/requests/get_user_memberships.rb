@@ -16,7 +16,7 @@ class Zendesk2::Client
     def get_user_memberships(params={})
       user_id = params["user_id"]
 
-      page(params, :memberships, "/users/#{user_id}/organization_memberships.json", "organization_memberships", filter: lambda{|c| c.select { |a| a["user_id"] == user_id }})
+      resources(:memberships, "/users/#{user_id}/organization_memberships.json", "organization_memberships", filter: lambda{|c| c.select { |a| a["user_id"] == user_id }})
     end
   end # Mock
 end
