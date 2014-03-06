@@ -22,6 +22,9 @@ class Zendesk2::Client
 
       find!(:users, user_id)
       find!(:organizations, organization_id, error: :invalid, details: { "organization" => [ { "description" => "Organization cannot be blank" } ] })
+      if self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["organization_id"] == organization_id }
+        error!(:invalid, description: { "user_id" => [ { "description" => "User has already been taken" } ] })
+      end
 
       resource_id = self.class.new_id
 

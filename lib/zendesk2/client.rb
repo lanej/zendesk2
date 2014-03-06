@@ -131,14 +131,14 @@ class Zendesk2::Client < Cistern::Service
 
     def initialize(options={})
       url = options[:url] || Zendesk2.defaults[:url] || begin
-        host      = options[:host]
-        subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
+      host      = options[:host]
+      subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
 
-        host ||= "#{subdomain}.zendesk.com"
-        scheme = options[:scheme] || "https"
-        port   = options[:port] || (scheme == "https" ? 443 : 80)
+      host ||= "#{subdomain}.zendesk.com"
+      scheme = options[:scheme] || "https"
+      port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}"
+      "#{scheme}://#{host}:#{port}"
       end
 
       @url  = URI.parse(url).to_s
@@ -228,12 +228,12 @@ class Zendesk2::Client < Cistern::Service
 
     def initialize(options={})
       url = options[:url] || begin
-        host   = options[:host]
-        host ||= "#{options[:subdomain] || "mock"}.zendesk.com"
-        scheme = options[:scheme] || "https"
-        port   = options[:port] || (scheme == "https" ? 443 : 80)
+      host   = options[:host]
+      host ||= "#{options[:subdomain] || "mock"}.zendesk.com"
+      scheme = options[:scheme] || "https"
+      port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-        "#{scheme}://#{host}:#{port}"
+      "#{scheme}://#{host}:#{port}"
       end
 
       @url  = url
@@ -315,14 +315,18 @@ class Zendesk2::Client < Cistern::Service
       if resource = self.data[collection][identity]
         resource
       else
-        status, body = self.class.error_map[options[:error] || :not_found]
-        body.merge!("details" => options[:details]) if options[:details]
-
-        response(
-          :status => status,
-          :body   => body,
-        )
+        error!(options[:error] || :not_found)
       end
+    end
+
+    def error!(type, options={})
+      status, body = self.class.error_map[type]
+      body.merge!("details" => options[:details]) if options[:details]
+
+      response(
+        :status => status,
+        :body   => body,
+      )
     end
 
     def response(options={})

@@ -62,6 +62,14 @@ describe "memberships" do
       expect { client.create_membership({}) }.to raise_exception(ArgumentError, "missing parameters: user_id, organization_id")
     end
 
+    it "should error when creating a duplicate membership" do
+      client.create_membership("user_id" => user.identity, "organization_id" => organization.identity)
+
+      expect {
+        client.create_membership("user_id" => user.identity, "organization_id" => organization.identity)
+      }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
+    end
+
     it "should error when user does not exist" do
       expect {
         client.create_membership("user_id" => 99, "organization_id" => organization.identity)
