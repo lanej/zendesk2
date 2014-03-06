@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Zendesk2 : Zendesk API V2 client using Cistern" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Zendesk2</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/lanej/zendesk2">View on GitHub</a>
+
+          <h1 id="project_title">Zendesk2</h1>
+          <h2 id="project_tagline">Zendesk API V2 client using Cistern</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/lanej/zendesk2/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/lanej/zendesk2/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="zendesk2" class="anchor" href="#zendesk2"><span class="octicon octicon-link"></span></a>Zendesk2</h1>
+
+<p><a href="http://travis-ci.org/lanej/zendesk2"><img src="https://secure.travis-ci.org/lanej/zendesk2.png" alt="Build Status"></a>
+<a href="http://badge.fury.io/rb/zendesk2"><img src="https://fury-badge.herokuapp.com/rb/zendesk2.png" alt="Gem Version"></a>
+<a href="https://codeclimate.com/github/lanej/zendesk2"><img src="https://codeclimate.com/badge.png" alt="Code Climate"></a>
+<a href="https://gemnasium.com/lanej/zendesk2"><img src="https://gemnasium.com/lanej/zendesk2.png" alt="Dependency Status"></a></p>
+
+<p>Ruby client for the <a href="http://developer.zendesk.com/documentation/rest_api/introduction.html">Zendesk V2 API</a> using <a href="https://github.com/lanej/cistern">cistern</a> and <a href="https://github.com/technoweenie/faraday">faraday</a></p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'zendesk2'</span>
+</pre></div>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install zendesk2
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="mock-it" class="anchor" href="#mock-it"><span class="octicon octicon-link"></span></a>Mock it!</h3>
+
+<p>All support resources have basic mocks.  Error conditions and messaging are constantly changing. Please contribute updates or fixes to the mock if you encounter inconsistencies.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">mock!</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span> <span class="c1"># Zendesk2::Client::Mock</span>
+<span class="n">client</span><span class="o">.</span><span class="n">organizations</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">)</span> <span class="c1"># Zendesk2::Client::Organization</span>
+<span class="n">client</span><span class="o">.</span><span class="n">organizations</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">)</span> <span class="c1"># Zendesk2::Error =&gt; Name has already been taken</span>
+</pre></div>
+
+<h3>
+<a name="defaults" class="anchor" href="#defaults"><span class="octicon octicon-link"></span></a>Defaults</h3>
+
+<p>Default credentials will be read in from <code>~/.zendesk2</code> file in YAML format.</p>
+
+<div class="highlight highlight-yaml"><pre><span class="nn">---</span>
+<span class="l-Scalar-Plain">:subdomain</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">zendeskdev</span>
+<span class="l-Scalar-Plain">:username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">zendeskedge@example.com</span>
+<span class="l-Scalar-Plain">:password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">wickedsecurepassword</span>
+<span class="l-Scalar-Plain">:token</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">reallylongrandomstringprovidedbyzendesk</span>
+</pre></div>
+
+<h3>
+<a name="creating-the-client" class="anchor" href="#creating-the-client"><span class="octicon octicon-link"></span></a>Creating the client</h3>
+
+<p>Either the absolute url or the subdomain is required. Username and either password or token are always required.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">subdomain</span><span class="p">:</span> <span class="s2">"engineyard"</span><span class="p">,</span> <span class="ss">username</span><span class="p">:</span> <span class="s2">"orchestra"</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="s2">"gwoo"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …&gt;</span>
+</pre></div>
+
+<p>or</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">url</span><span class="p">:</span> <span class="s2">"http://support.cloud.engineyard.com"</span><span class="p">,</span> <span class="ss">username</span><span class="p">:</span> <span class="s2">"mate"</span><span class="p">,</span> <span class="ss">token</span><span class="p">:</span> <span class="s2">"asdfghjkl1qwertyuiop5zxcvbnm3"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …&gt;</span>
+</pre></div>
+
+<h3>
+<a name="resources" class="anchor" href="#resources"><span class="octicon octicon-link"></span></a>Resources</h3>
+
+<h4>
+<a name="collections" class="anchor" href="#collections"><span class="octicon octicon-link"></span></a>Collections</h4>
+
+<p>Currently support resources</p>
+
+<ul>
+<li>Audit Events</li>
+<li>Categories</li>
+<li>Forums</li>
+<li>Groups</li>
+<li>Memberships</li>
+<li>Organization</li>
+<li>Ticket Audits</li>
+<li>Ticket Fields</li>
+<li>Tickets</li>
+<li>Topic Comments</li>
+<li>Topics</li>
+<li>User Identities</li>
+<li>Users</li>
+</ul><p>All collection are accessed like so:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">all</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Users</span>
+  <span class="n">count</span><span class="o">=</span><span class="mi">1779</span><span class="p">,</span>
+  <span class="n">next_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=2"</span><span class="p">,</span>
+  <span class="n">previous_page_link</span><span class="o">=</span><span class="kp">nil</span>
+  <span class="o">[</span>
+    <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+      <span class="nb">id</span><span class="o">=</span><span class="mi">125394183</span><span class="p">,</span>
+      <span class="n">url</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users/125394183.json"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="o">&gt;</span>
+  <span class="o">]</span>
+</pre></div>
+
+<p>Collections also respond to <code>create</code> and <code>new</code></p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="s2">"ohhai@example.org"</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">"lulz"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+  <span class="nb">id</span><span class="o">=</span><span class="mi">234020811</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="n">url</span><span class="o">=</span><span class="s2">"https://engineyarddev.zendesk.com/api/v2/users/234020811.json"</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="n">email</span><span class="o">=</span><span class="s2">"ohhai@example.org"</span><span class="p">,</span>
+  <span class="o">&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-ruby"><pre><span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="s2">"ohhai@example.org"</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+  <span class="nb">id</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="n">url</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="n">email</span><span class="o">=</span><span class="s2">"ohhai@example.org"</span><span class="p">,</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+  <span class="o">&gt;</span>
+</pre></div>
+
+<h4>
+<a name="paging" class="anchor" href="#paging"><span class="octicon octicon-link"></span></a>Paging</h4>
+
+<p>Paged collections respond to <code>next_page</code> and <code>previous_page</code> when appropriate.  <code>page_size</code> and <code>page</code> can be passed directly to the collection to control size and index.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">page</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="s2">"per_page"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"page"</span> <span class="o">=&gt;</span> <span class="mi">4</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Users</span>
+  <span class="n">count</span><span class="o">=</span><span class="mi">1780</span><span class="p">,</span>
+  <span class="n">next_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=5&amp;per_page=1"</span><span class="p">,</span>
+  <span class="n">previous_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=3&amp;per_page=1"</span>
+  <span class="o">[</span>
+    <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+      <span class="nb">id</span><span class="o">=</span><span class="mi">217761652</span><span class="p">,</span>
+      <span class="n">url</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users/217761652.json"</span><span class="p">,</span>
+      <span class="n">external_id</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span>
+      <span class="nb">name</span><span class="o">=</span><span class="s2">"Guy Dude"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="o">&gt;</span>
+  <span class="o">]</span>
+</pre></div>
+
+<div class="highlight highlight-ruby"><pre><span class="n">page</span><span class="o">.</span><span class="n">next_page</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Users</span>
+  <span class="n">count</span><span class="o">=</span><span class="mi">1780</span><span class="p">,</span>
+  <span class="n">next_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=6&amp;per_page=1"</span><span class="p">,</span>
+  <span class="n">previous_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=4&amp;per_page=1"</span>
+  <span class="o">[</span>
+    <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+      <span class="nb">id</span><span class="o">=</span><span class="mi">217761742</span><span class="p">,</span>
+      <span class="n">url</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users/217761742.json"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+      <span class="nb">name</span><span class="o">=</span><span class="s2">"epitaphical osteofibrous"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="o">&gt;</span>
+  <span class="o">]</span>
+</pre></div>
+
+<div class="highlight highlight-ruby"><pre><span class="n">page</span><span class="o">.</span><span class="n">previous_page</span>
+<span class="o">=&gt;</span> <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Users</span>
+  <span class="n">count</span><span class="o">=</span><span class="mi">1780</span><span class="p">,</span>
+  <span class="n">next_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=5&amp;per_page=1"</span><span class="p">,</span>
+  <span class="n">previous_page_link</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users.json?page=3&amp;per_page=1"</span>
+  <span class="o">[</span>
+    <span class="o">&lt;</span><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">User</span>
+      <span class="nb">id</span><span class="o">=</span><span class="mi">217761652</span><span class="p">,</span>
+      <span class="n">url</span><span class="o">=</span><span class="s2">"https://dev.zendesk.com/api/v2/users/217761652.json"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+      <span class="nb">name</span><span class="o">=</span><span class="s2">"Guy Dude"</span><span class="p">,</span>
+      <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+    <span class="o">&gt;</span>
+  <span class="o">]</span>
+</pre></div>
+
+<h4>
+<a name="models" class="anchor" href="#models"><span class="octicon octicon-link"></span></a>Models</h4>
+
+<p>All models respond to <code>destroy</code> and <code>save</code> if applicable.  <code>save</code> performs a 'create' operation if there is no identity provided or an 'update' if there is an identity.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Ticket</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">save</span>        <span class="c1"># performs a create</span>
+<span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Ticket</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">save</span> <span class="c1"># performs an update</span>
+</pre></div>
+
+<p>Attributes can be enumerated by the <code>attributes</code> method.</p>
+
+<h2>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h2>
+
+<h3>
+<a name="running" class="anchor" href="#running"><span class="octicon octicon-link"></span></a>Running</h3>
+
+<pre><code>$ bundle exec rspec
+</code></pre>
+
+<h3>
+<a name="testing-live" class="anchor" href="#testing-live"><span class="octicon octicon-link"></span></a>Testing Live</h3>
+
+<p>Run against a real Zendesk installation by setting <code>MOCK_ZENDESK=false</code></p>
+
+<pre><code>$ MOCK_ZENDESK=false bundle exec rspec
+</code></pre>
+
+<p>Credentials are sourced from your <code>~/.zendesk2</code> file</p>
+
+<p>Raw responses and requests can be echoed to STDOUT by adding <code>VERBOSE=true</code></p>
+
+<pre><code>$ VERBOSE=true bundle exec rspec
+</code></pre>
+
+<h2>
+<a name="releasing" class="anchor" href="#releasing"><span class="octicon octicon-link"></span></a>Releasing</h2>
+
+<pre><code>$ gem install gem-release
+$ gem bump -trv (major|minor|patch)
+</code></pre>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Added some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create new Pull Request</li>
+</ol>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Zendesk2 maintained by <a href="https://github.com/lanej">lanej</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
