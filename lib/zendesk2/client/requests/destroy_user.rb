@@ -16,6 +16,7 @@ class Zendesk2::Client
       path = "/users/#{id}.json"
 
       tickets = self.data[:tickets].values.select{|t| t["requester_id"] == id}.size
+      find!(:users, id)
       if tickets < 1
         body = self.data[:users].delete(id)
         response(

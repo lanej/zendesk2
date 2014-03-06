@@ -35,7 +35,7 @@ class Zendesk2::Client::Membership < Zendesk2::Model
     merge_attributes(data)
   end
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_membership("id" => self.identity)

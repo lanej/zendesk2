@@ -5,21 +5,26 @@ shared_examples "zendesk resource" do |options={}|
     let(:update_params) { instance_exec(&options[:update_params]) }
     let(:fetch_params)  { options[:fetch_params] || lambda { |r| r.identity } }
 
+    let(:record) { @record }
+    after(:each) { @record && @record.destroy }
+
     it "should be created" do
-      record = collection.create!(create_params)
+      @record = collection.create!(create_params)
       record.identity.should_not be_nil
     end
 
     it "should be fetched" do
-      record = collection.create!(create_params)
+      @record = collection.create!(create_params)
       collection.get!(fetch_params.call(record)).should == record
     end
 
     if options.fetch(:paged, true)
       context "paging" do
         before(:each) do
-          3.times.each { collection.create!(instance_exec(&options[:create_params])) }
+          @resources = 3.times.map { collection.create!(instance_exec(&options[:create_params])) }
         end
+
+        after(:each) { @resources.each { |r| r.destroy } }
 
         it "should retrieve first page" do
           collection.all("per_page" => "1").size.should == 1
@@ -49,7 +54,7 @@ shared_examples "zendesk resource" do |options={}|
 
     if options.fetch(:update, true)
       it "should be updated" do
-        record = collection.create!(create_params)
+        @record = collection.create!(create_params)
         record.merge_attributes(update_params)
         record.save
         update_params.each {|k,v| record.send(k).should == v}
@@ -57,7 +62,7 @@ shared_examples "zendesk resource" do |options={}|
     end
 
     it "should be destroyed" do
-      record = collection.create!(create_params)
+      @record = collection.create!(create_params)
       record.identity.should_not be_nil
       record.destroy
 
@@ -69,7 +74,7 @@ shared_examples "zendesk resource" do |options={}|
     if options.fetch(:search, true) && Zendesk2::Client.mocking?
       # Search index takes 2-3 minutes according to the docs
       it "should search" do
-        record = collection.create!(create_params)
+        @record = collection.create!(create_params)
         collection.search(create_params).should include(record)
       end
     end

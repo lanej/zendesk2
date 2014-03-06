@@ -18,8 +18,9 @@ class Zendesk2::Client < Cistern::Service
   collection :ticket_comments
   collection :topic_comments
   collection :topics
-  collection :users
+  collection :user_fields
   collection :user_identities
+  collection :users
   model :category
   model :forum
   model :group
@@ -38,9 +39,9 @@ class Zendesk2::Client < Cistern::Service
   model :topic
   model :topic_comment
   model :user
+  model :user_field
   model :user_identity
 
-  request :get_assignable_groups
   request :create_category
   request :create_forum
   request :create_group
@@ -51,6 +52,7 @@ class Zendesk2::Client < Cistern::Service
   request :create_topic
   request :create_topic_comment
   request :create_user
+  request :create_user_field
   request :create_user_identity
   request :destroy_category
   request :destroy_forum
@@ -62,7 +64,9 @@ class Zendesk2::Client < Cistern::Service
   request :destroy_topic
   request :destroy_topic_comment
   request :destroy_user
+  request :destroy_user_field
   request :destroy_user_identity
+  request :get_assignable_groups
   request :get_audits
   request :get_categories
   request :get_category
@@ -73,10 +77,9 @@ class Zendesk2::Client < Cistern::Service
   request :get_group
   request :get_groups
   request :get_membership
-  request :get_user_memberships
-  request :get_organization_memberships
   request :get_organization
   request :get_organization_by_external_id
+  request :get_organization_memberships
   request :get_organization_tickets
   request :get_organization_users
   request :get_organizations
@@ -95,8 +98,11 @@ class Zendesk2::Client < Cistern::Service
   request :get_topic_comments
   request :get_topics
   request :get_user
+  request :get_user_field
+  request :get_user_fields
   request :get_user_identities
   request :get_user_identity
+  request :get_user_memberships
   request :get_users
   request :mark_membership_default
   request :mark_user_identity_primary
@@ -112,6 +118,7 @@ class Zendesk2::Client < Cistern::Service
   request :update_topic
   request :update_topic_comment
   request :update_user
+  request :update_user_field
   request :update_user_identity
 
   recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token, :jwt_token
@@ -209,6 +216,7 @@ class Zendesk2::Client < Cistern::Service
         :tickets         => {},
         :topic_comments  => {},
         :topics          => {},
+        :user_fields     => {},
         :users           => {},
       }
     end

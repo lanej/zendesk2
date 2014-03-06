@@ -37,7 +37,7 @@ class Zendesk2::Client::UserIdentity < Zendesk2::Model
     merge_attributes(data)
   end
 
-  def destroy
+  def destroy!
     requires :identity
 
     connection.destroy_user_identity("user_id" => self.user_id, "id" => self.identity)

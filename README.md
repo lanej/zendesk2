@@ -77,6 +77,7 @@ Currently support resources
 * Topic Comments
 * Topics
 * User Identities
+* User Fields
 * Users
 
 All collection are accessed like so:
