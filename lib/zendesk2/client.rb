@@ -360,15 +360,8 @@ class Zendesk2::Client < Cistern::Service
 
       url = options[:url] || url_for(path)
 
-      env = {
-        :method           => method,
-        :status           => status,
-        :url              => url,
-        :body             => body,
-        :response_headers => {
-          "Content-Type"  => "application/json; charset=utf-8"
-        },
-      }
+      env = Faraday::Env.new(method, body, url, nil, {}, nil, nil, {}, nil, {"Content-Type"  => "application/json; charset=utf-8"}, status)
+
       Faraday::Response::RaiseError.new.on_complete(env) || Faraday::Response.new(env)
     rescue Faraday::Error::ClientError => e
       raise Zendesk2::Error.new(e)
