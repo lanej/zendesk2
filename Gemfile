@@ -5,7 +5,7 @@ gemspec
 
 gem 'rake'
  # To avoid warnings from JWT
-gem 'json', '~> 1.7.7'
+gem 'json', '~> 1.8'
 
 group :development, :test do
   gem 'pry-nav'
