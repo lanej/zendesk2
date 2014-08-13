@@ -12,6 +12,6 @@ describe "groups" do
   it "should list assignable groups" do
     client.groups.create(name: Zendesk2.uuid) # assignable by default
 
-    client.groups.assignable.should be_all{|g| !g.deleted}
+    expect(client.groups.assignable).to be_all{|g| !g.deleted}
   end
 end

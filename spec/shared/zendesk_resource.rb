@@ -10,12 +10,12 @@ shared_examples "zendesk resource" do |options={}|
 
     it "should be created" do
       @record = collection.create!(create_params)
-      record.identity.should_not be_nil
+      expect(record.identity).not_to be_nil
     end
 
     it "should be fetched" do
       @record = collection.create!(create_params)
-      collection.get!(fetch_params.call(record)).should == record
+      expect(collection.get!(fetch_params.call(record))).to eq(record)
     end
 
     if options.fetch(:paged, true)
@@ -27,27 +27,27 @@ shared_examples "zendesk resource" do |options={}|
         after(:each) { @resources.each { |r| r.destroy } }
 
         it "should retrieve first page" do
-          collection.all("per_page" => "1").size.should == 1
+          expect(collection.all("per_page" => "1").size).to eq(1)
         end
 
         it "should retrieve next page" do
           first_page = collection.all("per_page" => 1)
           second_page = collection.all("per_page" => 1).next_page
-          second_page.should_not == first_page
+          expect(second_page).not_to eq(first_page)
         end
 
         it "should retreive previous page" do
           first_page = collection.all("per_page" => "1")
           previous_to_second_page = collection.all("per_page" => 1).next_page.previous_page
-          previous_to_second_page.should == first_page
+          expect(previous_to_second_page).to eq(first_page)
         end
       end
     else
       context "paging" do
         it "should not be present" do
-          collection.class.attributes.should_not have_key(:next_page_link)
-          collection.class.attributes.should_not have_key(:previous_page_link)
-          collection.class.attributes.should have_key(:count)
+          expect(collection.class.attributes).not_to have_key(:next_page_link)
+          expect(collection.class.attributes).not_to have_key(:previous_page_link)
+          expect(collection.class.attributes).to have_key(:count)
         end
       end
     end
@@ -57,17 +57,17 @@ shared_examples "zendesk resource" do |options={}|
         @record = collection.create!(create_params)
         record.merge_attributes(update_params)
         record.save
-        update_params.each {|k,v| record.send(k).should == v}
+        update_params.each {|k,v| expect(record.send(k)).to eq(v)}
       end
     end
 
     it "should be destroyed" do
       @record = collection.create!(create_params)
-      record.identity.should_not be_nil
+      expect(record.identity).not_to be_nil
       record.destroy
 
       if !options.fetch(:delayed_destroy, false) && !Zendesk2::Client.mocking?
-        record.should be_destroyed
+        expect(record).to be_destroyed
       end
     end
 
@@ -75,7 +75,7 @@ shared_examples "zendesk resource" do |options={}|
       # Search index takes 2-3 minutes according to the docs
       it "should search" do
         @record = collection.create!(create_params)
-        collection.search(create_params).should include(record)
+        expect(collection.search(create_params)).to include(record)
       end
     end
   end

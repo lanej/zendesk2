@@ -16,11 +16,11 @@ describe "tickets" do
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {name: "Josh Lane", email: requester_email})
       if Zendesk2::Client.mocking? # this takes some time for realsies
         requester = client.users.search(email: requester_email).first
-        requester.should_not be_nil
+        expect(requester).not_to be_nil
 
-        ticket.reload.requester.should == requester
+        expect(ticket.reload.requester).to eq(requester)
       else
-        ticket.reload.requester.should_not be_nil
+        expect(ticket.reload.requester).not_to be_nil
       end
     end
 
@@ -34,17 +34,17 @@ describe "tickets" do
   describe "with a created ticket" do
     let(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
     it "should get requester" do
-      ticket.requester.should == client.users.current
+      expect(ticket.requester).to eq(client.users.current)
     end
 
     it "should get submitter" do
-      ticket.submitter.should == client.users.current
+      expect(ticket.submitter).to eq(client.users.current)
     end
 
     it "should have empty custom fields by default" do
       pending if !Zendesk2::Client.mocking?
 
-      ticket.custom_fields.should == []
+      expect(ticket.custom_fields).to eq([])
     end
   end
 
@@ -56,22 +56,22 @@ describe "tickets" do
       ticket.comment(body)
 
       audit = ticket.audits.last
-      audit.ticket.should == ticket
+      expect(audit.ticket).to eq(ticket)
 
       events = audit.events
-      events.size.should == 1
+      expect(events.size).to eq(1)
 
       event = events.first
-      event.body.should == body
-      event.should be_a(Zendesk2::Client::TicketComment)
-      event.ticket_audit.should == audit
+      expect(event.body).to eq(body)
+      expect(event).to be_a(Zendesk2::Client::TicketComment)
+      expect(event.ticket_audit).to eq(audit)
     end
 
     it "lists comments" do
       body = Zendesk2.uuid
       ticket.comment(body)
 
-      ticket.comments.find{|c| c.body == body}.should_not be_nil
+      expect(ticket.comments.find{|c| c.body == body}).not_to be_nil
     end
   end
 
@@ -81,13 +81,13 @@ describe "tickets" do
     it "should be based on ticket_fields" do
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid)
       custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
-      custom_field.should_not be_nil
-      custom_field["value"].should be_nil
+      expect(custom_field).not_to be_nil
+      expect(custom_field["value"]).to be_nil
 
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, custom_fields: [{"id" => ticket_field.identity, "value" => "jessicaspacekat"}])
       custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
-      custom_field.should_not be_nil
-      custom_field["value"].should == "jessicaspacekat"
+      expect(custom_field).not_to be_nil
+      expect(custom_field["value"]).to eq("jessicaspacekat")
     end
   end
 end

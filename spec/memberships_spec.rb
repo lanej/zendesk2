@@ -19,12 +19,12 @@ describe "memberships" do
 
     another_membership = client.memberships.create!(organization: another_organization, user: user)
 
-    membership.default.should be_false # for some reason
-    another_membership.default.should be_false
+    expect(membership.default).to be_falsey # for some reason
+    expect(another_membership.default).to be_falsey
 
     expect { another_membership.default! }.to change { another_membership.reload.default }.from(false).to(true)
 
-    membership.reload.default.should be_false
+    expect(membership.reload.default).to be_falsey
   end
 
   it "should get an organization's memberships" do
@@ -35,8 +35,8 @@ describe "memberships" do
     another_organization.memberships.create!(user: user)
     organization.memberships.create!(user: another_user)
 
-    organization.memberships.size.should == 1
-    another_organization.memberships.size.should == 2
+    expect(organization.memberships.size).to eq(1)
+    expect(another_organization.memberships.size).to eq(2)
   end
 
   it "should get an user's memberships" do
@@ -47,8 +47,8 @@ describe "memberships" do
     user_membership = another_organization.memberships.create!(user: user)
     organization.memberships.create!(user: another_user)
 
-    user.memberships.to_a.should == [user_membership]
-    another_user.memberships.size.should == 2
+    expect(user.memberships.to_a).to eq([user_membership])
+    expect(another_user.memberships.size).to eq(2)
   end
 
   describe "create_membership" do
