@@ -129,6 +129,23 @@ class Zendesk2::Client < Cistern::Service
         raise ArgumentError, "missing parameters: #{missing.join(", ")}"
       end
     end
+
+    private
+
+    def zendesk_url(options)
+      options[:url] || Zendesk2.defaults[:url] || form_zendesk_url(options)
+    end
+
+    def form_zendesk_url(options)
+      host      = options[:host]
+      subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
+
+      host ||= "#{subdomain}.zendesk.com"
+      scheme = options[:scheme] || "https"
+      port   = options[:port] || (scheme == "https" ? 443 : 80)
+
+      "#{scheme}://#{host}:#{port}"
+    end
   end
 
   class Real
@@ -137,19 +154,8 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :username, :url, :token, :logger, :jwt_token
 
     def initialize(options={})
-      url = options[:url] ||
-        Zendesk2.defaults[:url] ||
-        begin
-          host      = options[:host]
-          subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
-
-          host ||= "#{subdomain}.zendesk.com"
-          scheme = options[:scheme] || "https"
-          port   = options[:port] || (scheme == "https" ? 443 : 80)
-
-          "#{scheme}://#{host}:#{port}"
-        end
-
+      options[:subdomain] ||= "mock"
+      url = zendesk_url(options)
       @url  = URI.parse(url).to_s
 
       @logger            = options[:logger] || Logger.new(nil)
@@ -237,14 +243,7 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def initialize(options={})
-      url = options[:url] || begin
-      host   = options[:host]
-      host ||= "#{options[:subdomain] || "mock"}.zendesk.com"
-      scheme = options[:scheme] || "https"
-      port   = options[:port] || (scheme == "https" ? 443 : 80)
-
-      "#{scheme}://#{host}:#{port}"
-      end
+      url = zendesk_url(options)
 
       @url  = url
       @path = URI.parse(url).path

@@ -25,7 +25,7 @@ class Zendesk2::Client
       if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
         error!(:invalid, :details => {
               "email" => [ {
-                "description" => "Email #{email} is already being used by another user"
+                "description" => "Email: #{email} is already being used by another user"
               }]})
       else
         user_identity_id = self.class.new_id # ugh

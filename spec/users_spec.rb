@@ -101,7 +101,7 @@ describe "users" do
       expect { client.users.create!(email: email, name: Zendesk2.uuid) }.to raise_exception(Zendesk2::Error)
       user = client.users.create(email: email, name: Zendesk2.uuid)
       expect(user.identity).to be_falsey
-      expect(user.errors).to eq({"email" => ["Email #{email} is already being used by another user"]})
+      expect(user.errors).to eq({"email" => ["Email: #{email} is already being used by another user"]})
     end
 
     it "should create another identity when updating email" do
