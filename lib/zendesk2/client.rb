@@ -137,16 +137,18 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :username, :url, :token, :logger, :jwt_token
 
     def initialize(options={})
-      url = options[:url] || Zendesk2.defaults[:url] || begin
-      host      = options[:host]
-      subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
+      url = options[:url] ||
+        Zendesk2.defaults[:url] ||
+        begin
+          host      = options[:host]
+          subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
 
-      host ||= "#{subdomain}.zendesk.com"
-      scheme = options[:scheme] || "https"
-      port   = options[:port] || (scheme == "https" ? 443 : 80)
+          host ||= "#{subdomain}.zendesk.com"
+          scheme = options[:scheme] || "https"
+          port   = options[:port] || (scheme == "https" ? 443 : 80)
 
-      "#{scheme}://#{host}:#{port}"
-      end
+          "#{scheme}://#{host}:#{port}"
+        end
 
       @url  = URI.parse(url).to_s
 
