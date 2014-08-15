@@ -76,7 +76,7 @@ describe "tickets" do
   end
 
   describe "custom fields" do
-    let!(:ticket_field) { client.ticket_fields.create!(title: Zendesk2.uuid, type: "textbox") }
+    let!(:ticket_field) { client.ticket_fields.create!(title: SecureRandom.hex(3), type: "text") }
 
     it "should be based on ticket_fields" do
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid)
