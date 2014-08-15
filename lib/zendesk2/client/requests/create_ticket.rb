@@ -11,7 +11,13 @@ class Zendesk2::Client
 
   class Mock
     def create_ticket(params={})
+      params = Cistern::Hash.stringify_keys(params)
+
       identity = self.class.new_id
+
+      if params["description"].nil? || params["description"] == ""
+        error!(:invalid, :details => {"base" => [{"description" => "Description: cannot be blank"}]})
+      end
 
       if requester = params.delete('requester')
         if !requester['name'] || requester['name'].size < 1
@@ -43,8 +49,9 @@ class Zendesk2::Client
       requested_custom_fields = (params.delete("custom_fields") || [])
 
       custom_fields = requested_custom_fields.map do |cf|
-        if self.data[:ticket_fields][cf["id"]]
-          {"id" => cf["id"], "value" => cf["value"] }
+        field_id = cf["id"].to_i
+        if self.data[:ticket_fields][field_id]
+          {"id" => field_id, "value" => cf["value"] }
         end
       end.compact
 

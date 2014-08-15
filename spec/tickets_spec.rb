@@ -9,6 +9,14 @@ describe "Zendesk2::Client" do
     :update_params => lambda { {subject: Zendesk2.uuid} },
   }
 
+  describe "#create_ticket" do
+    it "should require a description" do
+      expect {
+        client.create_ticket("subject" => Zendesk2.uuid)
+      }.to raise_exception(Zendesk2::Error, /Description: cannot be blank/)
+    end
+  end
+
   describe "when creating a ticket" do
     let!(:requester_email) { "#{Zendesk2.uuid}@example.org" }
 
@@ -28,6 +36,16 @@ describe "Zendesk2::Client" do
       expect {
         client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, requester: {email: requester_email})
       }.to raise_exception(Zendesk2::Error, /Requester Name: .* too short/)
+    end
+
+    it "should require a description" do
+      expect {
+        client.tickets.create!(subject: Zendesk2.uuid)
+      }.to raise_exception(ArgumentError, /description is required/)
+
+      expect {
+        client.tickets.create!(subject: Zendesk2.uuid, description: "")
+      }.to raise_exception(ArgumentError, /description is required/)
     end
   end
 

@@ -12,8 +12,8 @@ class Zendesk2::Model < Cistern::Model
   # @return [Zendesk2::Model] self, regardless of success
   def save
     save!
-  rescue Zendesk2::Error => e
-    self.errors = e.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"] || e["description"]})} rescue nil
+  rescue Zendesk2::Error => exception
+    self.errors = exception.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"] || e["description"]})} rescue nil
     self
   end
 
@@ -25,5 +25,10 @@ class Zendesk2::Model < Cistern::Model
     destroy!
   rescue Zendesk2::Error
     false
+  end
+
+  # re-define Cistern::Attributes#missing_attributes to require non-blank
+  def missing_attributes(args)
+    ([:connection] | args).select{|arg| val = send("#{arg}"); val.nil? || val == "" }
   end
 end
