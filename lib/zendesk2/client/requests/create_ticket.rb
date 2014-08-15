@@ -40,10 +40,16 @@ class Zendesk2::Client
         params['requester_id'] = user_id
       end
 
-      custom_fields = (params.delete("custom_fields") || [])
+      requested_custom_fields = (params.delete("custom_fields") || [])
+
+      custom_fields = requested_custom_fields.map do |cf|
+        if self.data[:ticket_fields][cf["id"]]
+          {"id" => cf["id"], "value" => cf["value"] }
+        end
+      end.compact
 
       self.data[:ticket_fields].each do |field_id, field|
-        custom_fields.find { |cf| cf["id"] == field_id } ||
+        requested_custom_fields.find { |cf| cf["id"] == field_id } ||
           custom_fields << {"id" => field_id, "value" => nil }
       end
 

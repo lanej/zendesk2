@@ -72,6 +72,7 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
              connection.create_ticket(params.merge("requester" => with_requester)).body["ticket"]
            else
              requires :identity
+
              connection.update_ticket(params.merge("id" => self.identity)).body["ticket"]
            end
 

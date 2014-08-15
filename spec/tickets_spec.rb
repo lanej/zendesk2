@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "tickets" do
+describe "Zendesk2::Client" do
   let(:client) { create_client }
 
   include_examples "zendesk resource", {
@@ -81,13 +81,18 @@ describe "tickets" do
     it "should be based on ticket_fields" do
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid)
       custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
+
       expect(custom_field).not_to be_nil
       expect(custom_field["value"]).to be_nil
 
       ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, custom_fields: [{"id" => ticket_field.identity, "value" => "jessicaspacekat"}])
       custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
+
       expect(custom_field).not_to be_nil
       expect(custom_field["value"]).to eq("jessicaspacekat")
+
+      ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, custom_fields: [{"id" => "-1", "value" => "fantasy"}])
+      expect(ticket.custom_fields).not_to include({"id" => -1, "value" => "fantasy"})
     end
   end
 end
