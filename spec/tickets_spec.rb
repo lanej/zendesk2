@@ -47,10 +47,20 @@ describe "Zendesk2::Client" do
         client.tickets.create!(subject: Zendesk2.uuid, description: "")
       }.to raise_exception(ArgumentError, /description is required/)
     end
+
+    it "should set priority" do
+      priority = "urgent"
+
+      ticket = client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid, priority: priority)
+
+      expect(ticket.priority).to eq("urgent")
+      expect(client.tickets.get!(ticket.id).priority).to eq(priority)
+    end
   end
 
   describe "with a created ticket" do
     let(:ticket) { client.tickets.create!(subject: Zendesk2.uuid, description: Zendesk2.uuid) }
+
     it "should get requester" do
       expect(ticket.requester).to eq(client.users.current)
     end

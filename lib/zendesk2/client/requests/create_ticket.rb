@@ -65,6 +65,7 @@ class Zendesk2::Client
         "url"              => url_for("/tickets/#{identity}.json"),
         "created_at"       => Time.now.iso8601,
         "updated_at"       => Time.now.iso8601,
+        "priority"         => nil,
         "collaborator_ids" => [],
         "custom_fields"    => custom_fields,
       }.merge(params)
