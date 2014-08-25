@@ -154,7 +154,6 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :username, :url, :token, :logger, :jwt_token
 
     def initialize(options={})
-      options[:subdomain] ||= "mock"
       url = zendesk_url(options)
       @url  = URI.parse(url).to_s
 
