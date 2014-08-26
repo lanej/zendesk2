@@ -121,30 +121,13 @@ class Zendesk2::Client < Cistern::Service
   request :update_user_field
   request :update_user_identity
 
-  recognizes :url, :subdomain, :host, :port, :path, :scheme, :logger, :adapter, :username, :password, :token, :jwt_token
+  recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
 
   module Shared
     def require_parameters(params, *requirements)
       if (missing = requirements - params.keys).any?
         raise ArgumentError, "missing parameters: #{missing.join(", ")}"
       end
-    end
-
-    private
-
-    def zendesk_url(options)
-      options[:url] || Zendesk2.defaults[:url] || form_zendesk_url(options)
-    end
-
-    def form_zendesk_url(options)
-      host      = options[:host]
-      subdomain = options[:subdomain] || Zendesk2.defaults[:subdomain]
-
-      host ||= "#{subdomain}.zendesk.com"
-      scheme = options[:scheme] || "https"
-      port   = options[:port] || (scheme == "https" ? 443 : 80)
-
-      "#{scheme}://#{host}:#{port}"
     end
   end
 
@@ -154,19 +137,23 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :username, :url, :token, :logger, :jwt_token
 
     def initialize(options={})
-      url = zendesk_url(options)
-      @url  = ::URI.parse(url).to_s
+      @url = if url = options[:url] || Zendesk2.defaults[:url]
+               ::URI.parse(url).to_s
+             end
 
-      @logger            = options[:logger] || Logger.new(nil)
-      adapter            = options[:adapter] || :net_http
-      connection_options = options[:connection_options] || {ssl: {verify: false}}
-      @username          = options[:username] || Zendesk2.defaults[:username]
-      @token             = options[:token] || Zendesk2.defaults[:token]
-      password           = options[:password] || Zendesk2.defaults[:password]
-      @auth_token        = password || @token
-      @username         += "/token" if @auth_token == @token
-      @jwt_token         = options[:jwt_token]
+      @logger   = options[:logger]   || Logger.new(nil)
+      adapter   = options[:adapter]  || Faraday.default_adapter
+      @username = options[:username] || Zendesk2.defaults[:username]
+      @token    = options[:token]    || Zendesk2.defaults[:token]
+      password  = options[:password] || Zendesk2.defaults[:password]
 
+      connection_options = options[:connection_options] || {}
+
+      @auth_token  = password || @token
+      @username   += "/token" if @auth_token == @token
+      @jwt_token   = options[:jwt_token]
+
+      raise "Missing required options: :url" unless @url
       raise "Missing required options: :username" unless @username
       raise "Missing required options: :password or :token" unless password || @token
 
@@ -242,9 +229,7 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def initialize(options={})
-      url = zendesk_url(options)
-
-      @url  = url
+      @url  = options[:url]
       @path = ::URI.parse(url).path
       @username, @password = options[:username], options[:password]
       @token = options[:token]

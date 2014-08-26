@@ -13,9 +13,10 @@ end
 Cistern.formatter = Cistern::Formatter::AwesomePrint
 
 RSpec.configure do |config|
-  config.before(:each) do
-    Zendesk2::Client.reset! if Zendesk2::Client.mocking?
+  if Zendesk2::Client.mocking?
+    config.before(:each) { Zendesk2::Client.reset! }
   end
+
   config.order = "random"
-  config.filter_run_excluding(:mock_only => true) unless Zendesk2::Client.mocking?
+  config.filter_run_excluding(mock_only: true) unless Zendesk2::Client.mocking?
 end

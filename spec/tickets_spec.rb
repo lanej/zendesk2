@@ -69,9 +69,7 @@ describe "Zendesk2::Client" do
       expect(ticket.submitter).to eq(client.users.current)
     end
 
-    it "should have empty custom fields by default" do
-      pending if !Zendesk2::Client.mocking?
-
+    it "should have empty custom fields by default", mock_only: true do
       expect(ticket.custom_fields).to eq([])
     end
   end
