@@ -37,7 +37,7 @@ Default credentials will be read in from `~/.zendesk2` file in YAML format.
 
 ```yaml
 ---
-:subdomain: zendeskdev
+:url: https://www.zendesk.com
 :username: zendeskedge@example.com
 :password: wickedsecurepassword
 :token: reallylongrandomstringprovidedbyzendesk
@@ -45,14 +45,7 @@ Default credentials will be read in from `~/.zendesk2` file in YAML format.
 
 ### Creating the client
 
-Either the absolute url or the subdomain is required. Username and either password or token are always required.
-
-```ruby
-Zendesk2::Client.new(subdomain: "engineyard", username: "orchestra", password: "gwoo")
-=> #<Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …>
-```
-
-or
+Url is always required. Username and either password or token are always required.
 
 ```ruby
 Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate", token: "asdfghjkl1qwertyuiop5zxcvbnm3")
