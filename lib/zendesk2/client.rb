@@ -155,7 +155,7 @@ class Zendesk2::Client < Cistern::Service
 
     def initialize(options={})
       url = zendesk_url(options)
-      @url  = URI.parse(url).to_s
+      @url  = ::URI.parse(url).to_s
 
       @logger            = options[:logger] || Logger.new(nil)
       adapter            = options[:adapter] || :net_http
@@ -245,7 +245,7 @@ class Zendesk2::Client < Cistern::Service
       url = zendesk_url(options)
 
       @url  = url
-      @path = URI.parse(url).path
+      @path = ::URI.parse(url).path
       @username, @password = options[:username], options[:password]
       @token = options[:token]
       @jwt_token = options[:jwt_token]

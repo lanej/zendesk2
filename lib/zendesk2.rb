@@ -12,6 +12,7 @@ require 'forwardable'
 require 'logger'
 require 'time'
 require 'yaml'
+require 'uri'
 
 module Zendesk2
   require 'zendesk2/attributes'
