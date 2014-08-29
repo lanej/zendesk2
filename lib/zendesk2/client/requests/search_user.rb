@@ -5,7 +5,8 @@ class Zendesk2::Client
 
   class Mock
     def search_user(query)
-      query.delete("type") # context already provided
+      terms = Hash[query.split(" ").map { |t| t.split(":") }]
+      terms.delete("type") # context already provided
 
       collection = self.data[:users].values
       collection = collection.map do |user|
@@ -14,7 +15,7 @@ class Zendesk2::Client
         end
       end.flatten
 
-      results = collection.select{|v| query.all?{|term, condition| v[term.to_s] == condition}}
+      results = collection.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
 
       response(
         :path => "/search.json",

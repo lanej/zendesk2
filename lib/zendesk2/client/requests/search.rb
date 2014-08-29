@@ -1,10 +1,9 @@
 class Zendesk2::Client
   class Real
     def search(query)
-      term = query.map{|k,v| "#{k}:#{v}"}.join(" ")
       request(
         :method => :get,
-        :params => {query: term},
+        :params => {query: query},
         :path   => "/search.json",
       )
     end
@@ -12,10 +11,11 @@ class Zendesk2::Client
 
   class Mock
     def search(query)
-      type       = query.delete("type")
+      terms = Hash[query.split(" ").map { |t| t.split(":") }]
+      type = terms.delete("type")
       collection = type.nil? ? self.data.values : self.data[pluralize(type).to_sym]
 
-      results = collection.select{|k,v| query.all?{|term, condition| v[term.to_s] == condition}}.values
+      results = collection.values.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
 
       response(
         :path => "/search.json",

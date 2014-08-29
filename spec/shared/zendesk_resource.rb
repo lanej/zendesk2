@@ -73,9 +73,14 @@ shared_examples "zendesk resource" do |options={}|
 
     if options.fetch(:search, true) && Zendesk2::Client.mocking?
       # Search index takes 2-3 minutes according to the docs
-      it "should search" do
+      it "should search by hash" do
         @record = collection.create!(create_params)
         expect(collection.search(create_params)).to include(record)
+      end
+
+      it "should search by string" do
+        @record = collection.create!(create_params)
+        expect(collection.search(create_params.map { |k,v| [k,v].join(":") }.join(" "))).to include(record)
       end
     end
   end
