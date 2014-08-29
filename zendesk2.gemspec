@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.version       = Zendesk2::VERSION
 
   gem.add_dependency "addressable", "~> 2.2"
-  gem.add_dependency "cistern", "~> 0.6"
+  gem.add_dependency "cistern", "~> 0.9", ">= 0.9.2"
   gem.add_dependency "faraday", "~> 0.9"
   gem.add_dependency "faraday_middleware", "~> 0.9"
   gem.add_dependency "jwt", "~> 1.0"

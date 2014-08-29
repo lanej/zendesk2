@@ -1,125 +1,20 @@
 class Zendesk2::Client < Cistern::Service
   USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
 
+  collection_path "zendesk2/client/collections"
   model_path "zendesk2/client/models"
   request_path "zendesk2/client/requests"
 
-  require 'zendesk2/client/models/audit_event' # so special
-
-  collection :categories
-  collection :forums
-  collection :groups
-  collection :memberships
-  collection :organizations
-  collection :ticket_audits
-  collection :ticket_fields
-  collection :ticket_metrics
-  collection :tickets
-  collection :ticket_comments
-  collection :topic_comments
-  collection :topics
-  collection :user_fields
-  collection :user_identities
-  collection :users
-  model :category
-  model :forum
-  model :group
-  model :membership
-  model :organization
-  model :ticket
-  model :ticket_audit
-  model :ticket_metric
-  model :ticket_change
-  model :ticket_comment
-  model :ticket_comment_privacy_change
-  model :ticket_create
-  model :ticket_field
-  model :ticket_notification
-  model :ticket_voice_comment
-  model :topic
-  model :topic_comment
-  model :user
-  model :user_field
-  model :user_identity
-
-  request :create_category
-  request :create_forum
-  request :create_group
-  request :create_membership
-  request :create_organization
-  request :create_ticket
-  request :create_ticket_field
-  request :create_topic
-  request :create_topic_comment
-  request :create_user
-  request :create_user_field
-  request :create_user_identity
-  request :destroy_category
-  request :destroy_forum
-  request :destroy_group
-  request :destroy_membership
-  request :destroy_organization
-  request :destroy_ticket
-  request :destroy_ticket_field
-  request :destroy_topic
-  request :destroy_topic_comment
-  request :destroy_user
-  request :destroy_user_field
-  request :destroy_user_identity
-  request :get_assignable_groups
-  request :get_audits
-  request :get_categories
-  request :get_category
-  request :get_ccd_tickets
-  request :get_current_user
-  request :get_forum
-  request :get_forums
-  request :get_group
-  request :get_groups
-  request :get_membership
-  request :get_organization
-  request :get_organization_by_external_id
-  request :get_organization_memberships
-  request :get_organization_tickets
-  request :get_organization_users
-  request :get_organizations
-  request :get_requested_tickets
-  request :get_ticket
-  request :get_ticket_audit
-  request :get_ticket_audits
-  request :get_ticket_comments
-  request :get_ticket_field
-  request :get_ticket_fields
-  request :get_ticket_metric
-  request :get_ticket_metrics
-  request :get_tickets
-  request :get_topic
-  request :get_topic_comment
-  request :get_topic_comments
-  request :get_topics
-  request :get_user
-  request :get_user_field
-  request :get_user_fields
-  request :get_user_identities
-  request :get_user_identity
-  request :get_user_memberships
-  request :get_users
-  request :mark_membership_default
-  request :mark_user_identity_primary
-  request :search
-  request :search_user
-  request :update_category
-  request :update_forum
-  request :update_group
-  request :update_organization
-  request :update_request
-  request :update_ticket
-  request :update_ticket_field
-  request :update_topic
-  request :update_topic_comment
-  request :update_user
-  request :update_user_field
-  request :update_user_identity
+  # might be nice if cistern took care of this
+  [
+    [:collection, collection_path],
+    [:model, model_path],
+    [:request, request_path],
+  ].each do |type, path|
+    Dir[File.expand_path(File.join("lib", path, "*.rb"))].each do |file|
+      send(type, File.basename(file, ".rb"))
+    end
+  end
 
   recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
 
@@ -229,11 +124,11 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def initialize(options={})
-      @url  = options[:url]
-      @path = ::URI.parse(url).path
+      @url                 = options[:url]
+      @path                = ::URI.parse(url).path
       @username, @password = options[:username], options[:password]
-      @token = options[:token]
-      @jwt_token = options[:jwt_token]
+      @token               = options[:token]
+      @jwt_token           = options[:jwt_token]
 
       @current_user ||= self.create_user("email" => @username, "name" => "Mock Agent").body["user"]
       @current_user_identity ||= self.data[:identities].values.first
