@@ -15,16 +15,6 @@ require 'yaml'
 require 'uri'
 
 module Zendesk2
-  require 'zendesk2/attributes'
-  require 'zendesk2/attributes'
-  require 'zendesk2/error'
-  require 'zendesk2/client'
-  require 'zendesk2/searchable'
-  require 'zendesk2/logger'
-  require 'zendesk2/model'
-  require 'zendesk2/collection'
-  require 'zendesk2/paged_collection'
-
   def self.defaults
     @defaults ||= if File.exists?(File.expand_path("~/.zendesk2"))
                     YAML.load_file(File.expand_path("~/.zendesk2"))
@@ -54,3 +44,13 @@ module Zendesk2
     string.nil? || string == ""
   end
 end
+
+require 'zendesk2/attributes'
+require 'zendesk2/error'
+require 'zendesk2/searchable'
+require 'zendesk2/logger'
+require 'zendesk2/model'
+require 'zendesk2/collection'
+require 'zendesk2/paged_collection'
+
+require 'zendesk2/client'
