@@ -13,6 +13,8 @@ class Zendesk2::Client
 
   class Mock
     def create_user_identity(params={})
+      params = Cistern::Hash.stringify_keys(params)
+
       identity = self.class.new_id
       user_id  = params["user_id"]
 
@@ -25,7 +27,11 @@ class Zendesk2::Client
         "primary"    => false,
       }.merge(params)
 
-      record.merge("primary" => true) if self.data[:identities].values.find{|ui| ui["user_id"] == user_id}.nil?
+      record.merge("primary" => true) if self.data[:identities].values.find { |ui| ui["user_id"] == user_id }.nil?
+
+      if self.data[:identities].values.find { |i| i["value"] == record["value"] }
+        error!(:invalid, details: { "value"=> [ { "description"=>"Value: #{record["value"]} is already being used by another user" } ] })
+      end
 
       self.data[:identities][identity] = record
 
