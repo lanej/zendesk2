@@ -16,15 +16,19 @@ module Zendesk2::Searchable
   # @see http://developer.zendesk.com/documentation/rest_api/search.html
   def search(terms)
     query = if terms.is_a?(Hash)
-              terms.merge("type" => self.class.search_type).map { |k,v| "#{k}:#{v}" }.join(" ")
+              terms.merge("type" => self.class.search_type).
+                merge(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => public_send(k))}).
+                map { |k,v| "#{k}:#{v}" }.join(" ")
             else
-              type_qualification = "type:#{self.class.search_type}"
-              qualified_search   = terms.to_s
+              additional_terms = ["type:#{self.class.search_type}"]
+              additional_terms += self.class.scopes.inject([]) { |r,k| ["#{k}:#{public_send(k)}"] }
 
-              if qualified_search.include?(type_qualification)
-                qualified_search
-              else
-                "#{qualified_search} #{type_qualification}"
+              additional_terms.inject(terms.to_s) do |qualified_search, qualification|
+                if !qualified_search.include?(qualification)
+                  "#{qualified_search} #{qualification}"
+                else
+                  qualified_search
+                end
               end
             end
 

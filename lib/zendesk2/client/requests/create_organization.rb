@@ -52,7 +52,7 @@ class Zendesk2::Client
             "details"     => {
               "name" => [
                 {
-                  "description" => "Name has already been taken"
+                  "description" => "Name: has already been taken"
                 }
               ]
             }

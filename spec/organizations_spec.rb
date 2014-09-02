@@ -25,7 +25,7 @@ describe "organizations" do
     it "should hate non-unique names" do
       expect { client.organizations.create!(name: organization.name) }.to raise_exception(Zendesk2::Error)
       model = client.organizations.create(name: organization.name)
-      expect(model.errors).to eq({"name" => ["Name has already been taken"]})
+      expect(model.errors).to eq({"name" => ["Name: has already been taken"]})
     end
 
     it "should be able to find organizations by external id" do

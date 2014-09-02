@@ -34,7 +34,7 @@ describe "users" do
       expect(user.requested_tickets).to include ticket
     end
 
-    it "should get ccd tickets" do
+    it "should get ccd tickets", mock_only: true do
       ticket = client.tickets.create(collaborators: [user], subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       expect(user.ccd_tickets).to include ticket

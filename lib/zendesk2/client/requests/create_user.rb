@@ -43,7 +43,7 @@ class Zendesk2::Client
         }
 
         self.data[:identities][user_identity_id] = user_identity
-        self.data[:users][user_id] = record.reject{|k,v| k == "email"}
+        self.data[:users][user_id] = record.reject { |k,v| k == "email" }
 
         response(
           :method => :post,

@@ -4,6 +4,7 @@ shared_examples "zendesk resource" do |options={}|
     let(:create_params) { instance_exec(&options[:create_params]) || {} }
     let(:update_params) { instance_exec(&options[:update_params]) }
     let(:fetch_params)  { options[:fetch_params] || lambda { |r| r.identity } }
+    let(:search_params) { options[:search_params] ? instance_exec(&options[:search_params]) : create_params }
 
     let(:record) { @record }
     after(:each) { @record && @record.destroy }
@@ -75,12 +76,12 @@ shared_examples "zendesk resource" do |options={}|
       # Search index takes 2-3 minutes according to the docs
       it "should search by hash" do
         @record = collection.create!(create_params)
-        expect(collection.search(create_params)).to include(record)
+        expect(collection.search(search_params).to_a).to eq([record])
       end
 
       it "should search by string" do
         @record = collection.create!(create_params)
-        expect(collection.search(create_params.map { |k,v| [k,v].join(":") }.join(" "))).to include(record)
+        expect(collection.search(search_params.map { |k,v| [k,v].join(":") }.join(" ")).to_a).to eq([record])
       end
     end
   end

@@ -10,6 +10,7 @@ describe "user_identities" do
     :fetch_params  => lambda { |uc| { "user_id" => uc.user_id, "id" => uc.id } },
     :collection    => lambda { client.user_identities(user_id: user.id) },
     :paged         => false,
+    :search        => false,
   }
 
   describe "#create_user_identity" do
