@@ -11,7 +11,7 @@ class Zendesk2::Client < Cistern::Service
     [:model,      model_path],
     [:request,    request_path],
   ].each do |type, path|
-    Dir[File.join("lib", path, "*.rb")].sort.each do |file|
+    Dir[File.expand_path(File.join("../..", path, "*.rb"), __FILE__)].sort.each do |file|
       send(type, File.basename(file, ".rb"))
     end
   end
