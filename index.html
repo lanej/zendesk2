@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Zendesk2 : Zendesk API V2 client using Cistern" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Zendesk2 : Zendesk API V2 client using Cistern">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -75,7 +75,7 @@
 <p>Default credentials will be read in from <code>~/.zendesk2</code> file in YAML format.</p>
 
 <div class="highlight highlight-yaml"><pre><span class="nn">---</span>
-<span class="l-Scalar-Plain">:subdomain</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">zendeskdev</span>
+<span class="l-Scalar-Plain">:url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">https://www.zendesk.com</span>
 <span class="l-Scalar-Plain">:username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">zendeskedge@example.com</span>
 <span class="l-Scalar-Plain">:password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">wickedsecurepassword</span>
 <span class="l-Scalar-Plain">:token</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">reallylongrandomstringprovidedbyzendesk</span>
@@ -84,13 +84,7 @@
 <h3>
 <a name="creating-the-client" class="anchor" href="#creating-the-client"><span class="octicon octicon-link"></span></a>Creating the client</h3>
 
-<p>Either the absolute url or the subdomain is required. Username and either password or token are always required.</p>
-
-<div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">subdomain</span><span class="p">:</span> <span class="s2">"engineyard"</span><span class="p">,</span> <span class="ss">username</span><span class="p">:</span> <span class="s2">"orchestra"</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="s2">"gwoo"</span><span class="p">)</span>
-<span class="o">=&gt;</span> <span class="c1">#&lt;Zendesk2::Client::Real:0x007f99da1f9430 @url="https://engineyard.zendesk.com/api/v2", @username="orchestra", @password="gwoo", …&gt;</span>
-</pre></div>
-
-<p>or</p>
+<p>Url is always required. Username and either password or token are always required.</p>
 
 <div class="highlight highlight-ruby"><pre><span class="no">Zendesk2</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">url</span><span class="p">:</span> <span class="s2">"http://support.cloud.engineyard.com"</span><span class="p">,</span> <span class="ss">username</span><span class="p">:</span> <span class="s2">"mate"</span><span class="p">,</span> <span class="ss">token</span><span class="p">:</span> <span class="s2">"asdfghjkl1qwertyuiop5zxcvbnm3"</span><span class="p">)</span>
 <span class="o">=&gt;</span> <span class="c1">#&lt;Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …&gt;</span>
@@ -117,6 +111,7 @@
 <li>Topic Comments</li>
 <li>Topics</li>
 <li>User Identities</li>
+<li>User Fields</li>
 <li>Users</li>
 </ul><p>All collection are accessed like so:</p>
 
