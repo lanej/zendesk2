@@ -5,7 +5,7 @@ class Zendesk2::Model < Cistern::Model
   # @abstract override in subclass
   # @raise [Zendesk2::Error] if unsuccessful
   def save!
-    raise NotImplementError
+    raise NotImplementedError
   end
 
   # calls {#save!} and sets {#errors} if unsuccessful and applicable

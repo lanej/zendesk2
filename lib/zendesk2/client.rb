@@ -11,8 +11,8 @@ class Zendesk2::Client < Cistern::Service
     [:model,      model_path],
     [:request,    request_path],
   ].each do |type, path|
-    Dir[File.expand_path(File.join("../..", path, "*.rb"), __FILE__)].sort.each do |file|
-      send(type, File.basename(file, ".rb"))
+    Dir[File.expand_path(File.join("../..", path, "**/*.rb"), __FILE__)].sort.each do |file|
+      send(type, file.gsub(/.*#{path}\/(.*)\.rb/, "\\1"), require: file)
     end
   end
 
@@ -29,3 +29,4 @@ end
 
 require 'zendesk2/client/real'
 require 'zendesk2/client/mock'
+require 'zendesk2/client/help_center'
