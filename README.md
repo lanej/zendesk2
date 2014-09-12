@@ -1,6 +1,6 @@
 # Zendesk2
 
-[![Build Status](https://secure.travis-ci.org/lanej/zendesk2.png)](http://travis-ci.org/lanej/zendesk2)
+[![Build Status](https://travis-ci.org/lanej/zendesk2.svg?branch=master)](http://travis-ci.org/lanej/zendesk2)
 [![Gem Version](https://fury-badge.herokuapp.com/rb/zendesk2.png)](http://badge.fury.io/rb/zendesk2)
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/lanej/zendesk2)
 [![Dependency Status](https://gemnasium.com/lanej/zendesk2.png)](https://gemnasium.com/lanej/zendesk2)
