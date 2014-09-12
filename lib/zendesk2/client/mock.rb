@@ -6,21 +6,24 @@ class Zendesk2::Client < Cistern::Service
 
     def self.data
       @data ||= {
-        :categories      => {},
-        :forums          => {},
-        :groups          => {},
-        :identities      => {},
-        :memberships     => {},
-        :organizations   => {},
-        :ticket_audits   => {},
-        :ticket_comments => {},
-        :ticket_fields   => {},
-        :ticket_metrics  => {},
-        :tickets         => {},
-        :topic_comments  => {},
-        :topics          => {},
-        :user_fields     => {},
-        :users           => {},
+        :categories             => {},
+        :forums                 => {},
+        :groups                 => {},
+        :help_center_articles   => {},
+        :help_center_categories => {},
+        :help_center_sections   => {},
+        :identities             => {},
+        :memberships            => {},
+        :organizations          => {},
+        :ticket_audits          => {},
+        :ticket_comments        => {},
+        :ticket_fields          => {},
+        :ticket_metrics         => {},
+        :tickets                => {},
+        :topic_comments         => {},
+        :topics                 => {},
+        :user_fields            => {},
+        :users                  => {},
       }
     end
 
@@ -55,6 +58,10 @@ class Zendesk2::Client < Cistern::Service
       self.data[:identities][@current_user_identity["id"]] ||= @current_user_identity
 
       @current_user
+    end
+
+    def html_url_for(path)
+      File.join(@url, path.to_s)
     end
 
     def url_for(path)

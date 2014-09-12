@@ -56,7 +56,7 @@ shared_examples "zendesk resource" do |options={}|
     if options.fetch(:update, true)
       it "should be updated" do
         @record = collection.create!(create_params)
-        record.merge_attributes(update_params)
+        update_params.each { |k,v| record.send("#{k}=", v) }
         record.save
         update_params.each {|k,v| expect(record.send(k)).to eq(v)}
       end
