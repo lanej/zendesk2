@@ -39,6 +39,12 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Model
     merge_attributes(data)
   end
 
+  def destroy!
+    requires :id
+
+    connection.destroy_help_center_category(id)
+  end
+
   private
 
   def params
