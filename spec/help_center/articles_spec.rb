@@ -16,6 +16,7 @@ describe "help_center/articles" do
     :collection    => lambda { client.help_center_articles },
     :create_params => lambda { { title: Zendesk2.uuid, locale: "en-us", section: section } },
     :update_params => lambda { { title: Zendesk2.uuid } },
-    :search        => false,
+    :search_params => lambda { Cistern::Hash.slice(create_params, :title) },
+    :search        => true,
   }
 end
