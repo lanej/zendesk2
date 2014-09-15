@@ -5,7 +5,7 @@ class Zendesk2::Client < Cistern::Service
   model_path      "zendesk2/client/models"
   request_path    "zendesk2/client/requests"
 
-  # might be nice if cistern took care of this
+  # @fixme might be nice if cistern took care of this
   [
     [:collection, collection_path],
     [:model,      model_path],
@@ -19,7 +19,9 @@ class Zendesk2::Client < Cistern::Service
   recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
 
   module Shared
-    def require_parameters(params, *requirements)
+    def require_parameters(_params, *requirements)
+      params = Cistern::Hash.stringify_keys(_params)
+
       if (missing = requirements - params.keys).any?
         raise ArgumentError, "missing parameters: #{missing.join(", ")}"
       else

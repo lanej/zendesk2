@@ -22,6 +22,7 @@ class Zendesk2::Client
   class Mock
     def update_help_center_article(params={})
       params = Cistern::Hash.stringify_keys(params)
+
       require_parameters(params, "id")
 
       id     = params.delete("id")

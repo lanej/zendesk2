@@ -3,7 +3,9 @@ require 'spec_helper'
 describe "help_center/articles" do
   let(:client)   { create_client }
   let!(:section) do
-    category = client.help_center_categories.create!(name: Zendesk2.uuid, locale: "en-us")
+    category = client.help_center_categories.create!(name: Zendesk2.uuid,
+                                                     locale: "en-us",
+                                                    )
     client.help_center_sections.create!(:name     => Zendesk2.uuid,
                                         :locale   => "en-us",
                                         :category => category,

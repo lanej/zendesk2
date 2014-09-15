@@ -42,6 +42,6 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Model
   private
 
   def params
-    Cistern::Hash.slice(self.attributes, *%w[category_id description locale name position sorting])
+    Cistern::Hash.slice(self.attributes, :category_id, :description, :locale, :name, :position, :sorting)
   end
 end

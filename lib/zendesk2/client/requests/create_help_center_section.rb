@@ -2,17 +2,11 @@ class Zendesk2::Client
   class Real
     def create_help_center_section(params={})
       category_id = require_parameters(params, "category_id")
-      path = if locale = params["locale"]
-               "/#{locale}/sections/#{category_id}/sections.json"
-             else
-               "/sections/#{category_id}/sections.json"
-             end
-
 
       request(
         :body   => {"section" => params},
         :method => :post,
-        :path   => path,
+        :path   => "/help_center/categories/#{category_id}/sections.json",
       )
     end
   end # Real

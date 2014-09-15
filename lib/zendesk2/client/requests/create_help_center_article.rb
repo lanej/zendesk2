@@ -3,9 +3,9 @@ class Zendesk2::Client
     def create_help_center_article(params={})
       section_id = require_parameters(params, "section_id")
       path = if locale = params["locale"]
-              "/#{locale}/sections/#{section_id}.json"
+              "/help_center/#{locale}/sections/#{section_id}/articles.json"
             else
-              "/sections/#{section_id}.json"
+              "/help_center/sections/#{section_id}/articles.json"
             end
 
 

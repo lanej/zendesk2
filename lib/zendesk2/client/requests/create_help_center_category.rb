@@ -1,18 +1,14 @@
 class Zendesk2::Client
   class Real
     def create_help_center_category(params={})
-      locale = require_parameters(params, "locale")
-      path = if locale = params["locale"]
-               "/#{locale}/categories.json"
-             else
-               "/categories.json"
-             end
+      params = Cistern::Hash.stringify_keys(params)
 
+      require_parameters(params, "name")
 
       request(
         :body   => {"category" => params},
         :method => :post,
-        :path   => path,
+        :path   => "/help_center/categories.json",
       )
     end
   end # Real
@@ -20,6 +16,8 @@ class Zendesk2::Client
   class Mock
     def create_help_center_category(params={})
       params = Cistern::Hash.stringify_keys(params)
+
+      require_parameters(params, "name")
 
       identity = self.class.new_id
 
@@ -34,7 +32,6 @@ class Zendesk2::Client
         "position"    => position,
         "created_at"  => Time.now.iso8601,
         "updated_at"  => Time.now.iso8601,
-        "name"        => "",
         "description" => "",
       }.merge(params)
 
