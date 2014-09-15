@@ -64,7 +64,6 @@ class Zendesk2::Client::HelpCenter::Article < Zendesk2::Model
   private
 
   def params
-   Cistern::Hash.slice(self.attributes, :author_id, :body, :comments_disabled, :draft, :label_names, :locale, :position, :promoted, :section_id, :title)
+    Cistern::Hash.slice(self.attributes, :author_id, :body, :comments_disabled, :draft, :label_names, :locale, :position, :promoted, :section_id, :title)
   end
-
 end

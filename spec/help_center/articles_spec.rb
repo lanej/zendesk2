@@ -14,7 +14,7 @@ describe "help_center/articles" do
 
   include_examples "zendesk resource", {
     :collection    => lambda { client.help_center_articles },
-    :create_params => lambda { { title: Zendesk2.uuid, locale: "en", section: section } },
+    :create_params => lambda { { title: Zendesk2.uuid, locale: "en-us", section: section } },
     :update_params => lambda { { title: Zendesk2.uuid } },
     :search        => false,
   }

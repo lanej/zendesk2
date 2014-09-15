@@ -20,7 +20,7 @@ class Zendesk2::Client
       category_id = require_parameters(params, "category_id")
 
       locale = params["locale"] ||= "en-us"
-      position = self.data[:help_center_sections].select { |a| a["category_id"] == category_id }.size
+      position = self.data[:help_center_sections].values.select { |a| a["category_id"] == category_id }.size
 
       record = {
         "id"                => identity,
