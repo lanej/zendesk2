@@ -4,8 +4,7 @@ class Zendesk2::Client::HelpCenter::Articles < Zendesk2::PagedCollection
   model Zendesk2::Client::HelpCenter::Article
 
   self.collection_method = :get_help_center_articles
-  self.collection_root   = "help_center_articles"
+  self.collection_root   = "articles"
   self.model_method      = :get_help_center_article
-  self.model_root        = "help_center_article"
-  self.search_type       = "help_center_article"
+  self.model_root        = "article"
 end

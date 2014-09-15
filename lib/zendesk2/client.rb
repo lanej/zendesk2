@@ -22,6 +22,9 @@ class Zendesk2::Client < Cistern::Service
     def require_parameters(params, *requirements)
       if (missing = requirements - params.keys).any?
         raise ArgumentError, "missing parameters: #{missing.join(", ")}"
+      else
+        values = params.values_at(*requirements)
+        requirements.size == 1 ? values.first : values
       end
     end
   end
