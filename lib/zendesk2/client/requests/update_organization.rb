@@ -14,8 +14,15 @@ class Zendesk2::Client
   end
   class Mock
     def update_organization(params={})
-      id   = params.delete("id")
-      body = self.data[:organizations][id].merge!(params)
+      id = params.delete("id")
+
+      organization = self.find!(:organizations, id)
+
+      if self.data[:organizations].values.find { |o| o["name"] == params["name"] && o["id"] != id }
+        error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
+      end
+
+      body = organization.merge!(params)
 
       response(
         :method => :put,

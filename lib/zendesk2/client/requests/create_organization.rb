@@ -21,45 +21,12 @@ class Zendesk2::Client
       }.merge(params)
 
       unless record["name"]
-        response(
-          :status  => 422,
-          :headers => {
-            "status" => "422 Unprocessable Entity",
-          },
-          :body => {
-            "error"       => "RecordInvalid",
-            "description" => "Record validation errors",
-            "details"     => {
-              "name" => [
-                {
-                  "description" => "Name cannot be blank"
-                }
-              ]
-            }
-          }
-        )
+        error!(:invalid, details: { "name" => [ { "description" => "Name cannot be blank" } ]})
       end
 
       if self.data[:organizations].values.find{|o| o["name"] == record["name"]}
-        response(
-          :status  => 422,
-          :headers => {
-            "status" => "422 Unprocessable Entity",
-          },
-          :body    => {
-            "error"       => "RecordInvalid",
-            "description" => "Record validation errors",
-            "details"     => {
-              "name" => [
-                {
-                  "description" => "Name: has already been taken"
-                }
-              ]
-            }
-          }
-        )
+        error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
       end
-
 
       self.data[:organizations][identity]= record
 
