@@ -31,7 +31,7 @@ describe "users" do
     end
   end
 
-  describe do
+  describe "#save" do
     before(:each) do
       @user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
     end
@@ -39,26 +39,27 @@ describe "users" do
     let(:user) { @user }
 
     it "should update organization" do
-      organization = client.organizations.create(name: Zendesk2.uuid)
-      user.organization= organization
-      expect(user.save).to be_truthy
+      user.organization = organization = client.organizations.create!(name: Zendesk2.uuid)
+
+      user.save!
+
       expect(user.organization).to eq(organization)
     end
 
     it "should get requested tickets" do
-      ticket = client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      ticket = client.tickets.create!(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       expect(user.requested_tickets).to include ticket
     end
 
     it "should get ccd tickets", mock_only: true do
-      ticket = client.tickets.create(collaborators: [user], subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      ticket = client.tickets.create!(collaborators: [user], subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       expect(user.ccd_tickets).to include ticket
     end
 
     it "cannot destroy a user with a ticket" do
-      client.tickets.create(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      client.tickets.create!(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
 
       expect(user.destroy).to be_falsey
 
@@ -114,10 +115,12 @@ describe "users" do
 
     it "should hate non-unique emails" do
       email = "zendesk2+#{Zendesk2.uuid}@example.org"
-      client.users.create(email: email, name: Zendesk2.uuid)
+      client.users.create!(email: email, name: Zendesk2.uuid)
       expect { client.users.create!(email: email, name: Zendesk2.uuid) }.to raise_exception(Zendesk2::Error)
+
       user = client.users.create(email: email, name: Zendesk2.uuid)
-      expect(user.identity).to be_falsey
+
+      expect(user.identity).to eq(nil)
       expect(user.errors).to eq({"email" => ["Email: #{email} is already being used by another user"]})
     end
 
