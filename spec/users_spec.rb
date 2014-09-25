@@ -14,6 +14,23 @@ describe "users" do
     expect(current_user.email).to eq(client.username)
   end
 
+  describe "#search" do
+    it "should find a user based on details criteria with wildcards and by organization name", mock_only: true do
+      # detached user
+      client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
+
+      # possible match
+      bad_org = client.organizations.create!(name: Zendesk2.uuid)
+      client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, organization: bad_org)
+
+      org = client.organizations.create!(name: Zendesk2.uuid)
+      user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, organization: org, details: "anything_hello-something-michelle")
+
+      expect(client.users.search(details: "*michelle*", organization: org.name)).to contain_exactly(user)
+      expect(client.users.search(details: "*michelle*", organization: org.name[0..6])).to include(user)
+    end
+  end
+
   describe do
     before(:each) do
       @user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
