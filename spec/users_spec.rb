@@ -32,11 +32,7 @@ describe "users" do
   end
 
   describe "#save" do
-    before(:each) do
-      @user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
-    end
-
-    let(:user) { @user }
+    let!(:user) { client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
 
     it "should update organization" do
       user.organization = organization = client.organizations.create!(name: Zendesk2.uuid)
@@ -125,22 +121,29 @@ describe "users" do
     end
 
     it "should create another identity when updating email" do
+      expect(user.identities.size).to eq(1)
+
       original_email = user.email
       user.email = (new_email = "zendesk2+#{Zendesk2.uuid}@example.org")
-      user.save!
 
-      expect((identities = user.identities.all).size).to eq(2)
-      new_identity = identities.find{|i| i.value == new_email}
-      expect(new_identity).not_to be_nil
+      expect {
+        user.save!
+      }.to change { user.identities.size }.by(1)
 
-      expect(new_identity.primary).to be_falsey
+      new_identity = user.identities.find { |i| i.value == new_email }
 
-      original_identity = identities.find{|i| i.value == original_email}
-      expect(original_identity).not_to be_nil
+      expect(new_identity).to be
+      expect(new_identity.primary).to eq(false)
 
-      expect(original_identity.primary).to be_truthy
+      original_identity = user.identities.find { |i| i.value == original_email }
 
+      expect(original_identity).to be
+      expect(original_identity.primary).to eq(true)
       expect(user.reload.email).to eq(original_email)
+
+      expect {
+        user.save!
+      }.not_to change { user.identities.size }
     end
 
     it "should form 'legacy' login url" do
