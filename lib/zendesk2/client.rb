@@ -21,6 +21,7 @@ class Zendesk2::Client < Cistern::Service
   module Shared
     def require_parameters(_params, *requirements)
       params = Cistern::Hash.stringify_keys(_params)
+      params.reject! { |_,v| Zendesk2.blank?(v) }
 
       if (missing = requirements - params.keys).any?
         raise ArgumentError, "missing parameters: #{missing.join(", ")}"

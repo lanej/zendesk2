@@ -5,9 +5,9 @@ class Zendesk2::Client
       page_params = Zendesk2.paging_parameters(params)
 
       request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users/#{user_id}/identities.json",
+        :params => page_params,
+        :method => :get,
+        :path   => "/users/#{user_id}/identities.json",
       )
     end
   end # Real
