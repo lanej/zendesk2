@@ -12,9 +12,9 @@ class Zendesk2::Client
 
   class Mock
     def get_user(params={})
-      id   = params["id"]
+      id = require_parameters(params, "id").to_i
 
-      identities = self.data[:identities].values.select{|i| i["user_id"] == id}
+      identities = self.data[:identities].values.select { |i| i["user_id"] == id }
       identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
 
       # @todo what happens if no identity?

@@ -6,7 +6,7 @@ class Zendesk2::Client < Cistern::Service
 
     def initialize(options={})
       @url = if url = options[:url] || Zendesk2.defaults[:url]
-               ::URI.parse(url).to_s
+               Addressable::URI.parse(url).to_s
              end
 
       @logger   = options[:logger]   || Logger.new(nil)

@@ -12,7 +12,7 @@ require 'forwardable'
 require 'logger'
 require 'time'
 require 'yaml'
-require 'uri'
+require 'securerandom'
 
 module Zendesk2
   def self.defaults
@@ -24,20 +24,21 @@ module Zendesk2
   end
 
   def self.paging_parameters(options={})
-    if url = options["url"]
-      uri = Addressable::URI.parse(url)
-      uri.query_values
-    else
-      Cistern::Hash.slice(options, "page", "per_page")
-    end
+    params = if url = options["url"]
+               Addressable::URI.parse(url).query_values
+             else
+               options
+             end
+
+    Cistern::Hash.slice(params, "page", "per_page")
   end
 
   def self.uuid
-    [8,4,4,4,12].map{|i| Cistern::Mock.random_hex(i)}.join("-")
+    SecureRandom.uuid
   end
 
   def self.stringify_keys(hash)
-    hash.inject({}){|r,(k,v)| r.merge(k.to_s => v)}
+    hash.inject({}) { |r,(k,v)| r.merge(k.to_s => v) }
   end
 
   def self.blank?(string)

@@ -42,7 +42,7 @@ class Zendesk2::Client < Cistern::Service
 
     def initialize(options={})
       @url                 = options[:url]
-      @path                = ::URI.parse(url).path
+      @path                = Addressable::URI.parse(url).path
       @username, @password = options[:username], options[:password]
       @token               = options[:token]
       @jwt_token           = options[:jwt_token]
