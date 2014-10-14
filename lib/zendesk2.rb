@@ -17,14 +17,9 @@ require 'securerandom'
 module Zendesk2
   def self.defaults
     @defaults ||= begin
-                    config_path = File.expand_path("~/.zendesk2")
-                    if File.exists?(config_path)
-                      YAML.load_file(config_path)
-                    else
-                      {}
-                    end
-                  rescue ArgumentError
-                    # some people don't have home directories
+                    YAML.load_file(File.expand_path("~/.zendesk2"))
+                  rescue ArgumentError, Errno::ENOENT
+                    # handle missing home directories or missing file
                     {}
                   end
   end
