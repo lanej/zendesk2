@@ -10,7 +10,8 @@ class Zendesk2::Client
   end # Real
 
   class Mock
-    def create_organization(params={})
+    def create_organization(_params={})
+      params = Cistern::Hash.stringify_keys(_params)
       identity = self.class.new_id
 
       record = {
@@ -20,15 +21,20 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
       }.merge(params)
 
+
       unless record["name"]
         error!(:invalid, details: { "name" => [ { "description" => "Name cannot be blank" } ]})
       end
 
-      if self.data[:organizations].values.find{|o| o["name"] == record["name"]}
+      if self.data[:organizations].values.find { |o| o["name"] == record["name"]}
         error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
       end
 
-      self.data[:organizations][identity]= record
+      if record["external_id"] && self.data[:organizations].values.find { |o| o["external_id"] == record["external_id"] }
+        error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
+      end
+
+      self.data[:organizations][identity] = record
 
       response(
         :method => :post,

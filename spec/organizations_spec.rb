@@ -39,6 +39,31 @@ describe "organizations" do
 
       expect(client.organizations.find_by_external_id(external_id).first).to eq(organization)
     end
+  end
 
+  describe "#create_organization" do
+    it "should prevent duplicate external_ids" do
+      client.create_organization("name" => "a", external_id: nil) # fine
+      client.create_organization("name" => "b", external_id: nil) # also fine
+      client.create_organization("name" => "c", external_id: "1") # it's cool
+
+      expect {
+        client.create_organization("name" => "d", external_id: "1")
+      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+    end
+  end
+
+  describe "#update_organization" do
+    it "should prevent duplicate external_ids" do
+      organization         = client.organizations.create(name: "a")
+      another_organization = client.organizations.create(name: "b")
+
+      client.update_organization("id" => organization.id, external_id: nil) # fine
+      client.update_organization("id" => another_organization.id, external_id: "1") # also fine
+
+      expect {
+        client.update_organization("id" => organization.id, external_id: "1") # fine
+      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+    end
   end
 end
