@@ -5,8 +5,8 @@ describe "forums" do
 
   include_examples "zendesk resource", {
     :collection      => lambda { client.forums },
-    :create_params   => lambda { { name: Zendesk2.uuid } },
-    :update_params   => lambda { { name: Zendesk2.uuid } },
+    :create_params   => lambda { { name: mock_uuid } },
+    :update_params   => lambda { { name: mock_uuid } },
     :delayed_destroy => true,
   }
 end

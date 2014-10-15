@@ -5,12 +5,12 @@ describe "groups" do
 
   include_examples "zendesk resource", {
     :collection    => lambda { client.groups },
-    :create_params => lambda { { name: Zendesk2.uuid } },
-    :update_params => lambda { { name: Zendesk2.uuid } },
+    :create_params => lambda { { name: mock_uuid } },
+    :update_params => lambda { { name: mock_uuid } },
   }
 
   it "should list assignable groups" do
-    client.groups.create(name: Zendesk2.uuid) # assignable by default
+    client.groups.create(name: mock_uuid) # assignable by default
 
     expect(client.groups.assignable).to be_all{|g| !g.deleted}
   end

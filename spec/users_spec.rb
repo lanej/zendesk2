@@ -5,8 +5,8 @@ describe "users" do
 
   include_examples "zendesk resource", {
     :collection    => lambda { client.users },
-    :create_params => lambda { { email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true } },
-    :update_params => lambda { { name: Zendesk2.uuid } },
+    :create_params => lambda { { email: mock_email, name: mock_uuid, verified: true } },
+    :update_params => lambda { { name: mock_uuid } },
   }
 
   it "should get current user" do
@@ -16,20 +16,20 @@ describe "users" do
 
   describe "#create_user" do
     it "should prevent duplicate external_ids" do
-      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "a", external_id: nil) # fine
-      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "b", external_id: nil) # also fine
-      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "c", external_id: "1") # it's cool
+      client.create_user(email: mock_email, name: "a", external_id: nil) # fine
+      client.create_user(email: mock_email, name: "b", external_id: nil) # also fine
+      client.create_user(email: mock_email, name: "c", external_id: "1") # it's cool
 
       expect {
-        client.create_user(email:  "zendesk2+#{Zendesk2.uuid}@example.org", name: "d", external_id: "1")
+        client.create_user(email:  mock_email, name: "d", external_id: "1")
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
 
   describe "#update_user" do
     it "should prevent duplicate external_ids" do
-      user         = client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "a")
-      another_user = client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "b")
+      user         = client.users.create(email: mock_email, name: "a")
+      another_user = client.users.create(email: mock_email, name: "b")
 
       client.update_user(id: user.id, external_id: nil)         # fine
       client.update_user(id: another_user.id, external_id: "1") # also fine
@@ -43,14 +43,14 @@ describe "users" do
   describe "#search" do
     it "should find a user based on details criteria with wildcards and by organization name", mock_only: true do
       # detached user
-      client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid)
+      client.users.create!(email: mock_email, name: mock_uuid)
 
       # possible match
-      bad_org = client.organizations.create!(name: Zendesk2.uuid)
-      client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, organization: bad_org)
+      bad_org = client.organizations.create!(name: mock_uuid)
+      client.users.create!(email: mock_email, name: mock_uuid, organization: bad_org)
 
-      org = client.organizations.create!(name: Zendesk2.uuid)
-      user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, organization: org, details: "anything_hello-something-michelle")
+      org = client.organizations.create!(name: mock_uuid)
+      user = client.users.create!(email: mock_email, name: mock_uuid, organization: org, details: "anything_hello-something-michelle")
 
       expect(client.users.search(details: "*michelle*", organization: org.name)).to contain_exactly(user)
       expect(client.users.search(details: "*michelle*", organization: org.name[0..6])).to include(user)
@@ -58,10 +58,10 @@ describe "users" do
   end
 
   describe "#save" do
-    let!(:user) { client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid) }
+    let!(:user) { client.users.create!(email: mock_email, name: mock_uuid) }
 
     it "should update organization" do
-      user.organization = organization = client.organizations.create!(name: Zendesk2.uuid)
+      user.organization = organization = client.organizations.create!(name: mock_uuid)
 
       user.save!
 
@@ -69,19 +69,19 @@ describe "users" do
     end
 
     it "should get requested tickets" do
-      ticket = client.tickets.create!(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      ticket = client.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
 
       expect(user.requested_tickets).to include ticket
     end
 
     it "should get ccd tickets", mock_only: true do
-      ticket = client.tickets.create!(collaborators: [user], subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      ticket = client.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
 
       expect(user.ccd_tickets).to include ticket
     end
 
     it "cannot destroy a user with a ticket" do
-      client.tickets.create!(requester: user, subject: Zendesk2.uuid, description: Zendesk2.uuid)
+      client.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
 
       expect(user.destroy).to be_falsey
 
@@ -100,7 +100,7 @@ describe "users" do
     end
 
     it "should create a new identity" do
-      email = "ey+#{Zendesk2.uuid}@example.org"
+      email = "ey+#{mock_uuid}@example.org"
 
       new_identity = user.identities.create!(type: "email", value: email)
       expect(new_identity.primary).to be_falsey
@@ -110,7 +110,7 @@ describe "users" do
     end
 
     it "should mark remaining identity as primary" do
-      email = "ey+#{Zendesk2.uuid}@example.org"
+      email = "ey+#{mock_uuid}@example.org"
 
       initial_identity = user.identities.all.first
       new_identity     = user.identities.create!(type: "email", value: email)
@@ -124,7 +124,7 @@ describe "users" do
     end
 
     it "should not allow multiple primary identities" do
-      email = "ey+#{Zendesk2.uuid}@example.org"
+      email = "ey+#{mock_uuid}@example.org"
 
       initial_identity = user.identities.all.first
       new_identity     = user.identities.create!(type: "email", value: email)
@@ -136,11 +136,11 @@ describe "users" do
     end
 
     it "should hate non-unique emails" do
-      email = "zendesk2+#{Zendesk2.uuid}@example.org"
-      client.users.create!(email: email, name: Zendesk2.uuid)
-      expect { client.users.create!(email: email, name: Zendesk2.uuid) }.to raise_exception(Zendesk2::Error)
+      email = mock_email
+      client.users.create!(email: email, name: mock_uuid)
+      expect { client.users.create!(email: email, name: mock_uuid) }.to raise_exception(Zendesk2::Error)
 
-      user = client.users.create(email: email, name: Zendesk2.uuid)
+      user = client.users.create(email: email, name: mock_uuid)
 
       expect(user.identity).to eq(nil)
       expect(user.errors).to eq({"email" => ["Email: #{email} is already being used by another user"]})
@@ -150,7 +150,7 @@ describe "users" do
       expect(user.identities.size).to eq(1)
 
       original_email = user.email
-      user.email = (new_email = "zendesk2+#{Zendesk2.uuid}@example.org")
+      user.email = (new_email = mock_email)
 
       expect {
         user.save!

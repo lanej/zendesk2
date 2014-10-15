@@ -5,8 +5,8 @@ describe "help_center/categories" do
 
   include_examples "zendesk resource", {
     :collection    => lambda { client.help_center_categories },
-    :create_params => lambda { { name: Zendesk2.uuid, locale: "en-us" } },
-    :update_params => lambda { { name: Zendesk2.uuid } },
+    :create_params => lambda { { name: mock_uuid, locale: "en-us" } },
+    :update_params => lambda { { name: mock_uuid } },
     :search        => false,
   }
 end

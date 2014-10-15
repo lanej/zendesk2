@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe "memberships" do
   let(:client) { create_client }
-  let(:user)   { client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true) }
-  let(:organization)   { client.organizations.create!(name: Zendesk2.uuid) }
+  let(:user)   { client.users.create!(email: mock_email, name: mock_uuid, verified: true) }
+  let(:organization)   { client.organizations.create!(name: mock_uuid) }
 
   include_examples "zendesk resource", {
     :create_params => lambda { {organization_id: organization.id, user_id: user.id} },
@@ -15,7 +15,7 @@ describe "memberships" do
 
   it "should be marked as default" do
     membership           = client.memberships.create!(organization: organization, user: user)
-    another_organization = client.organizations.create!(name: Zendesk2.uuid)
+    another_organization = client.organizations.create!(name: mock_uuid)
 
     another_membership = client.memberships.create!(organization: another_organization, user: user)
 
@@ -28,8 +28,8 @@ describe "memberships" do
   end
 
   it "should get an organization's memberships" do
-    another_user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true)
-    another_organization = client.organizations.create!(name: Zendesk2.uuid)
+    another_user = client.users.create!(email: mock_email, name: mock_uuid, verified: true)
+    another_organization = client.organizations.create!(name: mock_uuid)
 
     another_organization.memberships.create!(user: another_user)
     another_organization.memberships.create!(user: user)
@@ -40,8 +40,8 @@ describe "memberships" do
   end
 
   it "should get an user's memberships" do
-    another_user = client.users.create!(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: Zendesk2.uuid, verified: true)
-    another_organization = client.organizations.create!(name: Zendesk2.uuid)
+    another_user = client.users.create!(email: mock_email, name: mock_uuid, verified: true)
+    another_organization = client.organizations.create!(name: mock_uuid)
 
     another_organization.memberships.create!(user: another_user)
     user_membership = another_organization.memberships.create!(user: user)

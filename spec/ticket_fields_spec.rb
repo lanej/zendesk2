@@ -5,8 +5,8 @@ describe "ticket_fields" do
 
   include_examples "zendesk resource", {
     :collection    => lambda { client.ticket_fields },
-    :create_params => lambda { { title: Zendesk2.uuid, type: "text" } },
-    :update_params => lambda { { title: Zendesk2.uuid } },
+    :create_params => lambda { { title: mock_uuid, type: "text" } },
+    :update_params => lambda { { title: mock_uuid } },
     :paged         => false,
   }
 end

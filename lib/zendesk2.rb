@@ -34,10 +34,6 @@ module Zendesk2
     Cistern::Hash.slice(params, "page", "per_page")
   end
 
-  def self.uuid
-    SecureRandom.uuid
-  end
-
   def self.stringify_keys(hash)
     hash.inject({}) { |r,(k,v)| r.merge(k.to_s => v) }
   end
