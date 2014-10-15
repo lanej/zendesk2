@@ -62,7 +62,7 @@ describe "organizations" do
       client.update_organization("id" => another_organization.id, external_id: "1") # also fine
 
       expect {
-        client.update_organization("id" => organization.id, external_id: "1") # fine
+        client.update_organization("id" => organization.id, external_id: "1")
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end

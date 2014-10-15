@@ -10,7 +10,8 @@ class Zendesk2::Client
   end # Real
 
   class Mock
-    def create_user(params={})
+    def create_user(_params={})
+      params  = Cistern::Hash.stringify_keys(_params)
       user_id = self.class.new_id
       path    = "/users.json"
 
@@ -21,6 +22,10 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
         "active"     => true,
       }.merge(params)
+
+      if record["external_id"] && self.data[:users].values.find { |o| o["external_id"] == record["external_id"] }
+        error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
+      end
 
       if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
         error!(:invalid, :details => {

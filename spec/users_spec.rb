@@ -14,6 +14,32 @@ describe "users" do
     expect(current_user.email).to eq(client.username)
   end
 
+  describe "#create_user" do
+    it "should prevent duplicate external_ids" do
+      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "a", external_id: nil) # fine
+      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "b", external_id: nil) # also fine
+      client.create_user(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "c", external_id: "1") # it's cool
+
+      expect {
+        client.create_user(email:  "zendesk2+#{Zendesk2.uuid}@example.org", name: "d", external_id: "1")
+      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+    end
+  end
+
+  describe "#update_user" do
+    it "should prevent duplicate external_ids" do
+      user         = client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "a")
+      another_user = client.users.create(email: "zendesk2+#{Zendesk2.uuid}@example.org", name: "b")
+
+      client.update_user(id: user.id, external_id: nil)         # fine
+      client.update_user(id: another_user.id, external_id: "1") # also fine
+
+      expect {
+        client.update_user("id" => user.id, external_id: "1")
+      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+    end
+  end
+
   describe "#search" do
     it "should find a user based on details criteria with wildcards and by organization name", mock_only: true do
       # detached user
