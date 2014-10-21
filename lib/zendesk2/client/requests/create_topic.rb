@@ -1,33 +1,28 @@
-class Zendesk2::Client
-  class Real
-    def create_topic(params={})
-      request(
-        :body   => {"topic" => params},
-        :method => :post,
-        :path   => "/topics.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::CreateTopic < Zendesk2::Client::Request
+  request_method :post
+  request_body { |r| { "topic" => r.topic_params } }
+  request_path { |_| "/topics.json" }
 
-  class Mock
-    def create_topic(params={})
-      identity = self.class.new_id
+  def self.accepted_attributes
+    %w[title body submitter_id updater_id forum_id locked pinned highlighted position tags]
+  end
 
-      record = {
-        "id"         => identity,
-        "url"        => url_for("/topics/#{identity}.json"),
-        "created_at" => Time.now.iso8601,
-        "updated_at" => Time.now.iso8601,
-      }.merge(params)
+  def topic_params
+    @_topic_params ||= Cistern::Hash.slice(params.fetch("topic"), *self.class.accepted_attributes)
+  end
 
-      path = "/topics.json"
-      self.data[:topics][identity]= record
+  def mock
+    identity = service.serial_id
 
-      response(
-        :method => :post,
-        :body   => {"topic" => record},
-        :path   => path,
-      )
-    end
-  end # Mock
+    record = {
+      "id"         => identity,
+      "url"        => url_for("/topics/#{identity}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+    }.merge(topic_params)
+
+    self.data[:topics][identity] = record
+
+    mock_response("topic" => record)
+  end
 end

@@ -1,4 +1,5 @@
-class Zendesk2::Client::TicketAudits < Zendesk2::PagedCollection
+class Zendesk2::Client::TicketAudits < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
 
   model Zendesk2::Client::TicketAudit
 
@@ -10,13 +11,13 @@ class Zendesk2::Client::TicketAudits < Zendesk2::PagedCollection
   self.model_root        = "audit"
 
   def ticket
-    self.connection.tickets.get(self.ticket_id)
+    self.service.tickets.get(self.ticket_id)
   end
 
   def all(params={})
     requires :ticket_id
 
-    body = connection.send(collection_method, {"ticket_id" => self.ticket_id}.merge(params)).body
+    body = service.send(collection_method, {"ticket_id" => self.ticket_id}.merge(params)).body
 
     collection = self.clone.load(body[collection_root])
     collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
@@ -26,7 +27,7 @@ class Zendesk2::Client::TicketAudits < Zendesk2::PagedCollection
   def get(id)
     requires :ticket_id
 
-    if data = self.connection.send(model_method, {"ticket_id" => self.ticket_id, "id" => id}).body[self.model_root]
+    if data = self.service.send(model_method, {"ticket_id" => self.ticket_id, "id" => id}).body[self.model_root]
       new(data)
     end
   rescue Zendesk2::Error

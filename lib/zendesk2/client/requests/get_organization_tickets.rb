@@ -1,25 +1,18 @@
-class Zendesk2::Client
-  class Real
-    def get_organization_tickets(params={})
-      id          = require_parameters(params, "id").to_s
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetOrganizationTickets < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/organizations/#{r.organization_id}/tickets.json" }
 
-      request(
-        :params => page_params,
-        :method => :get,
-        :path   => "/organizations/#{id}/tickets.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_organization_tickets(params={})
-      id = require_parameters(params, "id").to_s
+  def organization_id
+    params.fetch("organization_id").to_i
+  end
 
-      requesters = self.data[:users].values.select { |u| u["organization_id"] == id }.map { |s| s["organization_id"].to_s }
-      page(params, :tickets, "/organizations/#{id}/tickets.json", "tickets",
-           :filter => lambda { |c| c.select { |u| requesters.include?(u["organization_id"].to_s) } }
-          )
-    end
-  end # Mock
+  def mock(params={})
+    requesters = self.data[:users].values.select { |u| u["organization_id"] == organization_id }.map { |s| s["organization_id"] }
+
+    tickets = self.data[:tickets].values.select { |t| requesters.include?(t["organization_id"]) }
+
+    page(tickets, root: "tickets")
+  end
 end

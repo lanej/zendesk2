@@ -1,32 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def get_topic_comment(params={})
-      id       = params["id"]
-      topic_id = params["topic_id"]
-      path     = "/topics/#{topic_id}/comments/#{id}.json"
+class Zendesk2::Client::GetTopicComment < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" }
 
-      request(
-        :method => :get,
-        :path => path,
-      )
-    end
-  end # Real
+  def topic_id
+    params.fetch("topic_comment").fetch("topic_id")
+  end
 
-  class Mock
-    def get_topic_comment(params={})
-      id       = params["id"]
-      topic_id = params["topic_id"]
+  def topic_comment_id
+    params.fetch("topic_comment").fetch("id")
+  end
 
-      unless (topic_comment = self.find!(:topic_comments, id)) && topic_comment["topic_id"] == topic_id
-        error!(:not_found)
-      else
-        response(
-          :path  => "/topics/#{topic_id}/comments/#{id}.json",
-          :body  => {
-            "topic_comment" => topic_comment,
-          },
-        )
-      end
-    end
-  end # Mock
+  def mock
+    mock_response("topic_comment" => self.find!(:topic_comments, topic_comment_id))
+  end
 end

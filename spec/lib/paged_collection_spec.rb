@@ -35,8 +35,8 @@ describe Zendesk2::PagedCollection, :mock_only do
 
       found_records = client.organizations.search(name: "2_").each_entry.to_a
 
-      expect(matching_records.size).to eq(found_records.size)
-      expect(matching_records).to match_array(found_records)
+      expect(found_records.size).to eq(matching_records.size)
+      expect(found_records).to match_array(matching_records)
     end
   end
 end

@@ -1,23 +1,27 @@
-class Zendesk2::Client
-  class Real
-    def search_help_center_articles(query, params={})
-      request(
-        :method => :get,
-        :params => {query: query}.merge(params),
-        :path   => "/help_center/articles/search.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::SearchHelpCenterArticles < Zendesk2::Client::Request
+  request_path { |_| "/help_center/articles/search.json" }
 
-  class Mock
-    def search_help_center_articles(query, params={})
-      terms = Hash[query.split(" ").map { |t| t.split(":") }]
+  attr_reader :query
 
-      collection = self.data[:help_center_articles].values
+  def _mock(query, params={})
+    @query = query
+    setup(params)
+    mock
+  end
 
-      results = collection.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
+  def _real(query, params={})
+    @query = query
+    setup(params)
+    real
+  end
 
-      page(params, :help_center_articles, "/search.json", "results", resources: results, query: {query: query})
-    end
-  end # Mock
+  def mock
+    terms = Hash[query.split(" ").map { |t| t.split(":") }]
+
+    collection = self.data[:help_center_articles].values
+
+    results = collection.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
+
+    page(results, params: {"query" => query}, root: "results")
+  end
 end

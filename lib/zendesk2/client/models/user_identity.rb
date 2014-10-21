@@ -1,7 +1,5 @@
-class Zendesk2::Client::UserIdentity < Zendesk2::Model
+class Zendesk2::Client::UserIdentity < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[primary verified type value user_id]
 
   # @return [Integer] Automatically assigned upon creation
   identity :id, type: :integer
@@ -27,40 +25,33 @@ class Zendesk2::Client::UserIdentity < Zendesk2::Model
     data = if new_record?
              requires :type, :value, :user_id
 
-             connection.create_user_identity(params).body["identity"]
+             service.create_user_identity("user_identity" => self.attributes)
            else
              requires :identity
 
-             update_params = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), "verified", "id", "user_id")
-             connection.update_user_identity(update_params).body["identity"]
-           end
+             service.update_user_identity("user_identity" => self.attributes)
+           end.body["identity"]
+
     merge_attributes(data)
   end
 
   def destroy!
     requires :identity
 
-    connection.destroy_user_identity("user_id" => self.user_id, "id" => self.identity)
+    service.destroy_user_identity("user_identity" => { "user_id" => self.user_id, "id" => self.identity })
   end
 
   def reload
     requires :identity
 
-    if data = self.connection.user_identities("user_id" => user_id).get(identity)
-      new_attributes = data.attributes
-      merge_attributes(new_attributes)
+    if model = self.service.user_identities("user_id" => user_id).get(identity)
+      merge_attributes(model.attributes)
       self
     end
   end
 
   def primary!
-    self.connection.mark_user_identity_primary("user_id" => self.user_id, "id" => self.identity)
+    self.service.mark_user_identity_primary("user_identity" => { "user_id" => self.user_id, "id" => self.identity })
     self.primary = true
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
   end
 end

@@ -1,5 +1,4 @@
-class Zendesk2::Client::Organization < Zendesk2::Model
-  PARAMS = %w[id details domain_names external_id group_id organization_fields shared_comments shared_tickets tags name notes]
+class Zendesk2::Client::Organization < Zendesk2::Client::Model
 
   # @return [integer] Automatically assigned when creating organization
   identity :id, type: :integer # ro[yes] required[no]
@@ -34,51 +33,45 @@ class Zendesk2::Client::Organization < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_organization("id" => self.identity)
+    service.destroy_organization("organization" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             connection.create_organization(params).body["organization"]
+             service.create_organization("organization" => self.attributes)
            else
              requires :identity
 
-             connection.update_organization(params).body["organization"]
-           end
+             service.update_organization("organization" => self.attributes)
+           end.body["organization"]
+
     merge_attributes(data)
   end
 
   # @return [Zendesk2::Client::Users] users associated with this organization
   def users
     requires :identity
-    data = connection.get_organization_users("id" => self.identity).body["users"]
 
-    connection.users.load(data)
+    service.users.load(
+      service.get_organization_users("organization" => {"id" => self.identity}).body["users"]
+    )
   end
 
   # @return [Zendesk2::Client::Memberships] memberships associated with this organization
   def memberships
     requires :identity
 
-    connection.memberships(organization: self)
+    service.memberships(organization: self)
   end
 
   # @return [Zendesk2::Client::Tickets] tickets associated with this organization
   def tickets
     requires :identity
-    data = connection.get_organization_tickets("id" => self.identity).body["tickets"]
 
-    connection.tickets.load(data)
-  end
-
-  private
-
-  def params
-    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
-    writable_attributes.delete("external_id") if writable_attributes["external_id"].to_s == "0"
-    writable_attributes.delete("group_id") if writable_attributes["group_id"].to_s == "0"
-    writable_attributes
+    service.tickets.load(
+      service.get_organization_tickets("organization_id" => self.identity).body["tickets"]
+    )
   end
 end

@@ -1,4 +1,4 @@
-class Zendesk2::Client::HelpCenter::Category < Zendesk2::Model
+class Zendesk2::Client::HelpCenter::Category < Zendesk2::Client::Model
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when creating categories
@@ -28,26 +28,22 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Model
   attribute :url, type: :string # ro:yes required:no
 
   def save!
-    requires :name, :locale
+    response = if new_record?
+                 requires :name, :locale
 
-    data = if new_record?
-             connection.create_help_center_category(params).body["category"]
-           else
-             connection.update_help_center_category(dirty_attributes.merge("id" => self.identity)).body["category"]
-           end
+                 service.create_help_center_category("category" => self.attributes)
+               else
+                 requires :identity
 
-    merge_attributes(data)
+                 service.update_help_center_category("category" => self.attributes)
+               end
+
+    merge_attributes(response.body["category"])
   end
 
   def destroy!
-    requires :id
+    requires :identity
 
-    connection.destroy_help_center_category(id)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(self.attributes, :category_id, :description, :locale, :name, :position, :sorting)
+    service.destroy_help_center_category("category" => { "id" => self.identity })
   end
 end

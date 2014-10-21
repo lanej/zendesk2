@@ -1,38 +1,62 @@
 class Zendesk2::Client < Cistern::Service
   USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
 
-  collection_path "zendesk2/client/collections"
-  model_path      "zendesk2/client/models"
-  request_path    "zendesk2/client/requests"
-
-  # @fixme might be nice if cistern took care of this
-  [
-    [:collection, collection_path],
-    [:model,      model_path],
-    [:request,    request_path],
-  ].each do |type, path|
-    Dir[File.expand_path(File.join("../..", path, "**/*.rb"), __FILE__)].sort.each do |file|
-      send(type, file.gsub(/.*#{path}\/(.*)\.rb/, "\\1"), require: file)
-    end
-  end
-
   recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
+end
 
-  module Shared
-    def require_parameters(_params, *requirements)
-      params = Cistern::Hash.stringify_keys(_params)
-      params.reject! { |_,v| Zendesk2.blank?(v) }
+def require_resource(resource, options={})
+  plural = options[:plural] || "#{resource}s"
+  except = Array(options[:except])
+  other  = Array(options[:and])
 
-      if (missing = requirements - params.keys).any?
-        raise ArgumentError, "missing parameters: #{missing.join(", ")}"
-      else
-        values = params.values_at(*requirements)
-        requirements.size == 1 ? values.first : values
-      end
-    end
-  end
+  require "zendesk2/client/models/#{resource}"
+  require "zendesk2/client/collections/#{plural}"
+
+  require "zendesk2/client/requests/create_#{resource}"  unless except.include?(:create)
+  require "zendesk2/client/requests/destroy_#{resource}" unless except.include?(:destroy)
+  require "zendesk2/client/requests/get_#{plural}"       unless except.include?(:index)
+  require "zendesk2/client/requests/get_#{resource}"     unless except.include?(:show)
+  require "zendesk2/client/requests/update_#{resource}"  unless except.include?(:update)
+
+  other.each { |file| require "zendesk2/client/requests/#{file}" }
 end
 
 require 'zendesk2/client/real'
 require 'zendesk2/client/mock'
+require 'zendesk2/client/request'
+require 'zendesk2/client/model'
+require 'zendesk2/client/collection'
 require 'zendesk2/client/help_center'
+
+require 'zendesk2/client/requests/search'
+require 'zendesk2/client/models/audit_event'
+
+require_resource("category", plural: "categories")
+require_resource("forum")
+require_resource("group", and: ["get_assignable_groups"])
+require_resource("user", and: ["search_user", "get_current_user", "mark_user_identity_primary"])
+
+require_resource("ticket", and: ["get_requested_tickets", "get_ccd_tickets"])
+require_resource("ticket_audit", except: [:create, :destroy, :update])
+require_resource("ticket_field")
+require_resource("topic")
+require_resource("topic_comment", except: [:update])
+require_resource("ticket_comment", except: [:create, :destroy, :update, :show])
+require_resource("organization", and: [
+  "get_organization_users",
+  "get_organization_tickets",
+  "get_organization_by_external_id",
+  "get_organization_memberships",
+  "search_organization",
+  "get_user_memberships",
+])
+require_resource("user_field")
+require_resource("user_identity", plural: "user_identities")
+
+require "zendesk2/client/models/membership"
+require "zendesk2/client/collections/memberships"
+
+require "zendesk2/client/requests/create_membership"
+require "zendesk2/client/requests/destroy_membership"
+require "zendesk2/client/requests/get_membership"
+require "zendesk2/client/requests/mark_membership_default"

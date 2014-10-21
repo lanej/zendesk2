@@ -1,20 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def get_organization_memberships(params={})
-      organization_id = params["organization_id"]
+class Zendesk2::Client::GetOrganizationMemberships < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/organizations/#{r.organization_id}/memberships.json" }
 
-      request(
-        :method  => :get,
-        :path    => "/organizations/#{organization_id}/memberships.json",
-      )
-    end
-  end # Real
+  def organization_id
+    params.fetch("membership").fetch("organization_id").to_i
+  end
 
-  class Mock
-    def get_organization_memberships(params={})
-      organization_id = params["organization_id"]
+  def mock
+    memberships = self.data[:memberships].values.select { |m| m["organization_id"] == organization_id }
 
-      resources(:memberships, "/organizations/#{organization_id}/memberships.json", "organization_memberships", filter: lambda { |c| c.select { |m| m["organization_id"] == organization_id } })
-    end
-  end # Mock
+    resources(memberships, root: "organization_memberships")
+  end
 end

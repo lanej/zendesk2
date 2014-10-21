@@ -1,22 +1,15 @@
-class Zendesk2::Client
-  class Real
-    def get_user_identities(params={})
-      user_id     = require_parameters(params, "user_id")
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetUserIdentities < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/identities.json" }
 
-      request(
-        :params => page_params,
-        :method => :get,
-        :path   => "/users/#{user_id}/identities.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_user_identities(params={})
-      user_id = require_parameters(params, "user_id")
+  def user_id
+    params.fetch("user_id").to_i
+  end
 
-      page(params, :identities, "/users/#{user_id}/identities.json", "identities", filter: lambda { |c| c.select { |a| a["user_id"].to_s == user_id.to_s } })
-    end
-  end # Mock
+  def mock
+    identities = service.data[:identities].values.select { |a| a["user_id"] == user_id }
+
+    page(identities, root: "identities")
+  end
 end

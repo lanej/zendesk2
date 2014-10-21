@@ -1,7 +1,5 @@
-class Zendesk2::Client::UserField < Zendesk2::Model
+class Zendesk2::Client::UserField < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[key type title description position active, regexp_for_validation tag custom_field_options]
 
   # @return [Integer] Automatically assigned upon creation
   identity :id, type: :integer
@@ -32,28 +30,22 @@ class Zendesk2::Client::UserField < Zendesk2::Model
   attribute :url, type: :string
 
   def save!
-    data = if new_record?
-             requires :type, :title, :key
+    response = if new_record?
+                 requires :type, :title, :key
 
-             connection.create_user_field(params).body["user_field"]
-           else
-             requires :identity
+                 service.create_user_field("user_field" => self.attributes)
+               else
+                 requires :identity
 
-             connection.update_user_field(params.merge("id" => self.identity)).body["user_field"]
-           end
+                 service.update_user_field("user_field" => self.attributes)
+               end
 
-    merge_attributes(data)
+    merge_attributes(response.body["user_field"])
   end
 
   def destroy!
     requires :identity
 
-    connection.destroy_user_field("id" => self.identity)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
+    service.destroy_user_field("user_field" => { "id" => self.identity })
   end
 end

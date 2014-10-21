@@ -8,8 +8,8 @@ describe "topic_comments" do
 
   include_examples "zendesk resource",
     {
-      :create_params => lambda { {body: mock_uuid, topic_id: topic.identity, user_id: user.identity} },
-      :update_params => lambda { {body: mock_uuid} },
+      :create_params => lambda { { body: mock_uuid, topic_id: topic.identity, user_id: user.identity } },
+      :update        => false,
       :fetch_params  => lambda { |tc| {"topic_id" => tc.topic_id, "id" => tc.identity} },
       :collection    => lambda { client.topic_comments(topic_id: topic.identity) },
     }

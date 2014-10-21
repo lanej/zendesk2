@@ -1,18 +1,10 @@
-class Zendesk2::Client
-  class Real
-    def get_ticket_fields(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetTicketFields < Zendesk2::Client::Request
+  request_method :get
+  request_path { |_| "/ticket_fields.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/ticket_fields.json",
-      )
-    end
-  end
-  class Mock
-    def get_ticket_fields(params={})
-      collection(:ticket_fields, "/ticket_fields.json", "ticket_fields")
-    end
+  page_params!
+
+  def mock
+    resources(:ticket_fields)
   end
 end

@@ -1,15 +1,24 @@
-# @abstract Subclass and set #{collection_method}, #{collection_root}, #{model_method}, #{model_root} and #{model}
-# adds {#create!} method to {Cistern::Collection}.
-class Zendesk2::Collection < Cistern::Collection
-  def self.inherited(klass)
-    klass.send(:attribute, :count)
-    klass.send(:extend, ClassMethods)
+class Zendesk2::Client::Collection
+
+  class << self
+    attr_accessor :collection_method, :collection_root, :model_method, :model_root
+
+    attr_writer :namespace
+
+    def namespace
+      @namespace || self.model_root
+    end
+
+    def scopes
+      @scopes ||= []
+    end
   end
 
   def collection_method; self.class.collection_method; end
   def collection_root; self.class.collection_root; end
   def model_method; self.class.model_method; end
   def model_root; self.class.model_root; end
+  def namespace; self.class.namespace; end
 
   # Attempt creation of resource and explode if unsuccessful
   # @raise [Zendesk2::Error] if creation was unsuccessful
@@ -30,7 +39,7 @@ class Zendesk2::Collection < Cistern::Collection
   # Fetch a collection of resources
   def all(params={})
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
-    body = connection.send(collection_method, scoped_attributes).body
+    body = service.send(collection_method, scoped_attributes).body
 
     self.load(body[collection_root])
     self.merge_attributes(Cistern::Hash.slice(body, "count"))
@@ -53,12 +62,16 @@ class Zendesk2::Collection < Cistern::Collection
   # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
   def get!(identity_or_hash)
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
+
     if identity_or_hash.is_a?(Hash)
       scoped_attributes.merge!(identity_or_hash)
-    else scoped_attributes.merge!("id" => identity_or_hash)
+    else
+      scoped_attributes.merge!("id" => identity_or_hash)
     end
 
-    if data = self.connection.send(model_method, scoped_attributes).body[self.model_root]
+    scoped_attributes = { namespace => scoped_attributes }
+
+    if data = self.service.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
     end
   end
@@ -71,13 +84,5 @@ class Zendesk2::Collection < Cistern::Collection
     get!(*args)
   rescue Zendesk2::Error
     nil
-  end
-
-  module ClassMethods
-    attr_accessor :collection_method, :collection_root, :model_method, :model_root
-
-    def scopes
-      @scopes ||= []
-    end
   end
 end

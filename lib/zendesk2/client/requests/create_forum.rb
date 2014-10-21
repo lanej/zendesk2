@@ -1,33 +1,28 @@
-class Zendesk2::Client
-  class Real
-    def create_forum(params={})
-      request(
-        :body   => {"forum" => params},
-        :method => :post,
-        :path   => "/forums.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::CreateForum < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/forums.json" }
+  request_body { |r| {"forum" => r.forum_params } }
 
-  class Mock
-    def create_forum(params={})
-      identity = self.class.new_id
+  def self.accepted_attributes
+    %w[name description category_id organization_id locale_id locked position forum_type access]
+  end
 
-      record = {
-        "id"         => identity,
-        "url"        => url_for("/forums/#{identity}.json"),
-        "created_at" => Time.now.iso8601,
-        "updated_at" => Time.now.iso8601,
-      }.merge(params)
+  def forum_params
+    Cistern::Hash.slice(params.fetch("forum"), *self.class.accepted_attributes)
+  end
 
-      path = "/forums.json"
-      self.data[:forums][identity]= record
+  def mock
+    identity = service.serial_id
 
-      response(
-        :method => :post,
-        :body   => {"forum" => record},
-        :path   => path,
-      )
-    end
-  end # Mock
+    record = {
+      "id"         => identity,
+      "url"        => url_for("/forums/#{identity}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+    }.merge(Cistern::Hash.slice(params.fetch("forum"), *self.class.accepted_attributes))
+
+    service.data[:forums][identity] = record
+
+    mock_response({"forum" => record}, {status: 201})
+  end
 end

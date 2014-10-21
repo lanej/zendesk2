@@ -1,47 +1,35 @@
-class Zendesk2::Client
-  class Real
-    def create_help_center_category(params={})
-      params = Cistern::Hash.stringify_keys(params)
+class Zendesk2::Client::CreateHelpCenterCategory < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/help_center/categories.json" }
+  request_body { |r| {"category" => r.category_params} }
 
-      require_parameters(params, "name")
+  def self.accepted_attributes
+    %w[category_id description locale name position sorting]
+  end
 
-      request(
-        :body   => {"category" => params},
-        :method => :post,
-        :path   => "/help_center/categories.json",
-      )
-    end
-  end # Real
+  def category_params
+    Cistern::Hash.slice(params.fetch("category"), *self.class.accepted_attributes)
+  end
 
-  class Mock
-    def create_help_center_category(params={})
-      params = Cistern::Hash.stringify_keys(params)
+  def mock
+    identity = service.serial_id
 
-      require_parameters(params, "name")
+    locale = params["locale"] ||= "en-us"
+    position = self.data[:help_center_categories].size
 
-      identity = self.class.new_id
+    record = {
+      "id"          => identity,
+      "url"         => url_for("/help_center/#{locale}/categories/#{identity}.json"),
+      "html_url"    => html_url_for("/hc/#{locale}/categories/#{identity}.json"),
+      "author_id"   => service.current_user["id"],
+      "position"    => position,
+      "created_at"  => Time.now.iso8601,
+      "updated_at"  => Time.now.iso8601,
+      "description" => "",
+    }.merge(category_params)
 
-      locale = params["locale"] ||= "en-us"
-      position = self.data[:help_center_categories].size
+    self.data[:help_center_categories][identity] = record
 
-      record = {
-        "id"          => identity,
-        "url"         => url_for("/help_center/#{locale}/categories/#{identity}.json"),
-        "html_url"    => html_url_for("/hc/#{locale}/categories/#{identity}.json"),
-        "author_id"   => current_user["id"],
-        "position"    => position,
-        "created_at"  => Time.now.iso8601,
-        "updated_at"  => Time.now.iso8601,
-        "description" => "",
-      }.merge(params)
-
-      self.data[:help_center_categories][identity] = record
-
-      response(
-        :method => :post,
-        :body   => {"category" => record},
-        :path   => "/categories.json"
-      )
-    end
-  end # Mock
-end # Zendesk2::Client
+    mock_response("category" => record)
+  end
+end

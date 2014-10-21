@@ -1,20 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_assignable_groups(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetAssignableGroups < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/groups/assignable.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/groups/assignable.json",
-      )
-    end
-  end
-  class Mock
-    def get_assignable_groups(params={})
-      filter = lambda { |group| group.select{|g| !g['deleted'] } }
+  page_params!
 
-      page(params, :groups, "/groups/assignable.json", "groups", filter: filter)
-    end
+  def mock
+    groups = service.data[:groups].values.select { |group| group.select { |g| !g['deleted'] } }
+
+    page(groups, root: "groups")
   end
 end

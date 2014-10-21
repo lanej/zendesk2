@@ -1,51 +1,25 @@
-class Zendesk2::Client
-  class Real
-    def destroy_user(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyUser < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/users/#{r.user_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/users/#{id}.json"
-      )
-    end
+  def user_id
+    @_user_id ||= params.fetch("user").fetch("id").to_i
   end
 
-  class Mock
-    def destroy_user(params={})
-      id   = params["id"].to_s
-      path = "/users/#{id}.json"
+  def mock
+    ticket_count = service.data[:tickets].values.select { |t| t["requester_id"].to_i == user_id }.size
 
-      tickets = self.data[:tickets].values.select { |t| t["requester_id"] == id }.size
+    if ticket_count < 1
+      service.data[:identities].each { |k,v| service.data[:identities].delete(k) if v["user_id"] == user_id }
 
-      if tickets < 1
-        self.data[:identities].each { |k,v| self.data[:identities].delete(k) if v["user_id"] == id }
-
-        body = self.delete!(:users, id)
-
-        response(
-          :method => :delete,
-          :path   => path,
-          :body   => {
-            "user" => body,
-          },
-        )
-      else
-        response(
-          :method => :delete,
-          :path   => path,
-          :status => 422,
-          :body   => {
-            "error"       => "RecordInvalid",
-            "description" => "Record validation errors",
-            "details"     => {
-              "base" => [{
-                "type"        => "User is requester on #{tickets} ticket(s) that are not closed.",
-                "description" => "Base User is requester on #{tickets} ticket(s) that are not closed."
-              }]
-            }
-          }
-        )
-      end
+      mock_response("user" => self.delete!(:users, user_id))
+    else
+      error!(:invalid, "details" => {
+        "base" => [{
+          "type"        => "User is requester on #{ticket_count} ticket(s) that are not closed.",
+          "description" => "Base User is requester on #{ticket_count} ticket(s) that are not closed."
+        }]
+      })
     end
   end
 end

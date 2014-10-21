@@ -1,24 +1,15 @@
-class Zendesk2::Client
-  class Real
-    def get_organization_by_external_id(external_id)
-      request(
-        :method => :get,
-        :params => { external_id: external_id },
-        :path   => "/organizations/search.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::GetOrganizationByExternalId < Zendesk2::Client::Request
+  request_method :get
+  request_params { |r| { "external_id" => r.external_id } }
+  request_path   { |_| "/organizations/search.json" }
 
-  class Mock
-    def get_organization_by_external_id(external_id)
-      collection = self.data[:organizations]
+  def external_id
+    params.fetch("external_id")
+  end
 
-      results = collection.select { |k,v| v["external_id"].to_s == external_id.to_s }.values
+  def mock
+    results = self.data[:organizations].select { |k,v| v["external_id"].to_s == external_id.to_s }.values
 
-      response(
-        :path => "/organizations/search.json",
-        :body => {"organizations" => results},
-      )
-    end
-  end # Mock
+    mock_response("organizations" => results)
+  end
 end

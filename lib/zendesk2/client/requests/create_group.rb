@@ -1,33 +1,29 @@
-class Zendesk2::Client
-  class Real
-    def create_group(params={})
-      request(
-        :body   => {"group" => params},
-        :method => :post,
-        :path   => "/groups.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::CreateGroup < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/groups.json" }
+  request_body { |r|  { "group" => r.group_params } }
 
-  class Mock
-    def create_group(params={})
-      identity = self.class.new_id
+  def self.accepted_attributes
+    %w[name]
+  end
 
-      record = {
-        "id"               => identity,
-        "url"              => url_for("/groups/#{identity}.json"),
-        "created_at"       => Time.now.iso8601,
-        "updated_at"       => Time.now.iso8601,
-        "deleted"          => false,
-      }.merge(params)
+  def group_params
+    @_group_params ||= Cistern::Hash.slice(params.fetch("group"), *self.class.accepted_attributes)
+  end
 
-      self.data[:groups][identity] = record
+  def mock(params={})
+    identity = service.serial_id
 
-      response(
-        :method => :post,
-        :body   => {"group" => record},
-        :path   => "/groups.json"
-      )
-    end
-  end # Mock
-end # Zendesk2::Client
+    record = {
+      "id"         => identity,
+      "url"        => url_for("/groups/#{identity}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+      "deleted"    => false,
+    }.merge(group_params)
+
+    self.data[:groups][identity] = record
+
+    mock_response({"group" => record}, {status: 201})
+  end
+end

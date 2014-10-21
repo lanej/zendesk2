@@ -1,7 +1,5 @@
-class Zendesk2::Client::Forum < Zendesk2::Model
+class Zendesk2::Client::Forum < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[id name description category_id organization_id locale_id locked position forum_type access]
 
   identity :id,                 type: :integer # ro yes mandatory no  Automatically assigned upon creation
   attribute :url,               type: :string  # ro yes mandatory no  The API url of this forum
@@ -24,23 +22,20 @@ class Zendesk2::Client::Forum < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_forum("id" => self.identity)
+    service.destroy_forum("forum" => {"id" => self.identity})
   end
 
   def save!
-    data = if new_record?
-             requires :name
-             connection.create_forum(params).body["forum"]
-           else
-             requires :identity
-             connection.update_forum(params).body["forum"]
-           end
-    merge_attributes(data)
-  end
+    response = if new_record?
+                 requires :name
 
-  private
+                 service.create_forum("forum" => self.attributes)
+               else
+                 requires :identity
 
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
+                 service.update_forum("forum" => self.attributes)
+               end
+
+    merge_attributes(response.body["forum"])
   end
 end

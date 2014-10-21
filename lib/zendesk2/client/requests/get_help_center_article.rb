@@ -1,41 +1,17 @@
-class Zendesk2::Client
-  class Real
-    def get_help_center_article(params={})
-      id     = require_parameters(params, "id")
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/articles/#{id}.json"
-             else
-               "/help_center/articles/#{id}.json"
-             end
-
-
-      request(
-        :method => :get,
-        :path   => path,
-      )
+class Zendesk2::Client::GetHelpCenterArticle < Zendesk2::Client::Request
+  request_path { |r|
+    if locale = r.params.fetch("article")["locale"]
+      "/help_center/#{locale}/articles/#{r.article_id}.json"
+    else
+      "/help_center/articles/#{r.article_id}.json"
     end
-  end # Real
+  }
 
-  class Mock
-    def get_help_center_article(params={})
-      id = require_parameters(params, "id")
+  def article_id
+    params.fetch("article").fetch("id")
+  end
 
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/articles/#{id}.json"
-             else
-               "/help_center/articles/#{id}.json"
-             end
-
-      response(
-        :path => path,
-        :body => {
-          "article" => self.find!(:help_center_articles, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("article" => self.find!(:help_center_articles, article_id))
+  end
 end

@@ -1,12 +1,11 @@
 class Zendesk2::Client < Cistern::Service
   class Real
-    include Zendesk2::Client::Shared
 
-    attr_accessor :username, :url, :token, :logger, :jwt_token
+    attr_accessor :username, :url, :token, :logger, :jwt_token, :last_request
 
     def initialize(options={})
       @url = if url = options[:url] || Zendesk2.defaults[:url]
-               Addressable::URI.parse(url).to_s
+               URI.parse(url).to_s
              end
 
       @logger   = options[:logger]   || Logger.new(nil)
@@ -15,7 +14,7 @@ class Zendesk2::Client < Cistern::Service
       @token    = options[:token]    || Zendesk2.defaults[:token]
       password  = options[:password] || Zendesk2.defaults[:password]
 
-      connection_options = options[:connection_options] || {}
+      service_options = options[:service_options] || {}
 
       @auth_token  = password || @token
       @username   += "/token" if @auth_token == @token
@@ -25,7 +24,7 @@ class Zendesk2::Client < Cistern::Service
       raise "Missing required options: :username" unless @username
       raise "Missing required options: :password or :token" unless password || @token
 
-      @connection = Faraday.new({url: @url}.merge(connection_options)) do |builder|
+      @service = Faraday.new({url: @url}.merge(service_options)) do |builder|
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, @auth_token
         builder.use Faraday::Response::RaiseError
@@ -47,11 +46,11 @@ class Zendesk2::Client < Cistern::Service
       body    = options[:body]
       headers = {"User-Agent" => USER_AGENT}.merge(options[:headers] || {})
 
-      @connection.send(method) do |req|
-        req.url url
+      @service.send(method) do |req|
+        req.url(url)
         req.headers.merge!(headers)
         req.params.merge!(params)
-        req.body = body
+        req.body = @last_request = body
       end
     rescue Faraday::Error::ClientError => e
       raise Zendesk2::Error.new(e)

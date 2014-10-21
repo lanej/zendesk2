@@ -18,6 +18,8 @@ RSpec.configure do |config|
   else
     config.filter_run_excluding(mock_only: true)
   end
+  config.filter_run(:focus => true)
+  config.run_all_when_everything_filtered = true
 
   config.order = "random"
 end

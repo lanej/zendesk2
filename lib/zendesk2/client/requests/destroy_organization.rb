@@ -1,27 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def destroy_organization(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyOrganization < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/organizations/#{r.organization_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/organizations/#{id}.json"
-      )
-    end
+  def organization_id
+    params.fetch("organization").fetch("id")
   end
 
-  class Mock
-    def destroy_organization(params={})
-      id = require_parameters(params, "id")
-      body = self.delete!(:organizations, id)
+  def mock
+    self.delete!(:organizations, organization_id)
 
-      response(
-        :method => :delete,
-        :path   => "/organizations/#{id}.json",
-        :body   => {
-          "organization" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

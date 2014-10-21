@@ -1,25 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_organization(params={})
-      id = params["id"]
+class Zendesk2::Client::GetOrganization < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/organizations/#{r.organization_id}.json" }
 
-      request(
-        :method => :get,
-        :path   => "/organizations/#{id}.json"
-      )
-    end
-  end # Real
+  def organization_id
+    params.fetch("organization").fetch("id").to_i
+  end
 
-  class Mock
-    def get_organization(params={})
-      id = params["id"]
-
-      response(
-        :path  => "/organizations/#{id}.json",
-        :body  => {
-          "organization" => find!(:organizations, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("organization" => find!(:organizations, organization_id))
+  end
 end

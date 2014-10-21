@@ -1,7 +1,5 @@
-class Zendesk2::Client::Group < Zendesk2::Model
+class Zendesk2::Client::Group < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[name]
 
   # @return [Integer] Automatically assigned when creating groups
   identity :id, type: :integer
@@ -20,11 +18,13 @@ class Zendesk2::Client::Group < Zendesk2::Model
   def save!
     data = if new_record?
              requires :name
-             connection.create_group(params).body["group"]
+
+             service.create_group("group" => self.attributes)
            else
              requires :identity
-             connection.update_group(params.merge("id" => self.identity)).body["group"]
-           end
+
+             service.update_group("group" => self.attributes)
+           end.body["group"]
 
     merge_attributes(data)
   end
@@ -32,17 +32,12 @@ class Zendesk2::Client::Group < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_group("id" => self.identity)
+    service.destroy_group("group" => {"id" => self.identity})
+
     self.deleted = true
   end
 
   def destroyed?
     self.deleted
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
   end
 end

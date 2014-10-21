@@ -1,28 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def destroy_membership(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyMembership < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/organization_memberships/#{r.membership_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/organization_memberships/#{id}.json"
-      )
-    end
+  def membership_id
+    params.fetch("membership").fetch("id")
   end
 
-  class Mock
-    def destroy_membership(params={})
-      id   = params["id"]
+  def mock
+    delete!(:memberships, membership_id)
 
-      body = self.delete!(:memberships, id)
-
-      response(
-        :method => :delete,
-        :path   => "/organization_memberships/#{id}.json",
-        :body   => {
-          "membership" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

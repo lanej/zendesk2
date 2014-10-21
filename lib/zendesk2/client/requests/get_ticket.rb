@@ -1,26 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_ticket(params={})
-      id = params["id"]
+class Zendesk2::Client::GetTicket < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/tickets/#{r.ticket_id}.json" }
 
-      request(
-        :method => :get,
-        :path => "/tickets/#{id}.json"
-      )
-    end
-  end # Real
+  def ticket_id
+    params.fetch("ticket").fetch("id")
+  end
 
-  class Mock
-    def get_ticket(params={})
-      id   = params["id"]
-      path = "/tickets/#{id}.json"
-
-      response(
-        :path => path,
-        :body => {
-          "ticket" => self.find!(:tickets, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("ticket" => self.find!(:tickets, ticket_id))
+  end
 end

@@ -1,7 +1,5 @@
-class Zendesk2::Client::User < Zendesk2::Model
+class Zendesk2::Client::User < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
 
   # @return [Integer] Automatically assigned when creating users
   identity :id, type: :integer
@@ -68,22 +66,23 @@ class Zendesk2::Client::User < Zendesk2::Model
     data = if new_record?
              requires :name, :email
 
-             connection.create_user(params).body["user"]
+             service.create_user("user" => self.attributes)
            else
              requires :identity
 
-             connection.update_user(params.merge("id" => self.identity)).body["user"]
-           end
+             service.update_user("user" => self.attributes)
+           end.body["user"]
 
     merge_attributes(data)
   end
 
   def destroy!
     requires :identity
-    raise "don't nuke yourself" if self.email == connection.username
+    raise "don't nuke yourself" if self.email == service.username
 
-    data = connection.destroy_user("id" => self.identity).body["user"]
-    merge_attributes(data)
+    merge_attributes(
+      service.destroy_user("user" => {"id" => self.identity}).body["user"]
+    )
   end
 
   def destroyed?
@@ -99,9 +98,9 @@ class Zendesk2::Client::User < Zendesk2::Model
     requires :name, :email
 
     return_to = options[:return_to]
-    token     = self.connection.token || options[:token]
+    token     = self.service.token || options[:token]
 
-    uri      = Addressable::URI.parse(self.connection.url)
+    uri      = URI.parse(self.service.url)
     uri.path = "/access/remote"
 
     raise "timestamp cannot be nil" unless timestamp
@@ -113,10 +112,12 @@ class Zendesk2::Client::User < Zendesk2::Model
       'timestamp' => timestamp,
       'hash'      => Digest::MD5.hexdigest(hash_str)
     }
+
     unless Zendesk2.blank?(return_to)
       query_values['return_to'] = return_to
     end
-    uri.query_values = query_values
+
+    uri.query = Faraday::NestedParamsEncoder.encode(query_values)
 
     uri.to_s
   end
@@ -129,9 +130,9 @@ class Zendesk2::Client::User < Zendesk2::Model
     requires :name, :email
 
     return_to = options[:return_to]
-    jwt_token = self.connection.jwt_token || options[:jwt_token]
+    jwt_token = self.service.jwt_token || options[:jwt_token]
 
-    uri       = Addressable::URI.parse(self.connection.url)
+    uri       = URI.parse(self.service.url)
     uri.path  = "/access/jwt"
 
     iat = Time.now.to_i
@@ -149,7 +150,8 @@ class Zendesk2::Client::User < Zendesk2::Model
     unless Zendesk2.blank?(return_to)
       query_values['return_to'] = return_to
     end
-    uri.query_values = query_values
+
+    uri.query = Faraday::NestedParamsEncoder.encode(query_values)
 
     uri.to_s
   end
@@ -158,9 +160,9 @@ class Zendesk2::Client::User < Zendesk2::Model
   def tickets
     requires :identity
 
-    data = connection.get_requested_tickets("id" => self.identity).body["tickets"]
-
-    connection.tickets.load(data)
+    service.tickets.load(
+      service.get_requested_tickets("user_id" => self.identity).body["tickets"]
+    )
   end
   alias requested_tickets tickets
 
@@ -168,27 +170,18 @@ class Zendesk2::Client::User < Zendesk2::Model
   def ccd_tickets
     requires :identity
 
-    data = connection.get_ccd_tickets("id" => self.identity).body["tickets"]
-
-    connection.tickets.load(data)
+    service.tickets.load(
+      service.get_ccd_tickets("user_id" => self.identity).body["tickets"]
+    )
   end
 
   # @return [Zendesk2::Client::UserIdentities] the identities of this user
   def identities
-    self.connection.user_identities("user_id" => self.identity)
+    self.service.user_identities("user_id" => self.identity)
   end
 
   # @return [Zendesk2::Client::Memberships] the organization memberships of this user
   def memberships
-    self.connection.memberships(user: self)
-  end
-
-  private
-
-  def params
-    writable_attributes = Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
-    writable_attributes.delete("organization_id") if writable_attributes["organization_id"] == 0
-    writable_attributes.delete("custom_role_id") if writable_attributes["custom_role_id"] == 0
-    writable_attributes
+    self.service.memberships(user: self)
   end
 end

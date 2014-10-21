@@ -1,34 +1,21 @@
-class Zendesk2::Client
-  class Real
-    def get_user(params={})
-      id = params["id"]
+class Zendesk2::Client::GetUser < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/users/#{r.user_id}.json" }
 
-      request(
-        :method => :get,
-        :path => "/users/#{id}.json"
-      )
+  def user_id
+    params.fetch("user").fetch("id").to_i
+  end
+
+  def mock
+    identities = self.data[:identities].values.select { |i| i["user_id"] == user_id }
+    body = find!(:users, user_id).dup
+
+    if identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
+      body.merge!("email" => identity["value"])
     end
-  end # Real
 
-  class Mock
-    def get_user(params={})
-      id = require_parameters(params, "id")
+    # @todo what happens if no identity?
 
-      identities = self.data[:identities].values.select { |i| i["user_id"] == id.to_s }
-      body = find!(:users, id).dup
-
-      if identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
-        body.merge!("email" => identity["value"])
-      end
-
-      # @todo what happens if no identity?
-
-      response(
-        :path  => "/users/#{id}.json",
-        :body  => {
-          "user" => body,
-        },
-      )
-    end
-  end # Mock
+    mock_response("user" => body)
+  end
 end

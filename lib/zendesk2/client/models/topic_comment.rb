@@ -1,7 +1,5 @@
-class Zendesk2::Client::TopicComment < Zendesk2::Model
+class Zendesk2::Client::TopicComment < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[id topic_id user_id body informative]
 
   # @return [Integer] Automatically assigned upon creation
   identity :id, type: :integer
@@ -29,33 +27,30 @@ class Zendesk2::Client::TopicComment < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_topic_comment("id" => self.identity, "topic_id" => self.topic_id)
+    service.destroy_topic_comment("topic_comment" => { "id" => self.identity, "topic_id" => self.topic_id })
   end
 
   def save!
-    data = if new_record?
-             requires :topic_id, :user_id, :body
-             connection.create_topic_comment(params).body["topic_comment"]
-           else
-             requires :identity
-             connection.update_topic_comment(params).body["topic_comment"]
-           end
-    merge_attributes(data)
+    response = if new_record?
+                 requires :topic_id, :user_id, :body
+
+                 service.create_topic_comment("topic_comment" => self.attributes)
+               else
+                 requires :identity
+
+                 service.update_topic_comment("topic_comment" => self.attributes)
+               end
+
+    merge_attributes(response.body["topic_comment"])
   end
 
   def reload
     requires :identity
 
-    if data = self.connection.topic_comments("topic_id" => topic_id).get(identity)
+    if data = self.service.topic_comments("topic_id" => topic_id).get(identity)
       new_attributes = data.attributes
       merge_attributes(new_attributes)
       self
     end
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
   end
 end

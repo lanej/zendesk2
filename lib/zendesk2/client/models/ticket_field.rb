@@ -1,7 +1,5 @@
-class Zendesk2::Client::TicketField < Zendesk2::Model
+class Zendesk2::Client::TicketField < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[type title description position active required collapsed_for_agents regexp_for_validation title_in_portal visible_in_portal editable_in_portal required_in_portal tag custom_field_options]
 
   # @return [integer] Automatically assigned upon creation
   identity :id, type: :integer
@@ -49,12 +47,12 @@ class Zendesk2::Client::TicketField < Zendesk2::Model
     data = if new_record?
              requires :type, :title
 
-             connection.create_ticket_field(params).body["ticket_field"]
+             service.create_ticket_field("ticket_field" => self.attributes)
            else
              requires :identity
 
-             connection.update_ticket_field(params.merge("id" => self.identity)).body["ticket_field"]
-           end
+             service.update_ticket_field("ticket_field" => self.attributes)
+           end.body["ticket_field"]
 
     merge_attributes(data)
   end
@@ -62,12 +60,6 @@ class Zendesk2::Client::TicketField < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_ticket_field("id" => self.identity)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
+    service.destroy_ticket_field("ticket_field" => { "id" => self.identity })
   end
 end

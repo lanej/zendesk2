@@ -1,4 +1,4 @@
-class Zendesk2::Client::HelpCenter::Article < Zendesk2::Model
+class Zendesk2::Client::HelpCenter::Article < Zendesk2::Client::Model
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when the article is created
@@ -44,26 +44,22 @@ class Zendesk2::Client::HelpCenter::Article < Zendesk2::Model
   assoc_accessor :section, collection: :help_center_sections
 
   def save!
-    requires :title, :locale, :section_id
+    response = if new_record?
+                 requires :title, :locale, :section_id
 
-    data = if new_record?
-             connection.create_help_center_article(params).body["article"]
-           else
-             connection.update_help_center_article(dirty_attributes.merge("id" => self.identity)).body["article"]
-           end
+                 service.create_help_center_article("article" => self.attributes)
+               else
+                 requires :identity
 
-    merge_attributes(data)
+                 service.update_help_center_article("article" => self.attributes)
+               end
+
+    merge_attributes(response.body["article"])
   end
 
   def destroy!
-    requires :id
+    requires :identity
 
-    connection.destroy_help_center_article(id)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(self.attributes, :author_id, :body, :comments_disabled, :draft, :label_names, :locale, :position, :promoted, :section_id, :title)
+    service.destroy_help_center_article("article" => { "id" => self.identity })
   end
 end

@@ -1,31 +1,19 @@
-class Zendesk2::Client
-  class Real
-    def update_forum(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateForum < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/forums/#{r.forum_id}.json" }
+  request_body { |r| { "forum" => r.forum_params } }
 
-      request(
-        :method => :put,
-        :path   => "/forums/#{id}.json",
-        :body   => {
-          "forum" => params
-        },
-      )
-    end
+  def forum_params
+    Cistern::Hash.slice(params.fetch("forum"), *Zendesk2::Client::CreateForum.accepted_attributes)
   end
-  class Mock
-    def update_forum(params={})
-      id   = params.delete("id")
-      path = "/forums/#{id}.json"
 
-      body = self.find!(:forums, id).merge!(params)
+  def forum_id
+    params.fetch("forum").fetch("id")
+  end
 
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "forum" => body
-        },
-      )
-    end
+  def mock
+    mock_response(
+      "forum" => find!(:forums, forum_id).merge!(forum_params),
+    )
   end
 end

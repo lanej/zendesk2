@@ -1,25 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def get_category(params={})
-      id = params["id"]
+class Zendesk2::Client::GetCategory < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/categories/#{r.category_id}.json" }
 
-      request(
-        :method => :get,
-        :path   => "/categories/#{id}.json"
-      )
-    end
-  end # Real
+  def category_id
+    params.fetch("category").fetch("id")
+  end
 
-  class Mock
-    def get_category(params={})
-      id = params["id"]
-
-      response(
-        :path  => "/categories/#{id}.json",
-        :body  => {
-          "category" => find!(:categories, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response(
+      "category" => self.find!(:categories, category_id)
+    )
+  end
 end

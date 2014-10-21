@@ -48,7 +48,7 @@ class Zendesk2::Client::TicketMetric < Cistern::Model
   def ticket
     requires :ticket_id
 
-    self.connection.tickets.get(self.ticket_id)
+    self.service.tickets.get(self.ticket_id)
   end
 
 end

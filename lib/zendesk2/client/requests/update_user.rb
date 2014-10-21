@@ -1,73 +1,58 @@
-class Zendesk2::Client
-  class Real
-    def update_user(_params={})
-      params = Cistern::Hash.stringify_keys(_params)
-      id     = params.delete("id")
+class Zendesk2::Client::UpdateUser < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/users/#{r.user_id}.json" }
+  request_body { |r| {"user" => r.user_params } }
 
-      request(
-        :method => :put,
-        :path   => "/users/#{id}.json",
-        :body   => {
-          "user" => params
-        },
-      )
-    end
+  def user_params
+    @_user_params ||= Cistern::Hash.slice(params.fetch("user"), *Zendesk2::Client::CreateUser.accepted_attributes)
   end
-  class Mock
-    def update_user(_params={})
-      params  = Cistern::Hash.stringify_keys(_params)
-      user_id = params.delete("id").to_s
-      path    = "/users/#{user_id}.json"
 
-      email = params["email"]
+  def user_id
+    @_user_id ||= params.fetch("user").fetch("id").to_i
+  end
 
-      other_users = self.data[:users].dup
-      other_users.delete(user_id)
+  def mock
+    email = user_params["email"]
 
-      if params["external_id"] && other_users.values.find { |o| o["external_id"] == params["external_id"] }
-        error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
-      end
+    other_users = service.data[:users].dup
+    other_users.delete(user_id)
 
-      existing_identity = self.data[:identities].values.find { |i| i["type"] == "email" && i["value"] == email }
+    external_id = user_params["external_id"]
 
-      if !email
-        # nvm
-      elsif existing_identity && existing_identity["user_id"] != user_id
-        # email not allowed to conflict across users
-        error!(:invalid, details: { "email" => [ {
-          "description" => "Email #{params["email"]} is already being used by another user",
-        } ] })
-      elsif existing_identity && existing_identity["user_id"] == user_id
-        # no-op email already used
-      else
-        # add a new identity
-        user_identity_id = self.class.new_id
-
-        user_identity = {
-          "id"         => user_identity_id,
-          "url"        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
-          "created_at" => Time.now.iso8601,
-          "updated_at" => Time.now.iso8601,
-          "type"       => "email",
-          "value"      => email,
-          "verified"   => false,
-          "primary"    => false,
-          "user_id"    => user_id,
-        }
-
-        self.data[:identities][user_identity_id] = user_identity
-      end
-
-      body = self.find!(:users, user_id).merge!(params)
-
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "user" => body
-        },
-      )
-
+    if external_id && other_users.values.find { |o| o["external_id"].to_s == external_id.to_s }
+      error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
+
+    existing_identity = service.data[:identities].values.find { |i| i["type"] == "email" && i["value"] == email }
+
+    if !email
+      # nvm
+    elsif existing_identity && existing_identity["user_id"] != user_id
+      # email not allowed to conflict across users
+      error!(:invalid, details: { "email" => [ {
+        "description" => "Email #{params["email"]} is already being used by another user",
+      } ] })
+    elsif existing_identity && existing_identity["user_id"] == user_id
+      # no-op email already used
+    else
+      # add a new identity
+      user_identity_id = service.serial_id
+
+      user_identity = {
+        "id"         => user_identity_id,
+        "url"        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
+        "created_at" => Time.now.iso8601,
+        "updated_at" => Time.now.iso8601,
+        "type"       => "email",
+        "value"      => email,
+        "verified"   => false,
+        "primary"    => false,
+        "user_id"    => user_id,
+      }
+
+      service.data[:identities][user_identity_id] = user_identity
+    end
+
+    mock_response("user" => self.find!(:users, user_id).merge!(user_params))
   end
 end

@@ -1,28 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def update_user_field(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateUserField < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/user_fields/#{r.user_field_id}.json" }
 
-      request(
-        :method => :put,
-        :path   => "/user_fields/#{id}.json",
-        :body   => {
-          "user_field" => params
-        },
-      )
-    end
+  def user_field_id
+    params.fetch("user_field").fetch("id")
   end
-  class Mock
-    def update_user_field(params={})
-      user_field_id = params.delete("id")
 
-      response(
-        :method => :put,
-        :path   => "/user_fields/#{user_field_id}.json",
-        :body   => {
-          "user_field" => find!(:user_fields, user_field_id).merge!(params),
-        },
-      )
-    end
+  def user_field_params
+    Cistern::Hash.slice(params.fetch("user_field"), *Zendesk2::Client::CreateUserField.accepted_attributes)
+  end
+
+  def mock
+    mock_response("user_field" => find!(:user_fields, user_field_id).merge!(user_field_params))
   end
 end

@@ -1,26 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def get_forum(params={})
-      id = params["id"]
+class Zendesk2::Client::GetForum < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/forums/#{r.forum_id}.json" }
 
-      request(
-        :method => :get,
-        :path => "/forums/#{id}.json"
-      )
-    end
-  end # Real
+  def forum_id
+    params.fetch("forum").fetch("id")
+  end
 
-  class Mock
-    def get_forum(params={})
-      id   = params["id"]
-      body = self.find!(:forums, id)
-
-      response(
-        :path  => "/forums/#{id}.json",
-        :body  => {
-          "forum" => body
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response(
+      "forum" => find!(:forums, forum_id)
+    )
+  end
 end

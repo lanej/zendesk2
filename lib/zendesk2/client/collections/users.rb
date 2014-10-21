@@ -1,4 +1,5 @@
-class Zendesk2::Client::Users < Zendesk2::PagedCollection
+class Zendesk2::Client::Users < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::User
@@ -11,6 +12,6 @@ class Zendesk2::Client::Users < Zendesk2::PagedCollection
   self.search_request    = :search_user
 
   def current
-    new(connection.get_current_user.body["user"])
+    new(service.get_current_user.body["user"])
   end
 end

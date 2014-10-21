@@ -1,26 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_group(params={})
-      id = params["id"]
+class Zendesk2::Client::GetGroup < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/groups/#{r.group_id}.json" }
 
-      request(
-        :method => :get,
-        :path => "/groups/#{id}.json"
-      )
-    end
-  end # Real
+  def group_id
+    @_group_id ||= params.fetch("group").fetch("id")
+  end
 
-  class Mock
-    def get_group(params={})
-      id   = params["id"]
-      path = "/groups/#{id}.json"
-
-      response(
-        :path => path,
-        :body => {
-          "group" => find!(:groups, id),
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("group" => find!(:groups, group_id))
+  end
 end

@@ -1,48 +1,23 @@
-class Zendesk2::Client
-  class Real
-    def update_help_center_category(params={})
-      id     = require_parameters(params, "id")
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/categories/#{id}.json"
-             else
-               "/help_center/categories/#{id}.json"
-             end
-
-      request(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "category" => params
-        },
-      )
+class Zendesk2::Client::UpdateHelpCenterCategory < Zendesk2::Client::Request
+  request_method :put
+  request_body { |r| { "category" => r.category_params } }
+  request_path { |r|
+    if locale = r.category_params["locale"]
+      "/help_center/#{locale}/categories/#{r.category_id}.json"
+    else
+      "/help_center/categories/#{r.category_id}.json"
     end
+  }
+
+  def category_params
+    @_category_params ||= Cistern::Hash.slice(params.fetch("category"), *Zendesk2::Client::CreateHelpCenterCategory.accepted_attributes)
   end
-  class Mock
-    def update_help_center_category(params={})
-      params = Cistern::Hash.stringify_keys(params)
 
-      require_parameters(params, "id")
+  def category_id
+    params.fetch("category").fetch("id")
+  end
 
-      id     = params.delete("id").to_s
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/categories/#{id}.json"
-             else
-               "/help_center/categories/#{id}.json"
-             end
-
-      body = self.find!(:help_center_categories, id).merge!(params)
-
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "category" => body,
-        },
-      )
-    end
+  def mock
+    mock_response("category" => self.find!(:help_center_categories, self.category_id).merge!(category_params))
   end
 end

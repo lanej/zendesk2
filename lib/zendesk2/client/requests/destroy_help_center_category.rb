@@ -1,22 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def destroy_help_center_category(id)
-      request(
-        :method => :delete,
-        :path   => "/help_center/categories/#{id}.json"
-      )
-    end
+class Zendesk2::Client::DestroyHelpCenterCategory < Zendesk2::Client::Request
+  request_path { |r| "/help_center/categories/#{r.category_id}.json" }
+  request_method :delete
+
+  def category_id
+    params.fetch("category").fetch("id")
   end
 
-  class Mock
-    def destroy_help_center_category(id)
-      response(
-        :method => :delete,
-        :path   => "/help_center/categories/#{id}.json",
-        :body   => {
-          "category" => self.find!(:help_center_categories, id),
-        },
-      )
-    end
+  def mock
+    mock_response("category" => self.delete!(:help_center_categories, category_id))
   end
 end

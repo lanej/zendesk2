@@ -1,22 +1,15 @@
-class Zendesk2::Client
-  class Real
-    def get_ccd_tickets(params={})
-      id          = params["id"]
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetCcdTickets < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/tickets/ccd.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users/#{id}/tickets/ccd.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_ccd_tickets(params={})
-      id = params["id"]
+  def user_id
+    params.fetch("user_id").to_i
+  end
 
-      page(params, :tickets, "/users/#{id}/tickets/ccd.json", "tickets", filter: lambda{|c| c.select{|u| u["collaborator_ids"].include?(id)}})
-    end
-  end # Mock
+  def mock
+    tickets = service.data[:tickets].values.select { |u| u["collaborator_ids"].include?(user_id) }
+
+    page(tickets, root: "tickets")
+  end
 end

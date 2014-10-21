@@ -1,19 +1,10 @@
-class Zendesk2::Client
-  class Real
-    def get_organizations(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetOrganizations < Zendesk2::Client::Request
+  request_method :get
+  request_path { |_| "/organizations.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :url     => params.delete("url"),
-        :path    => "/organizations.json",
-      )
-    end
-  end
-  class Mock
-    def get_organizations(params={})
-      page(params, :organizations, "/organizations.json", "organizations")
-    end
+  page_params!
+
+  def mock
+    page(:organizations)
   end
 end

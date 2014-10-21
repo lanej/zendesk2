@@ -14,7 +14,7 @@ describe "Zendesk2::Client" do
   describe "#create_ticket" do
     it "should require a description" do
       expect {
-        client.create_ticket("subject" => mock_uuid)
+        client.create_ticket("ticket" => {"subject" => mock_uuid})
       }.to raise_exception(Zendesk2::Error, /Description: cannot be blank/)
     end
   end
@@ -149,7 +149,7 @@ describe "Zendesk2::Client" do
       expect(custom_field["value"]).to be_nil
 
       ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, custom_fields: [{"id" => ticket_field.identity, "value" => "jessicaspacekat"}])
-      custom_field = ticket.custom_fields.find { |cf| cf["id"].to_i == ticket_field.identity.to_i }
+      custom_field = ticket.custom_fields.find { |cf| cf["id"] == ticket_field.identity }
 
       expect(custom_field).to be
       expect(custom_field["value"]).to eq("jessicaspacekat")

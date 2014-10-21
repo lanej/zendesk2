@@ -1,29 +1,17 @@
-class Zendesk2::Client
-  class Real
-    def update_group(params={})
-      id   = params.delete("id")
-      path = "/groups/#{id}.json"
+class Zendesk2::Client::UpdateGroup < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/groups/#{r.group_id}.json" }
+  request_body { |r| { "group" => r.group_params } }
 
-      request(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "group" => params
-        },
-      )
-    end
+  def group_params
+    @_group_params ||= Cistern::Hash.slice(params.fetch("group"), *Zendesk2::Client::CreateGroup.accepted_attributes)
   end
-  class Mock
-    def update_group(params={})
-      id = params.delete("id")
 
-      response(
-        :method => :put,
-        :path   => "/groups/#{id}.json",
-        :body   => {
-          "group" => find!(:groups, id).merge!(params)
-        },
-      )
-    end
+  def group_id
+    @_group_id ||= params.fetch("group").fetch("id")
+  end
+
+  def mock
+    mock_response("group" => find!(:groups, group_id).merge!(group_params))
   end
 end

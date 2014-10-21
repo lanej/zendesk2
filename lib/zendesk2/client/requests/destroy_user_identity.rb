@@ -1,31 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def destroy_user_identity(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
+class Zendesk2::Client::DestroyUserIdentity < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" }
+  request_method :delete
 
-      request(
-        :method => :delete,
-        :path   => "/users/#{user_id}/identities/#{id}.json"
-      )
-    end
+  def user_id
+    params.fetch("user_identity").fetch("user_id")
   end
 
-  class Mock
-    def destroy_user_identity(params={})
-      id      = params["id"].to_s
-      user_id = params["user_id"].to_s
-      path    = "/users/#{user_id}/identities/#{id}.json"
+  def user_identity_id
+    params.fetch("user_identity").fetch("id")
+  end
 
-      body = self.delete!(:identities, id)
-
-      response(
-        :method => :delete,
-        :path   => path,
-        :body   => {
-          "identity" => body,
-        },
-      )
-    end
+  def mock
+    mock_response("identity" => self.delete!(:identities, user_identity_id))
   end
 end

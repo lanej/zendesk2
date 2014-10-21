@@ -1,4 +1,4 @@
-class Zendesk2::Client::TicketAudit < Cistern::Model
+class Zendesk2::Client::TicketAudit < Zendesk2::Client::Model
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when creating audits
@@ -19,10 +19,10 @@ class Zendesk2::Client::TicketAudit < Cistern::Model
   def ticket
     requires :ticket_id
 
-    self.connection.tickets.get(self.ticket_id)
+    self.service.tickets.get(self.ticket_id)
   end
 
   def events
-    (self.attributes[:events] || []).map{|ae| Zendesk2::Client::AuditEvent.for(ae.merge(ticket_audit: self, connection: self.connection))}
+    (self.attributes[:events] || []).map{|ae| Zendesk2::Client::AuditEvent.for(ae.merge(ticket_audit: self, service: self.service))}
   end
 end

@@ -1,18 +1,9 @@
-class Zendesk2::Client
-  class Real
-    def get_help_center_sections(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetHelpCenterSections < Zendesk2::Client::Request
+  request_path { |_| "/help_center/sections.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/help_center/sections.json",
-      )
-    end
-  end
-  class Mock
-    def get_help_center_sections(params={})
-      page(params, :help_center_sections, "/help_center_sections.json", "sections")
-    end
+  page_params!
+
+  def mock
+    page(:help_center_sections, root: "sections")
   end
 end

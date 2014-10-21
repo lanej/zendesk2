@@ -1,4 +1,4 @@
-class Zendesk2::Client::HelpCenter::Section < Zendesk2::Model
+class Zendesk2::Client::HelpCenter::Section < Zendesk2::Client::Model
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when creating subscriptions
@@ -35,26 +35,22 @@ class Zendesk2::Client::HelpCenter::Section < Zendesk2::Model
   assoc_accessor :category, collection: :help_center_categories
 
   def save!
-    requires :name, :locale, :category_id
+    response = if new_record?
+                 requires :name, :locale, :category_id
 
-    data = if new_record?
-             connection.create_help_center_section(params).body["section"]
-           else
-             connection.update_help_center_section(dirty_attributes.merge("id" => self.identity)).body["section"]
-           end
+                 service.create_help_center_section("section" => self.attributes)
+               else
+                 requires :identity
 
-    merge_attributes(data)
+                 service.update_help_center_section("section" => self.attributes)
+               end
+
+    merge_attributes(response.body["section"])
   end
 
   def destroy!
-    requires :id
+    requires :identity
 
-    connection.destroy_help_center_section(id)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(self.attributes, :category_id, :description, :locale, :name, :position, :sorting)
+    service.destroy_help_center_section("section" => { "id" => self.identity })
   end
 end

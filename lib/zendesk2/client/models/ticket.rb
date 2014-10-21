@@ -1,7 +1,5 @@
-class Zendesk2::Client::Ticket < Zendesk2::Model
+class Zendesk2::Client::Ticket < Zendesk2::Client::Model
   extend Zendesk2::Attributes
-
-  PARAMS = %w[external_id via priority requester_id submitter_id assignee_id organization_id subject description custom_fields recipient status collaborator_ids tags]
 
   # @return [Integer] Automatically assigned when creating tickets
   identity :id, type: :integer
@@ -67,13 +65,17 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     data = if new_record?
              requires :subject, :description
 
-             with_requester = (@requester || nil) && Zendesk2.stringify_keys(@requester)
+             create_attributes = self.attributes.dup
 
-             connection.create_ticket(params.merge("requester" => with_requester)).body["ticket"]
+             if with_requester = (@requester || nil) && Zendesk2.stringify_keys(@requester)
+               create_attributes.merge!("requester" => with_requester)
+             end
+
+             service.create_ticket("ticket" => create_attributes).body["ticket"]
            else
              requires :identity
 
-             connection.update_ticket(params.merge("id" => self.identity)).body["ticket"]
+             service.update_ticket("ticket" => self.attributes).body["ticket"]
            end
 
     merge_attributes(data)
@@ -82,7 +84,7 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
   def destroy!
     requires :identity
 
-    connection.destroy_ticket("id" => self.identity)
+    service.destroy_ticket("ticket" => {"id" => self.identity})
   end
 
   # Adds a ticket comment
@@ -96,16 +98,22 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     requires :identity
 
     options[:public] = true if options[:public].nil?
+
     comment = Zendesk2.stringify_keys(options).merge("body" => text)
 
-    connection.ticket_comments.new(
-      connection.update_ticket("id" => self.identity, "comment" => comment).body["audit"]["events"].first
+    service.ticket_comments.new(
+      service.update_ticket(
+        "ticket" => {
+          "id"      => self.identity,
+          "comment" => comment,
+        }
+      ).body["audit"]["events"].first
     )
   end
 
   # @return [Array<Zendesk2::Client::User>] All users CCD on this ticket
   def collaborators
-    self.collaborator_ids.map{|cid| self.connection.users.get(cid)}
+    self.collaborator_ids.map { |cid| self.service.users.get(cid) }
   end
 
   # Update list of users to be CCD on this ticket
@@ -116,22 +124,16 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
 
   # @return [Zendesk2::Client::TicketAudits] all audits for this ticket
   def audits
-    self.connection.ticket_audits(ticket_id: self.identity).all
+    self.service.ticket_audits(ticket_id: self.identity).all
   end
 
   # @return [Zendesk2::Client::TicketMetric] metrics for this ticket
   def metrics
-    Zendesk2::Client::TicketMetric.new(self.connection.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
+    Zendesk2::Client::TicketMetric.new(self.service.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
   end
 
   # @return [Array<Zendesk2::Client::TicketComment>] all comments for this ticket
   def comments
-    self.connection.ticket_comments(ticket_id: self.identity).all
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
+    self.service.ticket_comments(ticket_id: self.identity).all
   end
 end

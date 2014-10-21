@@ -1,23 +1,18 @@
-class Zendesk2::Client
-  class Real
-    def get_topic_comments(params={})
-      topic_id    = params.delete("topic_id")
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetTopicComments < Zendesk2::Client::Request
+  request_path { |r| "/topics/#{r.topic_id}/comments.json" }
+  request_method :get
 
-      request(
-        :params => page_params,
-        :path   => "/topics/#{topic_id}/comments.json",
-      )
-    end
+  page_params!
+
+  def topic_id
+    params.fetch("topic_id")
   end
-  class Mock
-    def get_topic_comments(params={})
-      topic_id = params["topic_id"]
-      self.find!(:topics, topic_id)
-      filter   = lambda { |comments| comments.select { |c| c["topic_id"] == topic_id } }
 
-      page(params, :topic_comments, "/topics/#{topic_id}/comments.json", "topic_comments", filter: filter).tap do
-      end
-    end
+  def mock
+    self.find!(:topics, topic_id)
+
+    topic_comments = self.data[:topic_comments].values.select { |c| c["topic_id"] == topic_id }
+
+    page(topic_comments, root: "topic_comments")
   end
 end

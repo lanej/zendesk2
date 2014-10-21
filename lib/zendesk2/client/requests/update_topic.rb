@@ -1,31 +1,17 @@
-class Zendesk2::Client
-  class Real
-    def update_topic(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateTopic < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/topics/#{r.topic_id}.json" }
+  request_body { |r| { "topic" => r.topic_params } }
 
-      request(
-        :method => :put,
-        :path   => "/topics/#{id}.json",
-        :body   => {
-          "topic" => params
-        },
-      )
-    end
+  def topic_id
+    params.fetch("topic").fetch("id").to_i
   end
-  class Mock
-    def update_topic(params={})
-      id   = params.delete("id")
-      path = "/topics/#{id}.json"
 
-      body = self.find!(:topics, id).merge!(params)
+  def topic_params
+    Cistern::Hash.slice(params.fetch("topic"), *Zendesk2::Client::CreateTopic.accepted_attributes)
+  end
 
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "topic" => body
-        },
-      )
-    end
+  def mock
+    mock_response("topic" => self.find!(:topics, topic_id).merge!(topic_params))
   end
 end

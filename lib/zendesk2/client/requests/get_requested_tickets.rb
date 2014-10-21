@@ -1,22 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def get_requested_tickets(params={})
-      id          = params["id"]
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetRequestedTickets < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/users/#{r.user_id}/tickets/requested.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users/#{id}/tickets/requested.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_requested_tickets(params={})
-      id = params["id"].to_s
+  def user_id
+    params.fetch("user_id").to_i
+  end
 
-      page(params, :tickets, "/requesteds/#{id}/tickets.json", "tickets", filter: lambda { |c| c.select { |u| u["requester_id"] == id } })
-    end
-  end # Mock
+  def mock(params={})
+    tickets = self.data[:tickets].values.select { |u| u["requester_id"] == user_id }
+
+    page(tickets, root: "tickets")
+  end
 end

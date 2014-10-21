@@ -18,12 +18,12 @@ describe "users" do
     it "should prevent duplicate external_ids" do
       external_id = mock_uuid
 
-      client.create_user(email: mock_email, name: "a", external_id: nil)         # fine
-      client.create_user(email: mock_email, name: "b", external_id: nil)         # also fine
-      client.create_user(email: mock_email, name: "c", external_id: external_id) # it's cool
+      client.create_user("user" => {:email => mock_email, :name => "a", :external_id => nil})         # fine
+      client.create_user("user" => {:email => mock_email, :name => "b", :external_id => nil})         # also fine
+      client.create_user("user" => {:email => mock_email, :name => "c", :external_id => external_id}) # it's cool
 
       expect {
-        client.create_user(email:  mock_email, name: "d", external_id: external_id)
+        client.create_user("user" => {:email => mock_email, :name => "d", :external_id => external_id})
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
@@ -35,11 +35,11 @@ describe "users" do
 
       external_id = mock_uuid
 
-      client.update_user(id: user.id, external_id: nil)                 # fine
-      client.update_user(id: another_user.id, external_id: external_id) # also fine
+      client.update_user("user" => {"id" => user.id,         "external_id" => nil})         # fine
+      client.update_user("user" => {"id" => another_user.id, "external_id" => external_id}) # also fine
 
       expect {
-        client.update_user("id" => user.id, external_id: external_id)
+        client.update_user("user" => {"id" => user.id, "external_id" => external_id})
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
@@ -157,14 +157,12 @@ describe "users" do
     end
 
     it "should create another identity when updating email" do
-      expect(user.identities.size).to eq(1)
-
       original_email = user.email
       user.email = (new_email = mock_email)
 
       expect {
         user.save!
-      }.to change { user.identities.size }.by(1)
+      }.to change { user.identities.size }.from(1).to(2)
 
       new_identity = user.identities.find { |i| i.value == new_email }
 
@@ -184,22 +182,25 @@ describe "users" do
 
     it "should form 'legacy' login url" do
       return_to = "http://engineyard.com"
-      uri = Addressable::URI.parse(user.login_url(Time.now.to_s, return_to: return_to, token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)"))
-      expect(uri.query_values["return_to"]).to eq(return_to)
-      expect(uri.query_values["name"]).to eq user.name
-      expect(uri.query_values["email"]).to eq user.email
-      expect(uri.query_values["hash"]).not_to be_nil
+      login_uri = user.login_url(Time.now.to_s, return_to: return_to, token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)")
+      query = Faraday::NestedParamsEncoder.decode(URI.parse(login_uri).query)
+
+      expect(query["return_to"]).to eq(return_to)
+      expect(query["name"]).to eq user.name
+      expect(query["email"]).to eq user.email
+      expect(query["hash"]).not_to be_nil
     end
 
     it "should form jwt login url" do
       return_to = "http://engineyard.com"
-      uri = Addressable::URI.parse(user.jwt_login_url(return_to: return_to, jwt_token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)"))
-      expect(uri.query_values["return_to"]).to eq(return_to)
-      expect(uri.query_values["name"]).to be_nil
-      expect(uri.query_values["email"]).to be_nil
-      expect(uri.query_values["jwt"]).not_to be_nil
 
-      #TODO: try JWT.decode
+      jwt_login_uri = user.jwt_login_url(return_to: return_to, jwt_token: "in-case-you-dont-have-it-in ~/.zendesk2 (aka ci)")
+      query = Faraday::NestedParamsEncoder.decode(URI.parse(jwt_login_uri).query)
+
+      expect(query["return_to"]).to eq(return_to)
+      expect(query["name"]).to be_nil
+      expect(query["email"]).to be_nil
+      expect(query["jwt"]).not_to be_nil
     end
 
   end

@@ -1,29 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def destroy_forum(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyForum < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/forums/#{r.forum_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/forums/#{id}.json"
-      )
-    end
+  def forum_id
+    params.fetch("forum").fetch("id")
   end
 
-  class Mock
-    def destroy_forum(params={})
-      id   = params["id"]
-      path = "/forums/#{id}.json"
+  def mock
+    delete!(:forums, forum_id)
 
-      body = self.delete!(:forums, id)
-
-      response(
-        :method => :delete,
-        :path   => path,
-        :body   => {
-          "forum" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

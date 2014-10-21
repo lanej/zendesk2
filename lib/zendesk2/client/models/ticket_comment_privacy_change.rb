@@ -13,7 +13,7 @@ class Zendesk2::Client
     def comment
       requires :comment_id
 
-      self.connection.ticket_comments.get(self.comment_id)
+      self.service.ticket_comments.get(self.comment_id)
     end
   end
 end

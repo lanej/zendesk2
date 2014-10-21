@@ -1,18 +1,9 @@
-class Zendesk2::Client
-  class Real
-    def get_help_center_categories(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetHelpCenterCategories < Zendesk2::Client::Request
+  request_path { |_| "/help_center/categories.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/help_center/categories.json",
-      )
-    end
-  end
-  class Mock
-    def get_help_center_categories(params={})
-      page(params, :help_center_categories, "/help_center_categories.json", "categories")
-    end
+  page_params!
+
+  def mock
+    page(:help_center_categories, root: "categories")
   end
 end

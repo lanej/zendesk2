@@ -1,7 +1,6 @@
-# @abstract Subclass and set #{collection_method}, #{collection_root}, #{model_method}, #{model_root} and #{model}
 # adds {#create!} method to {Cistern::Collection}.
-class Zendesk2::PagedCollection < Zendesk2::Collection
-  def self.inherited(klass)
+module Zendesk2::PagedCollection
+  def self.included(klass)
     klass.send(:attribute, :count)
     klass.send(:attribute, :next_page_link, {:aliases => "next_page"})
     klass.send(:attribute, :previous_page_link, {:aliases => "previous_page"})
@@ -14,7 +13,7 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
   def model_root; self.class.model_root; end
 
   def new_page
-    page = self.class.new(connection: self.connection)
+    page = self.class.new(service: self.service)
     page.merge_attributes(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))})
     page
   end
@@ -32,7 +31,7 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
     return to_enum(:each_entry) unless block_given?
     page = self
     while page
-      page.records.each { |r| yield r }
+      page.to_a.each { |r| yield r }
       page = page.next_page
     end
   end
@@ -64,12 +63,11 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
   # Fetch a collection of resources
   def all(params={})
     if params["filtered"] && (url = params["url"])
-      uri = Addressable::URI.parse(url)
-      query = uri.query_values
+      query = Faraday::NestedParamsEncoder.decode(URI.parse(url).query)
       search(query.delete("query"), query)
     else
       scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
-      body = connection.send(collection_method, scoped_attributes).body
+      body = service.send(collection_method, scoped_attributes).body
 
       self.load(body[collection_root]) # 'results' is the key for paged seraches
       self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
@@ -98,7 +96,9 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
     else scoped_attributes.merge!("id" => identity_or_hash)
     end
 
-    if data = self.connection.send(model_method, scoped_attributes).body[self.model_root]
+    scoped_attributes = {model_root => scoped_attributes}
+
+    if data = self.service.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
     end
   end

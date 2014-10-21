@@ -1,10 +1,11 @@
-class Zendesk2::Client::Organizations < Zendesk2::PagedCollection
+class Zendesk2::Client::Organizations < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::Organization
 
   def find_by_external_id(external_id)
-    body = connection.get_organization_by_external_id(external_id).body
+    body = service.get_organization_by_external_id("external_id" => external_id).body
     if data = body.delete("organizations")
       collection = self.clone.load(data)
       collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))

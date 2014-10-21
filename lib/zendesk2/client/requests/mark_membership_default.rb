@@ -1,36 +1,25 @@
-class Zendesk2::Client
-  class Real
-    def mark_membership_default(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
+class Zendesk2::Client::MarkMembershipDefault < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/users/#{r.user_id}/organization_memberships/#{r.identity}/make_default.json" }
 
-      path = "/users/#{user_id}/organization_memberships/#{id}/make_default.json"
-
-      request(
-        :method => :put,
-        :path   => path,
-      )
-    end
+  def identity
+    params.fetch("membership").fetch("id")
   end
-  class Mock
-    def mark_membership_default(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
 
-      path = "/users/#{user_id}/organization_memberships/#{id}/make_default.json"
+  def user_id
+    params.fetch("membership").fetch("user_id").to_i
+  end
 
-      if (membership = self.find!(:memberships, id)) && membership["user_id"] == user_id
-        # only one user can be default
-        other_user_memberships = self.data[:memberships].values.select { |m| m["user_id"] == user_id }
-        other_user_memberships.each { |i| i["default"] = false }
-        membership["default"] = true
+  def mock
+    if (membership = self.find!(:memberships, identity)) && (membership["user_id"] == user_id)
+      # only one user can be default
+      other_user_memberships = self.data[:memberships].values.select { |m| m["user_id"]== user_id }
+      other_user_memberships.each { |i| i["default"] = false }
+      membership["default"] = true
 
-        response(
-          :method => :put,
-          :path   => path
-        )
-      else error!(:not_found)
-      end
+      mock_response(params)
+    else
+      error!(:not_found)
     end
   end
 end

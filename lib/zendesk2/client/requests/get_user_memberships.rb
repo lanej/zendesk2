@@ -1,22 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def get_user_memberships(params={})
-      user_id     = params["user_id"]
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetUserMemberships < Zendesk2::Client::Request
+  request_method :get
+  request_path  { |r| "/users/#{r.user_id}/organization_memberships.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users/#{user_id}/organization_memberships.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_user_memberships(params={})
-      user_id = params["user_id"]
+  def user_id
+    params.fetch("membership").fetch("user_id").to_i
+  end
 
-      resources(:memberships, "/users/#{user_id}/organization_memberships.json", "organization_memberships", filter: lambda{|c| c.select { |a| a["user_id"] == user_id }})
-    end
-  end # Mock
+  def mock
+    collection = self.data[:memberships].values.select { |m| m["user_id"] == user_id }
+
+    resources(collection, root: "organization_memberships")
+  end
 end

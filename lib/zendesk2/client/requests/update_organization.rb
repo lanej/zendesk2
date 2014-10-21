@@ -1,44 +1,32 @@
-class Zendesk2::Client
-  class Real
-    def update_organization(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/organizations/#{r.organization_id}.json" }
+  request_body { |r| { "organization" => Cistern::Hash.except(r.organization, "id") } }
 
-      request(
-        :method => :put,
-        :path   => "/organizations/#{id}.json",
-        :body   => {
-          "organization" => params
-        },
-      )
-    end
+  def organization
+    params.fetch("organization")
   end
-  class Mock
-    def update_organization(_params={})
-      params = Cistern::Hash.stringify_keys(_params)
-      id     = params.delete("id")
 
-      organization = self.find!(:organizations, id)
+  def organization_id
+    organization.fetch("id").to_i
+  end
 
-      other_organizations = self.data[:organizations].dup
-      other_organizations.delete(id.to_s)
+  def mock
+    record = self.find!(:organizations, organization_id)
 
-      if other_organizations.values.find { |o| o["name"] == params["name"] }
-        error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
-      end
+    other_organizations = service.data[:organizations].dup
+    other_organizations.delete(organization_id)
 
-      if params["external_id"] && other_organizations.values.find { |o| o["external_id"] == params["external_id"] }
-        error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
-      end
-
-      body = organization.merge!(params)
-
-      response(
-        :method => :put,
-        :path   => "/organizations/#{id}.json",
-        :body   => {
-          "organization" => body
-        },
-      )
+    if other_organizations.values.find { |o| o["name"] == organization["name"] }
+      error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
     end
+
+    if organization["external_id"] && other_organizations.values.find { |o| o["external_id"].to_s == organization["external_id"].to_s }
+      error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
+    end
+
+    record.merge!(Cistern::Hash.slice(organization, *Zendesk2::Client::CreateOrganization.accepted_attributes))
+
+    mock_response("organization" => record)
   end
 end

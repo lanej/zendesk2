@@ -1,26 +1,11 @@
-class Zendesk2::Client
-  class Real
-    def get_topic(params={})
-      id = params["id"]
+class Zendesk2::Client::GetTopic < Zendesk2::Client::Request
+  request_path { |r| "/topics/#{r.topic_id}.json" }
 
-      request(
-        :method => :get,
-        :path => "/topics/#{id}.json"
-      )
-    end
-  end # Real
+  def topic_id
+    params.fetch("topic").fetch("id")
+  end
 
-  class Mock
-    def get_topic(params={})
-      id   = params["id"]
-      body = self.find!(:topics, id)
-
-      response(
-        :path  => "/topics/#{id}.json",
-        :body  => {
-          "topic" => body
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("topic" => self.find!(:topics, topic_id))
+  end
 end

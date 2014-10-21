@@ -1,18 +1,10 @@
-class Zendesk2::Client
-  class Real
-    def get_users(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetUsers < Zendesk2::Client::Request
+  request_method :get
+  request_path { "/users.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/users.json",
-      )
-    end
-  end
-  class Mock
-    def get_users(params={})
-      page(params, :users, "/users.json", "users")
-    end
+  page_params!
+
+  def mock(params={})
+    page(:users, params)
   end
 end

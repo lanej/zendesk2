@@ -1,66 +1,61 @@
-class Zendesk2::Client
-  class Real
-    def create_user(params={})
-      request(
-        :body   => {"user" => params},
-        :method => :post,
-        :path   => "/users.json",
-      )
+class Zendesk2::Client::CreateUser < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/users.json" }
+  request_body { |r| { "user" => r.user_params } }
+
+  def self.accepted_attributes
+    %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
+  end
+
+  def user_params
+    Cistern::Hash.slice(params.fetch("user"), *self.class.accepted_attributes)
+  end
+
+  def mock
+    user_id = service.serial_id
+
+    user = params.fetch("user")
+
+    if organization_id = user["organization_id"]
+      self.find!(:organizations, organization_id)
     end
-  end # Real
 
-  class Mock
-    def create_user(_params={})
-      params  = Cistern::Hash.stringify_keys(_params)
-      user_id = self.class.new_id
-      path    = "/users.json"
+    record = {
+      "id"         => user_id,
+      "url"        => url_for("/users/#{user_id}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+      "active"     => true,
+    }.merge(user_params)
 
-      if organization_id = params.delete("organization_id")
-        self.find!(:organizations, organization_id)
-        params["organization_id"] = organization_id.to_s
-      end
+    if record["external_id"] && self.data[:users].values.find { |o| o["external_id"] == record["external_id"] }
+      error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
+    end
 
-      record = {
-        "id"         => user_id,
-        "url"        => url_for("/users/#{user_id}.json"),
+    if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
+      error!(:invalid, :details => {
+        "email" => [ {
+          "description" => "Email: #{email} is already being used by another user"
+        }]})
+    else
+      user_identity_id = service.serial_id
+
+      user_identity = {
+        "id"         => user_identity_id,
+        "url"        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
         "created_at" => Time.now.iso8601,
         "updated_at" => Time.now.iso8601,
-        "active"     => true,
-      }.merge(params)
+        "type"       => "email",
+        "value"      => record["email"],
+        "verified"   => false,
+        "primary"    => true,
+        "user_id"    => user_id,
+      }
 
-      if record["external_id"] && self.data[:users].values.find { |o| o["external_id"] == record["external_id"] }
-        error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
-      end
+      self.data[:identities][user_identity_id] = user_identity
+      self.data[:users][user_id] = record.reject { |k,v| k == "email" }
 
-      if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
-        error!(:invalid, :details => {
-              "email" => [ {
-                "description" => "Email: #{email} is already being used by another user"
-              }]})
-      else
-        user_identity_id = self.class.new_id
-
-        user_identity = {
-          "id"         => user_identity_id,
-          "url"        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
-          "created_at" => Time.now.iso8601,
-          "updated_at" => Time.now.iso8601,
-          "type"       => "email",
-          "value"      => record["email"],
-          "verified"   => false,
-          "primary"    => true,
-          "user_id"    => user_id,
-        }
-
-        self.data[:identities][user_identity_id] = user_identity
-        self.data[:users][user_id] = record.reject { |k,v| k == "email" }
-
-        response(
-          :method => :post,
-          :body   => {"user" => record},
-          :path   => path,
-        )
-      end
+      mock_response({"user" => record}, {status: 201})
     end
-  end # Mock
+  end
 end

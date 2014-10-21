@@ -6,7 +6,7 @@ describe "memberships" do
   let(:organization)   { client.organizations.create!(name: mock_uuid) }
 
   include_examples "zendesk resource", {
-    :create_params => lambda { {organization_id: organization.id, user_id: user.id} },
+    :create_params => lambda { { organization_id: organization.id, user_id: user.id } },
     :collection    => lambda { client.memberships(user: user) },
     :paged         => false,
     :update        => false,
@@ -54,25 +54,21 @@ describe "memberships" do
   describe "create_membership" do
     it "should error when organization does not exist" do
       expect {
-        client.create_membership("user_id" => user.identity, "organization_id" => 99)
+        client.create_membership("membership" => { "user_id" => user.identity, "organization_id" => 99 })
       }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
     end
 
-    it "should error when missing parameters" do
-      expect { client.create_membership({}) }.to raise_exception(ArgumentError, "missing parameters: user_id, organization_id")
-    end
-
     it "should error when creating a duplicate membership" do
-      client.create_membership("user_id" => user.identity, "organization_id" => organization.identity)
+      client.create_membership("membership" => { "user_id" => user.identity, "organization_id" => organization.identity })
 
       expect {
-        client.create_membership("user_id" => user.identity, "organization_id" => organization.identity)
+        client.create_membership("membership" => { "user_id" => user.identity, "organization_id" => organization.identity })
       }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
     end
 
     it "should error when user does not exist" do
       expect {
-        client.create_membership("user_id" => 99, "organization_id" => organization.identity)
+        client.create_membership("membership" => { "user_id" => 99, "organization_id" => organization.identity })
       }.to raise_exception(Zendesk2::Error, /RecordNotFound/)
     end
   end

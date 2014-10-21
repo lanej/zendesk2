@@ -1,27 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def destroy_ticket_field(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyTicketField < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/ticket_fields/#{r.ticket_field_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/ticket_fields/#{id}.json"
-      )
-    end
+  def ticket_field_id
+    params.fetch("ticket_field").fetch("id")
   end
 
-  class Mock
-    def destroy_ticket_field(params={})
-      id   = params["id"]
-      body = self.delete!(:ticket_fields, id)
+  def mock
+    self.delete!(:ticket_fields, ticket_field_id)
 
-      response(
-        :method => :delete,
-        :path   => "/ticket_fields/#{id}.json",
-        :body   => {
-          "ticket_field" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

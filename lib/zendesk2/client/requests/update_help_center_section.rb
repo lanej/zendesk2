@@ -1,48 +1,23 @@
-class Zendesk2::Client
-  class Real
-    def update_help_center_section(params={})
-      id     = require_parameters(params, "id")
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/sections/#{id}.json"
-             else
-               "/help_center/sections/#{id}.json"
-             end
-
-      request(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "section" => params
-        },
-      )
+class Zendesk2::Client::UpdateHelpCenterSection < Zendesk2::Client::Request
+  request_method :put
+  request_body { |r| { "section" => r.section_params } }
+  request_path { |r|
+    if locale = r.section_params["locale"]
+      "/help_center/#{locale}/sections/#{r.section_id}.json"
+    else
+      "/help_center/sections/#{r.section_id}.json"
     end
+  }
+
+  def section_params
+    @_section_params ||= Cistern::Hash.slice(params.fetch("section"), *Zendesk2::Client::CreateHelpCenterSection.accepted_attributes)
   end
-  class Mock
-    def update_help_center_section(params={})
-      params = Cistern::Hash.stringify_keys(params)
 
-      require_parameters(params, "id")
+  def section_id
+    params.fetch("section").fetch("id")
+  end
 
-      id     = params.delete("id").to_s
-      locale = params["locale"]
-
-      path = if locale
-               "/help_center/#{locale}/sections/#{id}.json"
-             else
-               "/help_center/sections/#{id}.json"
-             end
-
-      body = self.find!(:help_center_sections, id).merge!(params)
-
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "section" => body,
-        },
-      )
-    end
+  def mock
+    mock_response("section" => self.find!(:help_center_sections, section_id).merge!(section_params))
   end
 end

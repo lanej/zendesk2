@@ -1,25 +1,15 @@
-class Zendesk2::Client
-  class Real
-    def get_user_identity(params={})
-      id      = params["id"]
-      user_id = params["user_id"]
-      path    = "/users/#{user_id}/identities/#{id}.json"
+class Zendesk2::Client::GetUserIdentity < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" }
 
-      request(:path => path)
-    end
-  end # Real
+  def user_identity_id
+    params.fetch("user_identity").fetch("id").to_i
+  end
 
-  class Mock
-    def get_user_identity(params={})
-      id      = params["id"]
-      user_id = params["user_id"]
+  def user_id
+    params.fetch("user_identity").fetch("user_id").to_i
+  end
 
-      response(
-        :path =>  "/users/#{user_id}/identities/#{id}.json",
-        :body => {
-          "identity" => find!(:identities, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("identity" => find!(:identities, user_identity_id))
+  end
 end

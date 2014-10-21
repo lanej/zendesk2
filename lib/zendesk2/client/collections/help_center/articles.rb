@@ -1,4 +1,5 @@
-class Zendesk2::Client::HelpCenter::Articles < Zendesk2::PagedCollection
+class Zendesk2::Client::HelpCenter::Articles < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::HelpCenter::Article

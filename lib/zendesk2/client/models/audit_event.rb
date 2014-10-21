@@ -1,5 +1,5 @@
 # @abstract subclass and implement audit event specific attributes
-class Zendesk2::Client::AuditEvent < Cistern::Model
+class Zendesk2::Client::AuditEvent < Zendesk2::Client::Model
   extend Zendesk2::Attributes
   extend Forwardable
 
@@ -16,7 +16,7 @@ class Zendesk2::Client::AuditEvent < Cistern::Model
     if klass = all.find{|k| k.name == event_class}
       klass.new(attributes)
     else # handle unrecognized audit events
-      attributes.reject{|k,v| k == :connection}
+      attributes.reject{|k,v| k == :service}
     end
   end
 

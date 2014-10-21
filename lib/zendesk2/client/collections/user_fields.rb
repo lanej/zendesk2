@@ -1,7 +1,9 @@
-class Zendesk2::Client::UserFields < Zendesk2::Collection
+class Zendesk2::Client::UserFields < Zendesk2::Client::Collection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::UserField
+
+  attribute :count
 
   self.collection_method = :get_user_fields
   self.collection_root   = "user_fields"

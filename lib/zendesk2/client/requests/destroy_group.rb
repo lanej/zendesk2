@@ -1,27 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def destroy_group(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyGroup < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/groups/#{r.group_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/groups/#{id}.json"
-      )
-    end
+  def group_id
+    params.fetch("group").fetch("id")
   end
 
-  class Mock
-    def destroy_group(params={})
-      id   = params["id"]
-      body = self.find!(:groups, id).merge!("deleted" => true)
+  def mock
+    find!(:groups, group_id, params).merge!("deleted" => true)
 
-      response(
-        :method => :delete,
-        :path   => "/groups/#{id}.json",
-        :body   => {
-          "group" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

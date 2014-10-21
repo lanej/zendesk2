@@ -1,37 +1,33 @@
-class Zendesk2::Client
-  class Real
-    def create_topic_comment(params={})
-      topic_id = params.delete("topic_id")
-      path     = "/topics/#{topic_id}/comments.json"
+class Zendesk2::Client::CreateTopicComment < Zendesk2::Client::Request
+  request_method :post
+  request_path { |r| "/topics/#{r.topic_id}/comments.json" }
+  request_body { |r| { "topic_comment" => r.topic_comment_params } }
 
-      request(
-        :body   => {"topic_comment" => params},
-        :method => :post,
-        :path   => path,
-      )
-    end
-  end # Real
+  def self.accepted_attributes
+    %w[user_id body informative]
+  end
 
-  class Mock
-    def create_topic_comment(params={})
-      identity = self.class.new_id
-      topic_id = params["topic_id"]
-      path     = "/topics/#{topic_id}/comments.json"
+  def topic_id
+    params.fetch("topic_comment").fetch("topic_id").to_i
+  end
 
-      record = {
-        "id"         => identity,
-        "url"        => url_for("/topics/#{topic_id}/comments/#{identity}.json"),
-        "created_at" => Time.now.iso8601,
-        "updated_at" => Time.now.iso8601,
-      }.merge(params)
+  def topic_comment_params
+    Cistern::Hash.slice(params.fetch("topic_comment"), *self.class.accepted_attributes)
+  end
 
-      self.data[:topic_comments][identity]= record
+  def mock
+    identity = service.serial_id
 
-      response(
-        :method => :post,
-        :body   => {"topic_comment" => record},
-        :path   => path,
-      )
-    end
-  end # Mock
+    record = {
+      "id"         => identity,
+      "url"        => url_for("/topics/#{topic_id}/comments/#{identity}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+      "topic_id"   => self.topic_id,
+    }.merge(topic_comment_params)
+
+    self.data[:topic_comments][identity] = record
+
+    mock_response("topic_comment" => record)
+  end
 end

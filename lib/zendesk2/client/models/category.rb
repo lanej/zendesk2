@@ -1,5 +1,4 @@
-class Zendesk2::Client::Category < Zendesk2::Model
-  PARAMS = %w[id name description position]
+class Zendesk2::Client::Category < Zendesk2::Client::Model
 
   # @return [Integer] Automatically assigned during creation
   identity :id, type: :integer
@@ -18,27 +17,28 @@ class Zendesk2::Client::Category < Zendesk2::Model
   attribute :url, type: :string
 
   def destroy!
-    requires :id
+    requires :identity
 
-    connection.destroy_category("id" => self.id)
+    service.destroy_category("category" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             connection.create_category(params).body["category"]
+             service.create_category(params).body["category"]
            else
              requires :identity
 
-             connection.update_category(params).body["category"]
+             service.update_category(params).body["category"]
            end
+
     merge_attributes(data)
   end
 
-  private
+  protected
 
   def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
+    {"category" => Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *Zendesk2::Client::CreateCategory.accepted_attributes)}
   end
 end

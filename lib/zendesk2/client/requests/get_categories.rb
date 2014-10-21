@@ -1,18 +1,10 @@
-class Zendesk2::Client
-  class Real
-    def get_categories(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetCategories < Zendesk2::Client::Request
+  request_method :get
+  request_path { |_| "/categories.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/categories.json",
-      )
-    end
-  end
-  class Mock
-    def get_categories(params={})
-      page(params, :categories, "/categories.json", "categories")
-    end
+  page_params!
+
+  def mock
+    page(:categories)
   end
 end

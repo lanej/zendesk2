@@ -1,23 +1,14 @@
-class Zendesk2::Client
-  class Real
-    def get_ticket_comments(params={})
-      ticket_id = require_parameters(params, "ticket_id")
+class Zendesk2::Client::GetTicketComments < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r|  "/tickets/#{r.ticket_id}/comments.json" }
 
-      request(
-        :method => :get,
-        :path => "/tickets/#{ticket_id}/comments.json"
-      )
-    end
-  end # Real
+  def ticket_id
+    params.fetch("ticket_id").to_i
+  end
 
-  class Mock
-    def get_ticket_comments(params={})
-      ticket_id = require_parameters(params, "ticket_id")
+  def mock(params={})
+    comments = self.data[:ticket_comments].values.select { |comment| comment["ticket_id"] == ticket_id }
 
-      page(params,
-           :ticket_comments,
-           "/tickets/#{ticket_id}/comments.json",
-           "comments", filter: lambda { |comments| comments.select { |comment| comment["ticket_id"].to_s == ticket_id.to_s } })
-    end
-  end # Mock
+    page(comments, root: "comments")
+  end
 end

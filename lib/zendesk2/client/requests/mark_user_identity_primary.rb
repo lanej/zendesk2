@@ -1,37 +1,24 @@
-class Zendesk2::Client
-  class Real
-    def mark_user_identity_primary(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
-      path    = "/users/#{user_id}/identities/#{id}/make_primary.json"
+class Zendesk2::Client::MarkUserIdentityPrimary < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}/make_primary.json" }
+  request_method :put
 
-      request(
-        :method => :put,
-        :path   => path,
-      )
-    end
+  def user_id
+    params.fetch("user_identity").fetch("user_id")
   end
-  class Mock
-    def mark_user_identity_primary(params={})
-      id      = params.delete("id").to_s
-      user_id = params.delete("user_id").to_s
-      path    = "/users/#{user_id}/identities/#{id}/make_primary.json"
 
-      user_identity = self.find!(:identities, id)
+  def user_identity_id
+    params.fetch("user_identity").fetch("id")
+  end
 
-      if user_identity && user_identity["user_id"] == user_id
-        # only one user can be primary
-        other_user_identities = self.data[:identities].values.select{|i| i["user_id"] == user_id}
-        other_user_identities.map{|i| i["primary"] = false}
-        user_identity["primary"] = true
+  def mock
+    user_identity = self.find!(:identities, user_identity_id)
 
-        response(
-          :method => :put,
-          :path   => path
-        )
-      else
-        error!(:not_found)
-      end
-    end
+    # only one user can be primary
+    other_user_identities = service.data[:identities].values.select { |i| i["user_id"] == user_id }
+    other_user_identities.map { |i| i["primary"] = false }
+
+    user_identity.merge!("primary" => true)
+
+    mock_response(nil)
   end
 end

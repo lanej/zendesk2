@@ -1,32 +1,24 @@
-class Zendesk2::Client
-  class Real
-    def create_category(params={})
-      request(
-        :body   => {"category" => params},
-        :method => :post,
-        :path   => "/categories.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::CreateCategory < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/categories.json" }
+  request_body { |r| {"category" => r.params["category"]} }
 
-  class Mock
-    def create_category(params={})
-      identity = self.class.new_id
+  def self.accepted_attributes
+    %w[id name description position]
+  end
 
-      record = {
-        "id"         => identity,
-        "url"        => url_for("/categories/#{identity}.json"),
-        "created_at" => Time.now.iso8601,
-        "updated_at" => Time.now.iso8601,
-      }.merge(params)
+  def mock
+    identity = service.serial_id
 
-      self.data[:categories][identity] = record
+    record = {
+      "id"         => identity,
+      "url"        => url_for("/categories/#{identity}.json"),
+      "created_at" => Time.now.iso8601,
+      "updated_at" => Time.now.iso8601,
+    }.merge(Cistern::Hash.slice(params.fetch("category"), *self.class.accepted_attributes))
 
-      response(
-        :method => :post,
-        :body   => {"category" => record},
-        :path   => "/categories.json"
-      )
-    end
-  end # Mock
+    service.data[:categories][identity] = record
+
+    mock_response({"category" => record}, {status: 201})
+  end
 end

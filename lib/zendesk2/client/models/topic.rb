@@ -1,9 +1,8 @@
-class Zendesk2::Client::Topic < Zendesk2::Model
+class Zendesk2::Client::Topic < Zendesk2::Client::Model
   extend Zendesk2::Attributes
 
-  PARAMS = %w[id title body submitter_id updater_id forum_id locked pinned highlighted position tags]
+  identity :id, type: :integer # ro[yes] mandatory[no]   Automatically assigned upon creation
 
-  identity  :id,           type: :integer # ro[yes] mandatory[no]   Automatically assigned upon creation
   attribute :url,          type: :string  # ro[yes] mandatory[no]   The API url of this topic
   attribute :title,        type: :string  # ro[no] mandatory[yes]   The title of the topic
   attribute :body,         type: :string  # ro[no] mandatory[yes] The unescaped body of the topic
@@ -23,31 +22,27 @@ class Zendesk2::Client::Topic < Zendesk2::Model
   assoc_accessor :updater, collection: :users
   assoc_accessor :forum
 
-
   def destroy!
     requires :identity
 
-    connection.destroy_topic("id" => self.identity)
+    service.destroy_topic("topic" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :title, :body
-             connection.create_topic(params).body["topic"]
+
+             service.create_topic("topic" => self.attributes)
            else
              requires :identity
-             connection.update_topic(params).body["topic"]
-           end
+
+             service.update_topic("topic" => self.attributes)
+           end.body["topic"]
+
     merge_attributes(data)
   end
 
   def comments
     self.topic_comments(topic_id: topic_id)
-  end
-
-  private
-
-  def params
-    Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *PARAMS)
   end
 end

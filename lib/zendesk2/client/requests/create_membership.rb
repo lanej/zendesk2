@@ -1,49 +1,49 @@
-class Zendesk2::Client
-  class Real
-    def create_membership(params={})
-      require_parameters(params, "user_id", "organization_id")
+class Zendesk2::Client::CreateMembership < Zendesk2::Client::Request
+  request_method :post
+  request_path { |r|  "/users/#{r.user_id}/organization_memberships.json" }
+  request_body { |r| { "organization_membership" => r.membership_params } }
 
-      user_id = params["user_id"]
+  def self.accepted_params
+    %w[user_id organization_id default]
+  end
 
-      request(
-        :body   => {"organization_membership" => params },
-        :method => :post,
-        :path   => "/users/#{user_id}/organization_memberships.json",
-      )
+  def membership_params
+    @_membership_params ||= Cistern::Hash.slice(params.fetch("membership"), *self.class.accepted_params)
+  end
+
+  def user_id
+    params.fetch("membership").fetch("user_id").to_i
+  end
+
+  def organization_id
+    params.fetch("membership").fetch("organization_id").to_i
+  end
+
+  def mock
+    find!(:users, user_id)
+    find!(:organizations, organization_id,
+          :error   => :invalid,
+          :details => {
+            "organization" => [ { "description" => "Organization cannot be blank" } ],
+          })
+
+    if self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["organization_id"] == organization_id }
+      error!(:invalid, description: { "user_id" => [ { "description" => "User has already been taken" } ] })
     end
-  end # Real
 
-  class Mock
-    def create_membership(params={})
-      require_parameters(params, "user_id", "organization_id")
+    resource_id = service.serial_id
 
-      user_id         = params["user_id"]
-      organization_id = params["organization_id"]
+    default_membership = false # !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
 
-      find!(:users, user_id)
-      find!(:organizations, organization_id, error: :invalid, details: { "organization" => [ { "description" => "Organization cannot be blank" } ] })
-      if self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["organization_id"] == organization_id }
-        error!(:invalid, description: { "user_id" => [ { "description" => "User has already been taken" } ] })
-      end
+    resource = {
+      "id"              => resource_id,
+      "user_id"         => user_id,
+      "organization_id" => organization_id,
+      "default"         => default_membership,
+    }
 
-      resource_id = self.class.new_id
+    self.data[:memberships][resource_id] = resource
 
-      default_membership = false # !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
-
-      resource = {
-        "id"              => resource_id,
-        "user_id"         => user_id,
-        "organization_id" => organization_id,
-        "default"         => default_membership,
-      }
-
-      self.data[:memberships][resource_id] = resource
-
-      response(
-        :method => :post,
-        :body   => { "organization_membership" => resource },
-        :path   => "/users/#{user_id}/organization_memberships.json",
-      )
-    end
-  end # Mock
+    mock_response("organization_membership" => resource)
+  end
 end

@@ -20,7 +20,7 @@ class Zendesk2::Client
     def author
       requires :author_id
 
-      self.connection.users.get(self.author_id)
+      self.service.users.get(self.author_id)
     end
   end
 end

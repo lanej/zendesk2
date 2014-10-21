@@ -1,31 +1,18 @@
-class Zendesk2::Client
-  class Real
-    def destroy_topic_comment(params={})
-      id       = params["id"]
-      topic_id = params["topic_id"]
+class Zendesk2::Client::DestroyTopicComment < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" }
 
-      request(
-        :method => :delete,
-        :path => "/topics/#{topic_id}/comments/#{id}.json"
-      )
-    end
+  def topic_id
+    params.fetch("topic_comment").fetch("topic_id")
   end
 
-  class Mock
-    def destroy_topic_comment(params={})
-      id       = params["id"]
-      topic_id = params["topic_id"]
-      path     = "/topics/#{topic_id}/comments/#{id}.json"
+  def topic_comment_id
+    params.fetch("topic_comment").fetch("id")
+  end
 
-      body = self.delete!(:topic_comments, id)
+  def mock
+    self.delete!(:topic_comments, topic_comment_id)
 
-      response(
-        :method => :delete,
-        :path   => path,
-        :body   => {
-          "topic_comment" => body,
-        },
-      )
-    end
+    mock_response(nil)
   end
 end

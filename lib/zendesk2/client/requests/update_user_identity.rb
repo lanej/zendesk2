@@ -1,33 +1,25 @@
-class Zendesk2::Client
-  class Real
-    def update_user_identity(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
-      path    = "/users/#{user_id}/identities/#{id}.json"
+class Zendesk2::Client::UpdateUserIdentity < Zendesk2::Client::Request
+  request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" }
+  request_method :put
+  request_body { |r| { "identity" => r.user_identity_params } }
 
-      request(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "identity" => params
-        },
-      )
-    end
+  def self.accepted_attributes
+    %w[verified]
   end
-  class Mock
-    def update_user_identity(params={})
-      id      = params.delete("id").to_s
-      user_id = params.delete("user_id").to_s
-      path    = "/users/#{user_id}/identities/#{id}.json"
 
-      body = self.find!(:identities, id).merge!(Cistern::Hash.slice(params, "verified"))
-      response(
-        :method => :put,
-        :path   => path,
-        :body   => {
-          "identity" => body
-        },
-      )
-    end
+  def user_id
+    params.fetch("user_identity").fetch("user_id")
+  end
+
+  def user_identity_id
+    params.fetch("user_identity").fetch("id")
+  end
+
+  def user_identity_params
+    Cistern::Hash.slice(params.fetch("user_identity"), *self.class.accepted_attributes)
+  end
+
+  def mock
+    mock_response("identity" => self.find!(:identities, user_identity_id).merge!(user_identity_params))
   end
 end

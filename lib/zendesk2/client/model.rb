@@ -1,5 +1,4 @@
-# @abstract subclass and implement {#save!} and {#destroy!}
-class Zendesk2::Model < Cistern::Model
+class Zendesk2::Client::Model
   attr_accessor :errors
 
   # @abstract override in subclass
@@ -29,6 +28,6 @@ class Zendesk2::Model < Cistern::Model
 
   # re-define Cistern::Attributes#missing_attributes to require non-blank
   def missing_attributes(args)
-    ([:connection] | args).select{|arg| val = send("#{arg}"); val.nil? || val == "" }
+    ([:service] | args).select{|arg| val = send("#{arg}"); val.nil? || val == "" }
   end
 end

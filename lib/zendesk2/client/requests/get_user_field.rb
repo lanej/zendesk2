@@ -1,25 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_user_field(params={})
-      id = params["id"]
+class Zendesk2::Client::GetUserField < Zendesk2::Client::Request
+  request_path { |r| "/user_fields/#{r.user_field_id}.json" }
+  request_method :get
 
-      request(
-        :method => :get,
-        :path => "/user_fields/#{id}.json"
-      )
-    end
-  end # Real
+  def user_field_id
+    params.fetch("user_field").fetch("id")
+  end
 
-  class Mock
-    def get_user_field(params={})
-      id   = params["id"]
-
-      response(
-        :path => "/user_fields/#{id}.json",
-        :body => {
-          "user_field" => find!(:user_fields, id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("user_field" => find!(:user_fields, user_field_id))
+  end
 end

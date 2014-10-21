@@ -18,13 +18,13 @@ describe "user_identities" do
 
     it "should prevent duplicate identities across users" do
       expect {
-        client.create_user_identity("type" => "email", "value" => user.email, "user_id" => another_user.id)
+        client.create_user_identity("user_identity" => { "type" => "email", "value" => user.email, "user_id" => another_user.id })
       }.to raise_exception(Zendesk2::Error, /is already being used by another user/)
     end
 
     it "should prevent duplicate identities on the same user" do
       expect {
-        client.create_user_identity("type" => "email", "value" => user.email, "user_id" => user.id)
+        client.create_user_identity("user_identity" => { "type" => "email", "value" => user.email, "user_id" => user.id })
       }.to raise_exception(Zendesk2::Error, /is already being used by another user/)
     end
 
@@ -33,10 +33,13 @@ describe "user_identities" do
       user.destroy
 
       expect {
-        client.create_user_identity("type"    => "email",
-                                    "value"   => email,
-                                    "user_id" => another_user.id,
-                                   )
+        client.create_user_identity(
+          "user_identity" => {
+            "type"    => "email",
+            "value"   => email,
+            "user_id" => another_user.id,
+          }
+        )
       }.to change { another_user.identities.all.count }.by(1)
     end
   end

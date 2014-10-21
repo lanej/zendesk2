@@ -1,4 +1,5 @@
-class Zendesk2::Client::Groups < Zendesk2::PagedCollection
+class Zendesk2::Client::Groups < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 
   model Zendesk2::Client::Group
@@ -10,8 +11,8 @@ class Zendesk2::Client::Groups < Zendesk2::PagedCollection
   self.search_type       = "group"
 
   def assignable
-    data = self.connection.get_assignable_groups.body
-    collection = self.connection.groups.load(data["groups"])
+    data = self.service.get_assignable_groups.body
+    collection = self.service.groups.load(data["groups"])
     collection.merge_attributes(Cistern::Hash.slice(data, "next_page", "previous_page", "count"))
   end
 end

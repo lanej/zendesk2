@@ -1,29 +1,19 @@
-class Zendesk2::Client
-  class Real
-    def update_category(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateCategory < Zendesk2::Client::Request
+  request_method :put
+  request_body { |r| { "category" => Cistern::Hash.except(r.category, "id") } }
+  request_path { |r| "/categories/#{r.category_id}.json" }
 
-      request(
-        :method => :put,
-        :path   => "/categories/#{id}.json",
-        :body   => {
-          "category" => params
-        },
-      )
-    end
+  def category
+    self.params.fetch("category")
   end
-  class Mock
-    def update_category(params={})
-      id   = params.delete("id")
-      body = self.find!(:categories, id).merge!(params)
 
-      response(
-        :method => :put,
-        :path   => "/categories/#{id}.json",
-        :body   => {
-          "category" => body
-        },
-      )
-    end
+  def category_id
+    category.fetch("id")
+  end
+
+  def mock
+    mock_response(
+      "category" => find!(:categories, category_id).merge!(Cistern::Hash.slice(category, *Zendesk2::Client::CreateCategory.accepted_attributes))
+    )
   end
 end

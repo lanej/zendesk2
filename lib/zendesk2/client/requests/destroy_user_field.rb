@@ -1,27 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def destroy_user_field(params={})
-      id = params["id"]
+class Zendesk2::Client::DestroyUserField < Zendesk2::Client::Request
+  request_method :delete
+  request_path { |r| "/user_fields/#{r.user_field_id}.json" }
 
-      request(
-        :method => :delete,
-        :path   => "/user_fields/#{id}.json"
-      )
-    end
+  def user_field_id
+    params.fetch("user_field").fetch("id")
   end
 
-  class Mock
-    def destroy_user_field(params={})
-      id   = params["id"]
-      body = self.delete!(:user_fields, id)
-
-      response(
-        :method => :delete,
-        :path   => "/user_fields/#{id}.json",
-        :body   => {
-          "user_field" => body,
-        },
-      )
-    end
+  def mock
+    mock_response("user_field" => self.delete!(:user_fields, user_field_id))
   end
 end

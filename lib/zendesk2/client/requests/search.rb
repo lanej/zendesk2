@@ -1,23 +1,34 @@
-class Zendesk2::Client
-  class Real
-    def search(query, params={})
-      request(
-        :method => :get,
-        :params => {query: query}.merge(params),
-        :path   => "/search.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::Search < Zendesk2::Client::Request
+  request_method :get
+  request_params { |r| { query: r.query } }
+  request_path   { |_| "/search.json" }
 
-  class Mock
-    def search(query, params={})
-      terms = Hash[query.split(" ").map { |t| t.split(":") }]
-      type = terms.delete("type")
-      collection = type.nil? ? self.data.values : self.data[pluralize(type).to_sym]
+  attr_reader :query
 
-      results = collection.values.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
+  def _mock(query, params={})
+    @query = query
+    setup(params)
+    mock
+  end
 
-      page(params, nil, "/search.json", "results", resources: results, query: {query: query})
-    end
-  end # Mock
+  def _real(query, params={})
+    @query = query
+    setup(params)
+    real
+  end
+
+  def mock
+    terms = Hash[query.split(" ").map { |t| t.split(":") }]
+    type  = terms.delete("type")
+
+    collection = if type.nil?
+                   service.data.values
+                 else
+                   service.data[pluralize(type).to_sym]
+                 end
+
+    results = collection.values.select { |v| terms.all?{ |term, condition| v[term].to_s == condition.to_s } }
+
+    page(results, params: {"query" => query}, root: "results")
+  end
 end

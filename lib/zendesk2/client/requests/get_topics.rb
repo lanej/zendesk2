@@ -1,18 +1,9 @@
-class Zendesk2::Client
-  class Real
-    def get_topics(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetTopics < Zendesk2::Client::Request
+  request_path { |r| "/topics.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/topics.json",
-      )
-    end
-  end
-  class Mock
-    def get_topics(params={})
-      page(params, :topics, "/topics.json", "topics")
-    end
+  page_params!
+
+  def mock
+    page(:topics)
   end
 end

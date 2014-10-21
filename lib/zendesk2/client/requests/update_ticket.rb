@@ -1,74 +1,74 @@
-class Zendesk2::Client
-  class Real
-    def update_ticket(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateTicket < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/tickets/#{r.ticket_id}.json"  }
+  request_body { |r| { "ticket" => r.ticket_params } }
 
-      request(
-        :method => :put,
-        :path   => "/tickets/#{id}.json",
-        :body   => {
-          "ticket" => params
-        },
-      )
-    end
+  def self.accepted_attributes
+    Zendesk2::Client::CreateTicket.accepted_attributes + ["comment"]
   end
 
-  class Mock
-    def update_ticket(params={})
-      ticket_id = params.delete("id")
-      body      = self.find!(:tickets, ticket_id).merge!(params)
+  def ticket_params
+    @_ticket_params ||= Cistern::Hash.slice(params.fetch("ticket"), *self.class.accepted_attributes)
+  end
 
-      if comment = params["comment"]
-        comment_id = self.class.new_id
-        comment_data = self.data[:ticket_comments][comment_id] = {
-            "id"          => comment_id,
-            "type"        => "Comment",
-            "author_id"   => current_user["id"],
-            "body"        => comment["body"],
-            "html_body"   => "<p>#{comment["body"]}</p>",
-            "public"      => comment["public"].nil? ? true : comment["public"],
-            "trusted"     => comment["trusted"].nil? ? true : comment["trusted"],
-            "attachments" => comment["attachments"] || [],
-            "ticket_id"   => ticket_id,
-        }
+  def ticket_id
+    params.fetch("ticket").fetch("id")
+  end
 
-        audit_id = self.class.new_id
+  def mock
+    comment = params.fetch("ticket").delete("comment")
 
-        self.data[:ticket_audits][audit_id] = audit = {
-          "id"         => audit_id,
-          "ticket_id"  => ticket_id,
-          "created_at" => Time.now,
-          "author_id"  => current_user["id"],
-          "via"        => {
-            "channel" => "api",
-            "source"  => {
-              "form" => {},
-              "to"   => {},
-              "rel"  => nil,
-            }
-          },
-          "metadata" => {
-            "system" => {
-              "client"     => Zendesk2::Client::USER_AGENT,
-              "ip_address" => "127.0.0.1",
-              "location"   => "Oakland, CA, United States",
-              "latitude"   => 37.83449999999999,
-              "longitude"  => -122.2647,
-            },
-            "custom" => {},
-          },
-          "events" => [comment_data]
-        }
-      end
+    body = self.find!(:tickets, ticket_id).merge!(ticket_params)
 
-      response(
-        :method => :put,
-        :path   => "/tickets/#{ticket_id}.json",
-        :body   => {
-          "ticket" => body,
-          "audit"  => audit,
+    if comment
+      comment_id = service.serial_id
+
+      comment_data = service.data[:ticket_comments][comment_id] = {
+        "id"          => comment_id,
+        "type"        => "Comment",
+        "author_id"   => service.current_user["id"],
+        "body"        => comment["body"],
+        "html_body"   => "<p>#{comment["body"]}</p>",
+        "public"      => comment["public"].nil? ? true : comment["public"],
+        "trusted"     => comment["trusted"].nil? ? true : comment["trusted"],
+        "attachments" => comment["attachments"] || [],
+        "ticket_id"   => ticket_id,
+      }
+
+      audit_id = service.serial_id
+
+      audit = {
+        "id"         => audit_id,
+        "ticket_id"  => ticket_id,
+        "created_at" => Time.now,
+        "author_id"  => service.current_user["id"],
+        "via"        => {
+          "channel" => "api",
+          "source"  => {
+            "form" => {},
+            "to"   => {},
+            "rel"  => nil,
+          }
         },
-      )
+        "metadata" => {
+          "system" => {
+            "client"     => Zendesk2::Client::USER_AGENT,
+            "ip_address" => "127.0.0.1",
+            "location"   => "Oakland, CA, United States",
+            "latitude"   => 37.83449999999999,
+            "longitude"  => -122.2647,
+          },
+          "custom" => {},
+        },
+        "events" => [comment_data]
+      }
+
+      self.data[:ticket_audits][audit_id] = audit
     end
+
+    mock_response(
+      "ticket" => body,
+      "audit"  => audit,
+    )
   end
 end

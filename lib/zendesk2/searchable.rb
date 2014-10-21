@@ -36,7 +36,7 @@ module Zendesk2::Searchable
               end
             end
 
-    body = connection.send(self.class.search_request, query, params).body
+    body = service.send(self.class.search_request, query, params).body
 
     if data = body.delete("results")
       self.load(data)

@@ -1,44 +1,40 @@
-class Zendesk2::Client
-  class Real
-    def create_user_field(params={})
-      request(
-        :body   => {"user_field" => params},
-        :method => :post,
-        :path   => "/user_fields.json",
-      )
-    end
-  end # Real
+class Zendesk2::Client::CreateUserField < Zendesk2::Client::Request
+  request_method :post
+  request_path { |_| "/user_fields.json" }
+  request_body { |r| { "user_field" => r.user_field_params } }
 
-  class Mock
-    def create_user_field(params={})
-      identity = self.class.new_id
+  def self.accepted_attributes
+    %w[key type title description position active, regexp_for_validation tag custom_field_options]
+  end
 
-      record = {
-        "active"                => true,
-        "collapsed_for_agents"  => false,
-        "created_at"            => Time.now.iso8601,
-        "description"           => params["title"],
-        "editable_in_portal"    => false,
-        "id"                    => identity,
-        "position"              => 9999,
-        "regexp_for_validation" => "",
-        "removable"             => true,
-        "required"              => false,
-        "required_in_portal"    => false,
-        "tag"                   => "",
-        "title_in_portal"       => params["title"],
-        "updated_at"            => Time.now.iso8601,
-        "url"                   => url_for("/user_fields/#{identity}.json"),
-        "visible_in_portal"     => false,
-      }.merge(params)
+  def user_field_params
+    Cistern::Hash.slice(params.fetch("user_field"), *self.class.accepted_attributes)
+  end
 
-      self.data[:user_fields][identity] = record
+  def mock
+    identity = service.serial_id
 
-      response(
-        :method => :post,
-        :body   => {"user_field" => record},
-        :path   => "/user_fields.json"
-      )
-    end
-  end # Mock
-end # Zendesk2::Client
+    record = {
+      "active"                => true,
+      "collapsed_for_agents"  => false,
+      "created_at"            => Time.now.iso8601,
+      "description"           => params["title"],
+      "editable_in_portal"    => false,
+      "id"                    => identity,
+      "position"              => 9999,
+      "regexp_for_validation" => "",
+      "removable"             => true,
+      "required"              => false,
+      "required_in_portal"    => false,
+      "tag"                   => "",
+      "title_in_portal"       => params["title"],
+      "updated_at"            => Time.now.iso8601,
+      "url"                   => url_for("/user_fields/#{identity}.json"),
+      "visible_in_portal"     => false,
+    }.merge(user_field_params)
+
+    service.data[:user_fields][identity] = record
+
+    mock_response("user_field" => record)
+  end
+end

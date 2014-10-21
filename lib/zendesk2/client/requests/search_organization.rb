@@ -1,36 +1,47 @@
-class Zendesk2::Client
-  class Real
-    alias search_organization search
-  end # Real
+class Zendesk2::Client::SearchOrganization < Zendesk2::Client::Request
+  request_method :get
+  request_path { "/search.json" }
 
-  class Mock
-    def search_organization(query, params={})
-      terms = Hash[query.split(" ").map { |t| t.split(":") }]
-      terms.delete("type") # context already provided
+  attr_reader :query
 
-      collection = self.data[:organizations].values
+  def _mock(query, params={})
+    @query = query
+    setup(params)
+    mock
+  end
 
-      # organization name is fuzzy matched
-      if organization_name = terms.delete("name")
-        terms.merge!("name" => "*#{organization_name}*")
-      end
+  def _real(query, params={})
+    @query = query
+    setup(params)
+    real
+  end
 
-      compiled_terms = terms.inject({}) do |r,(term, raw_condition)|
-        condition = if raw_condition.include?("*")
-                      Regexp.compile(raw_condition.gsub("*", ".*"), Regexp::IGNORECASE)
-                    else
-                      raw_condition
-                    end
-        r.merge(term => condition)
-      end
+  def mock
+    terms = Hash[query.split(" ").map { |t| t.split(":") }]
+    terms.delete("type") # context already provided
 
-      results = collection.select do |v|
-        compiled_terms.all? do |term, condition|
-          condition.is_a?(Regexp) ? condition.match(v[term.to_s]) : v[term.to_s].to_s == condition.to_s
-        end
-      end
+    collection = self.data[:organizations].values
 
-      page(params, :organizations, "/search.json", "results", resources: results, query: {query: query})
+    # organization name is fuzzy matched
+    if organization_name = terms.delete("name")
+      terms.merge!("name" => "*#{organization_name}*")
     end
-  end # Mock
+
+    compiled_terms = terms.inject({}) do |r,(term, raw_condition)|
+      condition = if raw_condition.include?("*")
+                    Regexp.compile(raw_condition.gsub("*", ".*"), Regexp::IGNORECASE)
+                  else
+                    raw_condition
+                  end
+      r.merge(term => condition)
+    end
+
+    results = collection.select do |v|
+      compiled_terms.all? do |term, condition|
+        condition.is_a?(Regexp) ? condition.match(v[term.to_s]) : v[term.to_s].to_s == condition.to_s
+      end
+    end
+
+    page(results, params: {"query" => query}, root: "results")
+  end
 end

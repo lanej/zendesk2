@@ -1,18 +1,10 @@
-class Zendesk2::Client
-  class Real
-    def get_groups(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetGroups < Zendesk2::Client::Request
+  request_method :get
+  request_path { |_| "/groups.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/groups.json",
-      )
-    end
-  end
-  class Mock
-    def get_groups(params={})
-      page(params, :groups, "/groups.json", "groups")
-    end
+  page_params!
+
+  def mock
+    page(:groups, params)
   end
 end

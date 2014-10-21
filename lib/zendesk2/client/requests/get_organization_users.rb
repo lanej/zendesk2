@@ -1,24 +1,16 @@
-class Zendesk2::Client
-  class Real
-    def get_organization_users(params={})
-      id          = require_parameters(params, "id").to_s
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::Client::GetOrganizationUsers < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/organizations/#{r.organization_id}/users.json" }
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/organizations/#{id}/users.json",
-      )
-    end
-  end # Real
+  page_params!
 
-  class Mock
-    def get_organization_users(params={})
-      id = require_parameters(params, "id").to_s
+  def organization_id
+    params.fetch("organization").fetch("id")
+  end
 
-      page(params, :users, "/organizations/#{id}/users.json", "users",
-           :filter => lambda { |c| c.select { |u| u["organization_id"].to_s == id } }
-          )
-    end
-  end # Mock
+  def mock
+    users = self.data[:users].values.select { |u| u["organization_id"].to_i == organization_id.to_i }
+
+    page(users, root: "users")
+  end
 end

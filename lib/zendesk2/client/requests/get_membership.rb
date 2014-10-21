@@ -1,27 +1,12 @@
-class Zendesk2::Client
-  class Real
-    def get_membership(params={})
-      id = params["id"]
+class Zendesk2::Client::GetMembership < Zendesk2::Client::Request
+  request_method :get
+  request_path { |r| "/organization_memberships/#{r.membership_id}.json" }
 
-      request(
-        :method => :get,
-        :path   => "/organization_memberships/#{id}.json",
-      )
-    end
-  end # Real
+  def membership_id
+    params.fetch("organization_membership").fetch("id")
+  end
 
-  class Mock
-    def get_membership(params={})
-      membership_id = params["id"]
-
-      path = "/organization_memberships/#{membership_id}.json"
-
-      response(
-        :path => path,
-        :body => {
-          "organization_membership" => find!(:memberships, membership_id)
-        },
-      )
-    end
-  end # Mock
+  def mock
+    mock_response("organization_membership" => find!(:memberships, membership_id))
+  end
 end

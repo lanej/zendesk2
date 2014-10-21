@@ -1,29 +1,17 @@
-class Zendesk2::Client
-  class Real
-    def update_ticket_field(params={})
-      id = params.delete("id")
+class Zendesk2::Client::UpdateTicketField < Zendesk2::Client::Request
+  request_method :put
+  request_path { |r| "/ticket_fields/#{r.ticket_field_id}.json" }
+  request_body { |r| { "ticket_field" => r.ticket_field_params } }
 
-      request(
-        :method => :put,
-        :path   => "/ticket_fields/#{id}.json",
-        :body   => {
-          "ticket_field" => params
-        },
-      )
-    end
+  def ticket_field_id
+    params.fetch("ticket_field").fetch("id")
   end
-  class Mock
-    def update_ticket_field(params={})
-      id   = params.delete("id")
-      body = self.find!(:ticket_fields, id).merge!(params)
 
-      response(
-        :method => :put,
-        :path   => "/ticket_fields/#{id}.json",
-        :body   => {
-          "ticket_field" => body
-        },
-      )
-    end
+  def ticket_field_params
+    Cistern::Hash.slice(params.fetch("ticket_field"), *Zendesk2::Client::CreateTicketField.accepted_attributes)
+  end
+
+  def mock
+    mock_response("ticket_field" => self.find!(:ticket_fields, ticket_field_id).merge!(ticket_field_params))
   end
 end
