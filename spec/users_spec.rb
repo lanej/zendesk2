@@ -16,12 +16,14 @@ describe "users" do
 
   describe "#create_user" do
     it "should prevent duplicate external_ids" do
-      client.create_user(email: mock_email, name: "a", external_id: nil) # fine
-      client.create_user(email: mock_email, name: "b", external_id: nil) # also fine
-      client.create_user(email: mock_email, name: "c", external_id: "1") # it's cool
+      external_id = mock_uuid
+
+      client.create_user(email: mock_email, name: "a", external_id: nil)         # fine
+      client.create_user(email: mock_email, name: "b", external_id: nil)         # also fine
+      client.create_user(email: mock_email, name: "c", external_id: external_id) # it's cool
 
       expect {
-        client.create_user(email:  mock_email, name: "d", external_id: "1")
+        client.create_user(email:  mock_email, name: "d", external_id: external_id)
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
@@ -31,11 +33,13 @@ describe "users" do
       user         = client.users.create(email: mock_email, name: "a")
       another_user = client.users.create(email: mock_email, name: "b")
 
-      client.update_user(id: user.id, external_id: nil)         # fine
-      client.update_user(id: another_user.id, external_id: "1") # also fine
+      external_id = mock_uuid
+
+      client.update_user(id: user.id, external_id: nil)                 # fine
+      client.update_user(id: another_user.id, external_id: external_id) # also fine
 
       expect {
-        client.update_user("id" => user.id, external_id: "1")
+        client.update_user("id" => user.id, external_id: external_id)
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end

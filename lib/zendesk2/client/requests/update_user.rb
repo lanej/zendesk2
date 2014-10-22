@@ -1,7 +1,8 @@
 class Zendesk2::Client
   class Real
-    def update_user(params={})
-      id = params.delete("id")
+    def update_user(_params={})
+      params = Cistern::Hash.stringify_keys(_params)
+      id     = params.delete("id")
 
       request(
         :method => :put,
