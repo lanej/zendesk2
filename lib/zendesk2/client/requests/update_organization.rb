@@ -20,7 +20,7 @@ class Zendesk2::Client
       organization = self.find!(:organizations, id)
 
       other_organizations = self.data[:organizations].dup
-      other_organizations.delete(id)
+      other_organizations.delete(id.to_s)
 
       if other_organizations.values.find { |o| o["name"] == params["name"] }
         error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})

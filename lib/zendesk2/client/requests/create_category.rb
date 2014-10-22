@@ -20,7 +20,7 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
       }.merge(params)
 
-      self.data[:categories][identity]= record
+      self.data[:categories][identity] = record
 
       response(
         :method => :post,

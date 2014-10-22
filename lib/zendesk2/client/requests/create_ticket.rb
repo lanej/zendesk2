@@ -74,7 +74,7 @@ class Zendesk2::Client
       record["submitter_id"] = current_user["id"]
 
       # FIXME: throw error if user doesn't exist?
-      requester = self.data[:users][record["requester_id"]]
+      requester = self.find!(:users, record["requester_id"])
       record["organization_id"] = requester["organization_id"]
 
       self.data[:tickets][identity] = record

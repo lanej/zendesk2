@@ -15,7 +15,7 @@ class Zendesk2::Client
   class Mock
     def update_ticket(params={})
       ticket_id = params.delete("id")
-      body      = self.data[:tickets][ticket_id].merge!(params)
+      body      = self.find!(:tickets, ticket_id).merge!(params)
 
       if comment = params["comment"]
         comment_id = self.class.new_id

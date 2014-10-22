@@ -15,7 +15,7 @@ class Zendesk2::Client
   class Mock
     def update_category(params={})
       id   = params.delete("id")
-      body = self.data[:categories][id].merge!(params)
+      body = self.find!(:categories, id).merge!(params)
 
       response(
         :method => :put,

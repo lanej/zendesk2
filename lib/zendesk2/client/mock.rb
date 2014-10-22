@@ -30,6 +30,7 @@ class Zendesk2::Client < Cistern::Service
     def self.new_id
       @current_id ||= 0
       @current_id += 1
+      @current_id.to_s
     end
 
     def data
@@ -136,11 +137,16 @@ class Zendesk2::Client < Cistern::Service
     end
 
     def find!(collection, identity, options={})
-      if resource = self.data[collection][identity]
+      if resource = self.data[collection][identity.to_s]
         resource
       else
         error!(options[:error] || :not_found)
       end
+    end
+
+    def delete!(collection, identity, record)
+      self.data[collection].delete(identity.to_s) ||
+        error!(options[:error] || :not_found)
     end
 
     def error!(type, options={})
