@@ -33,7 +33,7 @@ class Zendesk2::Client
                 "description" => "Email: #{email} is already being used by another user"
               }]})
       else
-        user_identity_id = self.class.new_id # ugh
+        user_identity_id = self.class.new_id
 
         user_identity = {
           "id"         => user_identity_id,

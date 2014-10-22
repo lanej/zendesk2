@@ -15,7 +15,7 @@ class Zendesk2::Client
   class Mock
     def update_user(_params={})
       params  = Cistern::Hash.stringify_keys(_params)
-      user_id = params.delete("id")
+      user_id = params.delete("id").to_s
       path    = "/users/#{user_id}.json"
 
       email = params["email"]
@@ -57,7 +57,7 @@ class Zendesk2::Client
         self.data[:identities][user_identity_id] = user_identity
       end
 
-      body = self.data[:users][user_id].merge!(params)
+      body = self.find!(:users, user_id).merge!(params)
 
       response(
         :method => :put,

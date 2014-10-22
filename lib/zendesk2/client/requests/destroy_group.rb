@@ -13,8 +13,7 @@ class Zendesk2::Client
   class Mock
     def destroy_group(params={})
       id   = params["id"]
-      body = self.data[:groups][id]
-      body["deleted"] = true
+      body = self.find!(:groups, id).merge!("deleted" => true)
 
       response(
         :method => :delete,

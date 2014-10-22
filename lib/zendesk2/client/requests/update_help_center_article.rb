@@ -34,7 +34,7 @@ class Zendesk2::Client
                "/help_center/articles/#{id}.json"
              end
 
-      body = self.data[:help_center_articles][id.to_i].merge!(params)
+      body = self.find!(:help_center_articles, id).merge!(params)
 
       response(
         :method => :put,

@@ -33,7 +33,7 @@ class Zendesk2::Client
       response(
         :path => path,
         :body => {
-          "section" => self.find!(:help_center_sections, id.to_i)
+          "section" => self.find!(:help_center_sections, id)
         },
       )
     end

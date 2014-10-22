@@ -12,17 +12,15 @@ class Zendesk2::Client
 
   class Mock
     def destroy_user(params={})
-      id   = params["id"]
+      id   = params["id"].to_s
       path = "/users/#{id}.json"
 
-      tickets = self.data[:tickets].values.select{|t| t["requester_id"] == id}.size
-
-      find!(:users, id)
+      tickets = self.data[:tickets].values.select { |t| t["requester_id"] == id }.size
 
       if tickets < 1
         self.data[:identities].each { |k,v| self.data[:identities].delete(k) if v["user_id"] == id }
 
-        body = self.data[:users].delete(id)
+        body = self.delete!(:users, id)
 
         response(
           :method => :delete,

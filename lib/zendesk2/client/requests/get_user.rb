@@ -12,17 +12,21 @@ class Zendesk2::Client
 
   class Mock
     def get_user(params={})
-      id = require_parameters(params, "id").to_i
+      id = require_parameters(params, "id")
 
-      identities = self.data[:identities].values.select { |i| i["user_id"] == id }
-      identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
+      identities = self.data[:identities].values.select { |i| i["user_id"] == id.to_s }
+      body = find!(:users, id).dup
+
+      if identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
+        body.merge!("email" => identity["value"])
+      end
 
       # @todo what happens if no identity?
 
       response(
         :path  => "/users/#{id}.json",
         :body  => {
-          "user" => find!(:users, id).merge("email" => identity["value"]),
+          "user" => body,
         },
       )
     end

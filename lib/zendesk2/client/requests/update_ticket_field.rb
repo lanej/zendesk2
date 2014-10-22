@@ -14,12 +14,12 @@ class Zendesk2::Client
   end
   class Mock
     def update_ticket_field(params={})
-      ticket_field_id = params.delete("id")
-      body            = self.data[:ticket_fields][ticket_field_id].merge!(params)
+      id   = params.delete("id")
+      body = self.find!(:ticket_fields, id).merge!(params)
 
       response(
         :method => :put,
-        :path   => "/ticket_fields/#{ticket_field_id}.json",
+        :path   => "/ticket_fields/#{id}.json",
         :body   => {
           "ticket_field" => body
         },

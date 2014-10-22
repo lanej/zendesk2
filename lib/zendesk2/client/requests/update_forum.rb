@@ -17,7 +17,8 @@ class Zendesk2::Client
       id   = params.delete("id")
       path = "/forums/#{id}.json"
 
-      body = self.data[:forums][id].merge!(params)
+      body = self.find!(:forums, id).merge!(params)
+
       response(
         :method => :put,
         :path   => path,

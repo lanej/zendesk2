@@ -16,11 +16,11 @@ class Zendesk2::Client
   end
   class Mock
     def update_user_identity(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
+      id      = params.delete("id").to_s
+      user_id = params.delete("user_id").to_s
       path    = "/users/#{user_id}/identities/#{id}.json"
 
-      body = self.data[:identities][id].merge!(Cistern::Hash.slice(params, "verified"))
+      body = self.find!(:identities, id).merge!(Cistern::Hash.slice(params, "verified"))
       response(
         :method => :put,
         :path   => path,

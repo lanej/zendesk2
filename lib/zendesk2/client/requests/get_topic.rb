@@ -13,7 +13,7 @@ class Zendesk2::Client
   class Mock
     def get_topic(params={})
       id   = params["id"]
-      body = self.data[:topics][id]
+      body = self.find!(:topics, id)
 
       response(
         :path  => "/topics/#{id}.json",

@@ -144,7 +144,7 @@ class Zendesk2::Client < Cistern::Service
       end
     end
 
-    def delete!(collection, identity, record)
+    def delete!(collection, identity, options={})
       self.data[collection].delete(identity.to_s) ||
         error!(options[:error] || :not_found)
     end

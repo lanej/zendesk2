@@ -19,6 +19,8 @@ class Zendesk2::Client
         error!(:invalid, :details => {"base" => [{"description" => "Description: cannot be blank"}]})
       end
 
+      requester_id = params.delete('requester_id')
+
       if requester = params.delete('requester')
         if !requester['name'] || requester['name'].size < 1
           response(
@@ -41,7 +43,7 @@ class Zendesk2::Client
                   else
                     # name is not required in this case
                     create_user(requester).body["user"]["id"]
-                  end
+                  end.to_s
 
         params['requester_id'] = user_id
       end
@@ -49,15 +51,15 @@ class Zendesk2::Client
       requested_custom_fields = (params.delete("custom_fields") || [])
 
       custom_fields = requested_custom_fields.map do |cf|
-        field_id = cf["id"].to_i
+        field_id = cf["id"].to_s
         if self.data[:ticket_fields][field_id]
           {"id" => field_id, "value" => cf["value"] }
         end
       end.compact
 
       self.data[:ticket_fields].each do |field_id, field|
-        requested_custom_fields.find { |cf| cf["id"] == field_id } ||
-          custom_fields << {"id" => field_id, "value" => nil }
+        requested_custom_fields.find { |cf| cf["id"] == field_id.to_s } ||
+          custom_fields << {"id" => field_id.to_s, "value" => nil }
       end
 
       record = {
@@ -70,8 +72,8 @@ class Zendesk2::Client
         "custom_fields"    => custom_fields,
       }.merge(params)
 
-      record["requester_id"] ||= current_user["id"]
-      record["submitter_id"] = current_user["id"]
+      record["requester_id"] ||= (requester_id && requester_id.to_s) || current_user["id"].to_s
+      record["submitter_id"] = current_user["id"].to_s
 
       # FIXME: throw error if user doesn't exist?
       requester = self.find!(:users, record["requester_id"])

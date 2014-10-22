@@ -16,7 +16,7 @@ class Zendesk2::Client
       params = Cistern::Hash.stringify_keys(params)
 
       identity = self.class.new_id
-      user_id  = params["user_id"]
+      user_id  = params.delete("user_id").to_s
 
       record = {
         "id"         => identity,
@@ -25,6 +25,7 @@ class Zendesk2::Client
         "updated_at" => Time.now.iso8601,
         "verified"   => false,
         "primary"    => false,
+        "user_id"    => user_id,
       }.merge(params)
 
       record.merge("primary" => true) if self.data[:identities].values.find { |ui| ui["user_id"] == user_id }.nil?

@@ -14,9 +14,9 @@ class Zendesk2::Client
 
   class Mock
     def get_requested_tickets(params={})
-      id = params["id"]
+      id = params["id"].to_s
 
-      page(params, :tickets, "/requesteds/#{id}/tickets.json", "tickets", filter: lambda{|c| c.select{|u| u["requester_id"] == id}})
+      page(params, :tickets, "/requesteds/#{id}/tickets.json", "tickets", filter: lambda { |c| c.select { |u| u["requester_id"] == id } })
     end
   end # Mock
 end

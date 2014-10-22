@@ -13,8 +13,8 @@ class Zendesk2::Client
   end
   class Mock
     def mark_user_identity_primary(params={})
-      id      = params.delete("id")
-      user_id = params.delete("user_id")
+      id      = params.delete("id").to_s
+      user_id = params.delete("user_id").to_s
       path    = "/users/#{user_id}/identities/#{id}/make_primary.json"
 
       user_identity = self.find!(:identities, id)

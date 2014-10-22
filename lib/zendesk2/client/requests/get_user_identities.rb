@@ -16,7 +16,7 @@ class Zendesk2::Client
     def get_user_identities(params={})
       user_id = require_parameters(params, "user_id")
 
-      page(params, :identities, "/users/#{user_id}/identities.json", "identities", filter: lambda { |c| c.select { |a| a["user_id"] == user_id } })
+      page(params, :identities, "/users/#{user_id}/identities.json", "identities", filter: lambda { |c| c.select { |a| a["user_id"].to_s == user_id.to_s } })
     end
   end # Mock
 end

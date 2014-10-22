@@ -19,7 +19,7 @@ class Zendesk2::Client
 
       # allow searching by organization name
       collection = collection.map do |user|
-        if organization = self.data[:organizations][user["organization_id"]]
+        if organization = self.data[:organizations][user["organization_id"].to_s]
           user.merge("organization" => organization["name"])
         else
           user

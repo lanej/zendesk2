@@ -25,7 +25,7 @@ class Zendesk2::Client
 
       require_parameters(params, "id")
 
-      id     = params.delete("id")
+      id     = params.delete("id").to_s
       locale = params["locale"]
 
       path = if locale
@@ -34,7 +34,7 @@ class Zendesk2::Client
                "/help_center/sections/#{id}.json"
              end
 
-      body = self.data[:help_center_sections][id.to_i].merge!(params)
+      body = self.find!(:help_center_sections, id).merge!(params)
 
       response(
         :method => :put,

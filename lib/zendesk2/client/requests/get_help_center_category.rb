@@ -33,7 +33,7 @@ class Zendesk2::Client
       response(
         :path => path,
         :body => {
-          "category" => self.find!(:help_center_categories, id.to_i)
+          "category" => self.find!(:help_center_categories, id)
         },
       )
     end

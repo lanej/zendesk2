@@ -67,7 +67,7 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
     data = if new_record?
              requires :subject, :description
 
-             with_requester = @requester && Zendesk2.stringify_keys(@requester)
+             with_requester = (@requester || nil) && Zendesk2.stringify_keys(@requester)
 
              connection.create_ticket(params.merge("requester" => with_requester)).body["ticket"]
            else
