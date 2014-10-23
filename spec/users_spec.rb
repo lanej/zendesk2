@@ -107,6 +107,7 @@ describe "users" do
       email = "ey+#{mock_uuid}@example.org"
 
       new_identity = user.identities.create!(type: "email", value: email)
+
       expect(new_identity.primary).to be_falsey
       expect(new_identity.verified).to be_falsey
       expect(new_identity.type).to eq("email")
@@ -119,11 +120,16 @@ describe "users" do
       initial_identity = user.identities.all.first
       new_identity     = user.identities.create!(type: "email", value: email)
 
-      initial_identity.destroy
+      expect {
+        initial_identity.destroy
+      }.to change { user.identities.all }.
+        from(a_collection_containing_exactly(initial_identity, new_identity)).
+        to(a_collection_containing_exactly(new_identity))
 
       expect(new_identity.reload.primary).to be_falsey
 
       new_identity.primary!
+
       expect(new_identity.reload.primary).to be_truthy
     end
 

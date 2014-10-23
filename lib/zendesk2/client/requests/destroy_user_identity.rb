@@ -13,12 +13,12 @@ class Zendesk2::Client
 
   class Mock
     def destroy_user_identity(params={})
-      id      = params["id"]
-      user_id = params["user_id"]
+      id      = params["id"].to_s
+      user_id = params["user_id"].to_s
       path    = "/users/#{user_id}/identities/#{id}.json"
 
-      user_identity = self.data[:identities][id]
-      body = self.data[:identities].delete(id)
+      body = self.delete!(:identities, id)
+
       response(
         :method => :delete,
         :path   => path,
