@@ -12,8 +12,8 @@ class Zendesk2::Client
 
   class Mock
     def destroy_organization(params={})
-      id   = params["id"]
-      body = self.data[:organizations].delete(id)
+      id = require_parameters(params, "id")
+      body = self.delete!(:organizations, id)
 
       response(
         :method => :delete,

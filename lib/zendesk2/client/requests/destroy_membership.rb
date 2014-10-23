@@ -14,7 +14,8 @@ class Zendesk2::Client
     def destroy_membership(params={})
       id   = params["id"]
 
-      body = self.data[:memberships].delete(id)
+      body = self.delete!(:memberships, id)
+
       response(
         :method => :delete,
         :path   => "/organization_memberships/#{id}.json",

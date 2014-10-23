@@ -13,7 +13,7 @@ class Zendesk2::Client
   class Mock
     def destroy_category(params={})
       id   = params["id"]
-      body = self.data[:categories].delete(id)
+      body = self.delete!(:categories, id)
 
       response(
         :method => :delete,

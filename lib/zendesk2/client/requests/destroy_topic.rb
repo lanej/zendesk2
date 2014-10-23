@@ -15,7 +15,8 @@ class Zendesk2::Client
       id   = params["id"]
       path = "/topics/#{id}.json"
 
-      body = self.data[:topics].delete(id)
+      body = self.delete!(:topics, id)
+
       response(
         :method => :delete,
         :path   => path,

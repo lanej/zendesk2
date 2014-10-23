@@ -13,7 +13,7 @@ class Zendesk2::Client
   class Mock
     def destroy_user_field(params={})
       id   = params["id"]
-      body = self.data[:user_fields].delete(id)
+      body = self.delete!(:user_fields, id)
 
       response(
         :method => :delete,

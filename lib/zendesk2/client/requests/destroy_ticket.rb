@@ -13,7 +13,7 @@ class Zendesk2::Client
   class Mock
     def destroy_ticket(params={})
       id   = params["id"]
-      body = self.data[:tickets].delete(id)
+      body = self.delete!(:tickets, id)
 
       response(
         :method => :delete,
