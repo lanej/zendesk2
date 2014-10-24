@@ -34,6 +34,19 @@ describe "Zendesk2::Client" do
       end
     end
 
+    it "should require a valid organization if not blank" do
+      client.tickets.create!(subject: mock_uuid, description: mock_uuid, organization_id: -1)
+    end
+
+    it "should default to the requesters primary organization if organization is not specified" do
+      organization = client.organizations.create!(name: mock_uuid)
+      requester = client.users.create!(email: mock_email, name: mock_uuid, organization: organization)
+
+      expect(
+        client.tickets.create!(requester: requester, subject: mock_uuid, description: mock_uuid).organization
+      ).to eq(requester.organization)
+    end
+
     it "should require requester name" do
       expect {
         client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: {email: requester_email})
