@@ -15,6 +15,11 @@ class Zendesk2::Client
       user_id = self.class.new_id
       path    = "/users.json"
 
+      if organization_id = params.delete("organization_id")
+        self.find!(:organizations, organization_id)
+        params["organization_id"] = organization_id.to_s
+      end
+
       record = {
         "id"         => user_id,
         "url"        => url_for("/users/#{user_id}.json"),

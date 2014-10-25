@@ -20,10 +20,11 @@ describe "Zendesk2::Client" do
   end
 
   describe "when creating a ticket" do
-    let!(:requester_email) { "#{mock_uuid}@example.org" }
-
     it "should create requester" do
+      requester_email = mock_email
+
       ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: {name: "Josh Lane", email: requester_email})
+
       if Zendesk2::Client.mocking? # this takes some time for realsies
         requester = client.users.search(email: requester_email).first
         expect(requester).not_to be_nil
@@ -35,21 +36,24 @@ describe "Zendesk2::Client" do
     end
 
     it "should require a valid organization if not blank" do
-      client.tickets.create!(subject: mock_uuid, description: mock_uuid, organization_id: -1)
+      expect {
+        client.tickets.create!(subject: mock_uuid, description: mock_uuid, organization_id: -1)
+      }.to raise_exception(Zendesk2::Error, /RecordNotFound/)
     end
 
     it "should default to the requesters primary organization if organization is not specified" do
       organization = client.organizations.create!(name: mock_uuid)
       requester = client.users.create!(email: mock_email, name: mock_uuid, organization: organization)
 
-      expect(
-        client.tickets.create!(requester: requester, subject: mock_uuid, description: mock_uuid).organization
-      ).to eq(requester.organization)
+      ticket = client.tickets.create!(requester: requester, subject: mock_uuid, description: mock_uuid)
+
+      expect(ticket.organization).to eq(organization)
+      expect(organization.tickets).to contain_exactly(ticket)
     end
 
     it "should require requester name" do
       expect {
-        client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: {email: requester_email})
+        client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: {email: mock_email})
       }.to raise_exception(Zendesk2::Error, /Requester Name: .* too short/)
     end
 

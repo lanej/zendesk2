@@ -73,11 +73,13 @@ class Zendesk2::Client
       }.merge(params)
 
       record["requester_id"] ||= (requester_id && requester_id.to_s) || current_user["id"].to_s
+      requester = self.find!(:users, record["requester_id"])
+
       record["submitter_id"] = current_user["id"].to_s
 
-      # FIXME: throw error if user doesn't exist?
-      requester = self.find!(:users, record["requester_id"])
-      record["organization_id"] = requester["organization_id"]
+      if record["organization_id"] = params.delete('organization_id') || requester["organization_id"]
+        self.find!(:organizations, record["organization_id"])
+      end
 
       self.data[:tickets][identity] = record
 
