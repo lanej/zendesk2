@@ -12,6 +12,7 @@ class Zendesk2::Client
       )
     end
   end
+
   class Mock
     def update_ticket(params={})
       ticket_id = params.delete("id")
@@ -31,7 +32,8 @@ class Zendesk2::Client
         }
 
         audit_id = self.class.new_id
-        self.data[:ticket_audits][audit_id] = {
+
+        self.data[:ticket_audits][audit_id] = audit = {
           "id"         => audit_id,
           "ticket_id"  => ticket_id,
           "created_at" => Time.now,
@@ -62,7 +64,8 @@ class Zendesk2::Client
         :method => :put,
         :path   => "/tickets/#{ticket_id}.json",
         :body   => {
-          "ticket" => body
+          "ticket" => body,
+          "audit"  => audit,
         },
       )
     end

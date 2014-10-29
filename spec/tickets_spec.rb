@@ -98,7 +98,8 @@ describe "Zendesk2::Client" do
 
     it "lists audits" do
       body = mock_uuid
-      ticket.comment(body)
+      comment = ticket.comment(body)
+      expect(comment.body).to eq(body)
 
       audit = ticket.audits.last
       expect(audit.ticket).to eq(ticket)

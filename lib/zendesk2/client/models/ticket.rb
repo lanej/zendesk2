@@ -91,13 +91,16 @@ class Zendesk2::Client::Ticket < Zendesk2::Model
   # @param [Hash] options comment options
   # @option options [Array] :attachments Attachment to upload with comment
   # @option options [Boolean] :public (true)
+  # @return [Zendesk2::Client::TicketComment]
   def comment(text, options={})
     requires :identity
 
     options[:public] = true if options[:public].nil?
     comment = Zendesk2.stringify_keys(options).merge("body" => text)
 
-    connection.update_ticket("id" => self.identity, "comment" => comment)
+    connection.ticket_comments.new(
+      connection.update_ticket("id" => self.identity, "comment" => comment).body["audit"]["events"].first
+    )
   end
 
   # @return [Array<Zendesk2::Client::User>] All users CCD on this ticket
