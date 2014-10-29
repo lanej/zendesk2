@@ -17,7 +17,7 @@ class Zendesk2::Client::Topic < Zendesk2::Model
   attribute :answered,     type: :boolean # ro[yes] mandatory[no]   Set to true if the topic is a question and it has been marked as answered.
   attribute :position,     type: :integer # ro[no] mandatory[no]  The position of this topic relative to other topics in the same forum
   attribute :tags,         type: :array   # ro[no] mandatory[no]  The tags set on the topic
-  attribute :created_at,   type: :date    # ro[yes] mandatory[no] The time the topic was created
+  attribute :created_at,   type: :time    # ro[yes] mandatory[no] The time the topic was created
 
   assoc_accessor :submitter, collection: :users
   assoc_accessor :updater, collection: :users

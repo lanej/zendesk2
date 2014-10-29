@@ -15,8 +15,8 @@ class Zendesk2::Client::Forum < Zendesk2::Model
   attribute :position,          type: :integer # ro no mandatory no  The position of this forum relative to other forums in the same category
   attribute :forum_type,        type: :string  # ro no mandatory no  The type of the topics in this forum, valid values: "articles", "ideas" or "questions"
   attribute :access,            type: :string  # ro no mandatory no  Who has access to this forum, valid values: "everybody", "logged-in users" or "agents only"
-  attribute :created_at,        type: :date    # ro yes mandatory no  The time the forum was created
-  attribute :updated_at,        type: :date    # ro yes mandatory no  The time of the last update of the forum
+  attribute :created_at,        type: :time    # ro yes mandatory no  The time the forum was created
+  attribute :updated_at,        type: :time    # ro yes mandatory no  The time of the last update of the forum
 
   assoc_accessor :organization
   assoc_accessor :category

@@ -11,7 +11,7 @@ class Zendesk2::Client::TicketField < Zendesk2::Model
   # @return [String] If this field should be shown to agents by default or be hidden alongside infrequently used fields
   attribute :collapsed_for_agents, type: :string
   # @return [Date] The time the ticket field was created
-  attribute :created_at, type: :date
+  attribute :created_at, type: :time
   # @return [Array] Required and presented for a ticket field of type "tagger"
   attribute :custom_field_options, type: :array
   # @return [String] The description of the purpose of this ticket field, shown to users
@@ -39,7 +39,7 @@ class Zendesk2::Client::TicketField < Zendesk2::Model
   # @return [String] The type of the ticket field
   attribute :type, type: :string
   # @return [Date] The time of the last update of the ticket field
-  attribute :updated_at, type: :date
+  attribute :updated_at, type: :time
   # @return [String] The URL for this resource
   attribute :url, type: :string
   # @return [Boolean] Whether this field is available to end users

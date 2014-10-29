@@ -5,7 +5,7 @@ class Zendesk2::Client::Organization < Zendesk2::Model
   identity :id, type: :integer # ro[yes] required[no]
 
   # @return [Date] The time the organization was created
-  attribute :created_at, type: :date # ro[yes] required[no]
+  attribute :created_at, type: :time # ro[yes] required[no]
   # @return [String] In this field you can store any details obout the organization. e.g. the address
   attribute :details, type: :string # ro[no] required[no]
   # @return [Array] An array of domain names associated with this organization
@@ -27,7 +27,7 @@ class Zendesk2::Client::Organization < Zendesk2::Model
   # @return [Array] The tags of the organization
   attribute :tags, type: :array # ro[no] required[no]
   # @return [Date] The time of the last update of the organization
-  attribute :updated_at, type: :date # ro[yes] required[no]
+  attribute :updated_at, type: :time # ro[yes] required[no]
   # @return [String] The API url of this organization
   attribute :url, type: :string # ro[yes] required[no]
 

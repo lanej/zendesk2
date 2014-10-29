@@ -7,7 +7,7 @@ class Zendesk2::Client::HelpCenter::Section < Zendesk2::Model
   # @return [Integer] The id of the category to which this section belongs
   attribute :category_id, type: :integer # ro:no required:no
   # @return [Time] The time at which the section was created
-  attribute :created_at, type: :datetime # ro:yes required:no
+  attribute :created_at, type: :time # ro:yes required:no
   # @return [String] The description of the section
   attribute :description, type: :string # ro:no required:no
   # @return [String] The url of this section in HC
@@ -27,7 +27,7 @@ class Zendesk2::Client::HelpCenter::Section < Zendesk2::Model
   # @return [Array] The ids of all translations of this section
   attribute :translation_ids, type: :array # ro:yes required:no
   # @return [Time] The time at which the section was last updated
-  attribute :updated_at, type: :datetime # ro:yes required:no
+  attribute :updated_at, type: :time # ro:yes required:no
   # @return [string] The API url of this section
   attribute :url, type: :string # ro:yes required:no
 
