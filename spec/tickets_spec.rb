@@ -135,9 +135,9 @@ describe "Zendesk2::Client" do
       expect(custom_field["value"]).to be_nil
 
       ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, custom_fields: [{"id" => ticket_field.identity, "value" => "jessicaspacekat"}])
-      custom_field = ticket.custom_fields.find { |cf| cf["id"].to_s == ticket_field.identity.to_s }
+      custom_field = ticket.custom_fields.find { |cf| cf["id"].to_i == ticket_field.identity.to_i }
 
-      expect(custom_field).not_to be_nil
+      expect(custom_field).to be
       expect(custom_field["value"]).to eq("jessicaspacekat")
 
       ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, custom_fields: [{"id" => "-1", "value" => "fantasy"}])

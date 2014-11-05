@@ -51,15 +51,17 @@ class Zendesk2::Client
       requested_custom_fields = (params.delete("custom_fields") || [])
 
       custom_fields = requested_custom_fields.map do |cf|
-        field_id = cf["id"].to_s
-        if self.data[:ticket_fields][field_id]
+        field_id = cf["id"].to_i
+        if self.data[:ticket_fields][field_id.to_s]
           {"id" => field_id, "value" => cf["value"] }
+        else
+          # @fixme error ?!
         end
       end.compact
 
       self.data[:ticket_fields].each do |field_id, field|
-        requested_custom_fields.find { |cf| cf["id"] == field_id.to_s } ||
-          custom_fields << {"id" => field_id.to_s, "value" => nil }
+        requested_custom_fields.find { |cf| cf["id"].to_i == field_id.to_i } ||
+          custom_fields << {"id" => field_id.to_i, "value" => nil }
       end
 
       record = {
