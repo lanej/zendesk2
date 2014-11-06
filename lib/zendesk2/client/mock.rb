@@ -90,7 +90,7 @@ class Zendesk2::Client < Cistern::Service
       page_index  = (page_params["page"] || 1).to_i
       offset      = (page_index - 1) * page_size
       filter      = options[:filter]
-      resources   = self.data[collection].values
+      resources   = options[:resources] || self.data[collection].values
       resources   = filter.call(resources) if filter
       count       = resources.size
       total_pages = (count / page_size) + 1

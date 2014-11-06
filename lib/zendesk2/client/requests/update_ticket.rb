@@ -29,6 +29,7 @@ class Zendesk2::Client
             "public"      => comment["public"].nil? ? true : comment["public"],
             "trusted"     => comment["trusted"].nil? ? true : comment["trusted"],
             "attachments" => comment["attachments"] || [],
+            "ticket_id"   => ticket_id,
         }
 
         audit_id = self.class.new_id

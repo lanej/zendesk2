@@ -93,6 +93,18 @@ describe "Zendesk2::Client" do
     end
   end
 
+  describe "ticket#comments" do
+    let!(:ticket)         { client.tickets.create!(subject: mock_uuid, description: mock_uuid) }
+    let!(:another_ticket) { client.tickets.create!(subject: mock_uuid, description: mock_uuid)  }
+
+    it "should scope the comments to the source ticket" do
+      target_comments = 2.times.map { ticket.comment(mock_uuid) }
+      2.times.map { another_ticket.comment(mock_uuid) }
+
+      expect(ticket.comments.all).to match_array(target_comments)
+    end
+  end
+
   describe "ticket comments" do
     let(:ticket) { client.tickets.create!(subject: mock_uuid, description: mock_uuid) }
 
