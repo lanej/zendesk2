@@ -35,10 +35,12 @@ describe "Zendesk2::Client" do
       end
     end
 
-    it "should require a valid organization if not blank" do
-      expect {
-        client.tickets.create!(subject: mock_uuid, description: mock_uuid, organization_id: -1)
-      }.to raise_exception(Zendesk2::Error, /RecordNotFound/)
+    context 'valid requester exists' do
+      it 'sets organization id' do
+        ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester_id: 11111111111199)
+
+        expect(ticket.organization_id).to be_nil
+      end
     end
 
     it "should default to the requesters primary organization if organization is not specified" do
@@ -101,7 +103,7 @@ describe "Zendesk2::Client" do
       target_comments = 2.times.map { ticket.comment(mock_uuid) }
       2.times.map { another_ticket.comment(mock_uuid) }
 
-      expect(ticket.comments.all).to match_array(target_comments)
+      expect(ticket.comments.all).to include(*target_comments) # @fixme model (subject + description) || (comment) on create_ticket as a comment
     end
   end
 

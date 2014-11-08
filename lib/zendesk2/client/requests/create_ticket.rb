@@ -75,13 +75,14 @@ class Zendesk2::Client
       }.merge(params)
 
       record["requester_id"] ||= (requester_id && requester_id.to_s) || current_user["id"].to_s
-      requester = self.find!(:users, record["requester_id"])
-
       record["submitter_id"] = current_user["id"].to_s
 
-      if record["organization_id"] = params.delete('organization_id') || requester["organization_id"]
-        self.find!(:organizations, record["organization_id"])
-      end
+      # @note invalid requester id does NOT cause a 404 or 422
+      record["organization_id"] = if requester = self.data[:users][record["requester_id"]]
+                                    requester["organization_id"]
+                                  else
+                                    nil
+                                  end
 
       self.data[:tickets][identity] = record
 
