@@ -33,6 +33,16 @@ describe "organizations" do
       expect(model.errors).to eq({"name" => ["Name: has already been taken"]})
     end
 
+    it "should update name" do
+      old_name = organization.name
+      proxy = organization.dup
+      new_name = proxy.name = mock_uuid
+
+      expect {
+        proxy.save!
+      }.to change { organization.reload.name }.from(old_name).to(new_name)
+    end
+
     it "should be able to find organizations by external id" do
       external_id = organization.external_id = mock_uuid
       organization.save!
