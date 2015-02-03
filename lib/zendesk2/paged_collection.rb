@@ -20,6 +20,24 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
     page
   end
 
+  def each_page
+    return to_enum(:each_page) unless block_given?
+    page = self
+    while page
+      yield page
+      page = page.next_page
+    end
+  end
+
+  def each_entry
+    return to_enum(:each_entry) unless block_given?
+    page = self
+    while page
+      page.records.each { |r| yield r }
+      page = page.next_page
+    end
+  end
+
   def next_page
     new_page.all("url" => next_page_link) if next_page_link
   end
