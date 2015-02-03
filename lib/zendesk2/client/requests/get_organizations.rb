@@ -6,6 +6,7 @@ class Zendesk2::Client
       request(
         :params  => page_params,
         :method  => :get,
+        :url     => params.delete("url"),
         :path    => "/organizations.json",
       )
     end
