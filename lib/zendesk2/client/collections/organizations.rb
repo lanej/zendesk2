@@ -17,4 +17,5 @@ class Zendesk2::Client::Organizations < Zendesk2::PagedCollection
   self.model_method      = :get_organization
   self.model_root        = "organization"
   self.search_type       = "organization"
+  self.search_request    = :search_organization
 end

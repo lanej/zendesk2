@@ -4,7 +4,7 @@ class Zendesk2::Client
   end # Real
 
   class Mock
-    def search_user(query)
+    def search_user(query, params={})
       terms = Hash[query.split(" ").map { |t| t.split(":") }]
       terms.delete("type") # context already provided
 
@@ -46,10 +46,7 @@ class Zendesk2::Client
         end
       end
 
-      response(
-        :path => "/search.json",
-        :body => {"results" => results},
-      )
+      page(params, :users, "/search.json", "results", resources: results, query: {query: query})
     end
   end # Mock
 end
