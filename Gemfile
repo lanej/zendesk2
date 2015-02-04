@@ -15,5 +15,5 @@ group :test do
   gem 'awesome_print'
   gem 'guard-bundler', require: false
   gem 'guard-rspec', '~> 4.3', require: false
-  gem 'rspec', '~> 3.0'
+  gem 'rspec', '~> 3.2'
 end

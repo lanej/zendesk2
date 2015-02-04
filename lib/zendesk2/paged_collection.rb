@@ -14,9 +14,8 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
   def model_root; self.class.model_root; end
 
   def new_page
-    page = self.clone
-    %w[count next_page_link previous_page_link].each { |k| page.attributes.delete(k) }
-    page.records = []
+    page = self.class.new(connection: self.connection)
+    page.merge_attributes(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))})
     page
   end
 
@@ -67,7 +66,7 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
     body = connection.send(collection_method, scoped_attributes).body
 
-    self.load(body[collection_root])
+    self.load(body[collection_root]) # 'results' is the key for paged seraches
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     self
   end

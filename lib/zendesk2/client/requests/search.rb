@@ -17,10 +17,7 @@ class Zendesk2::Client
 
       results = collection.values.select { |v| terms.all?{ |term, condition| v[term.to_s].to_s == condition.to_s } }
 
-      response(
-        :path => "/search.json",
-        :body => {"results" => results},
-      )
+      page({}, nil, "/search.json", "results", resources: results, query: {query: query})
     end
   end # Mock
 end

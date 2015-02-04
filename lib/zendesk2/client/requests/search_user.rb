@@ -46,10 +46,7 @@ class Zendesk2::Client
         end
       end
 
-      response(
-        :path => "/search.json",
-        :body => {"results" => results},
-      )
+      page({}, :users, "/search.json", "results", resources: results, query: {query: query})
     end
   end # Mock
 end

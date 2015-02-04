@@ -65,8 +65,12 @@ class Zendesk2::Client < Cistern::Service
       File.join(@url, path.to_s)
     end
 
-    def url_for(path)
-      File.join(@url, "/api/v2", path.to_s)
+    def url_for(path, options={})
+      Addressable::URI.parse(
+        File.join(@url, "/api/v2", path.to_s)
+      ).tap do |uri|
+        uri.query_values = options.fetch(:query, {})
+      end.to_s
     end
 
     def resources(collection, path, collection_root, options={})
@@ -86,7 +90,7 @@ class Zendesk2::Client < Cistern::Service
 
     def page(params, collection, path, collection_root, options={})
       page_params = Zendesk2.paging_parameters(params)
-      page_size   = (page_params["per_page"] || 50).to_i
+      page_size   = (page_params["per_page"] || 100).to_i
       page_index  = (page_params["page"] || 1).to_i
       offset      = (page_index - 1) * page_size
       filter      = options[:filter]
@@ -95,11 +99,13 @@ class Zendesk2::Client < Cistern::Service
       count       = resources.size
       total_pages = (count / page_size) + 1
 
+      query = options.fetch(:query, {})
+
       next_page = if page_index < total_pages
-                    url_for("#{path}?page=#{page_index + 1}&per_page=#{page_size}")
+                    url_for(path, query: {page: page_index + 1, per_page: page_size}.merge(query))
                   end
       previous_page = if page_index > 1
-                        url_for("#{path}?page=#{page_index - 1}&per_page=#{page_size}")
+                        url_for(path, query: {page: page_index - 1, per_page: page_size}.merge(query))
                       end
 
       resource_page = resources.slice(offset, page_size)
