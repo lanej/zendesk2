@@ -1,6 +1,7 @@
 module Zendesk2::Searchable
   def self.included(klass)
     klass.send(:extend, Zendesk2::Searchable::Attributes)
+    klass.send(:attribute, :filtered, type: :boolean)
   end
 
   # Search for resources of a certain type.
@@ -14,7 +15,7 @@ module Zendesk2::Searchable
   #
   # @param [String, Hash] seach terms.  This will be converted to a qualified Zendesk search String
   # @see http://developer.zendesk.com/documentation/rest_api/search.html
-  def search(terms)
+  def search(terms, params={})
     query = if terms.is_a?(Hash)
               terms.merge!("type" => self.class.search_type) if self.class.search_type
               terms.merge(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => public_send(k))}).
@@ -33,12 +34,12 @@ module Zendesk2::Searchable
               end
             end
 
-    body = connection.send(self.class.search_request, query).body
+    body = connection.send(self.class.search_request, query, params).body
 
     if data = body.delete("results")
-      collection = self.clone.load(data)
-      collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
-      collection
+      self.load(data)
+      self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page").merge("filtered" => true))
+      self
     end
   end
 

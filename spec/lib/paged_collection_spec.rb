@@ -30,14 +30,12 @@ describe Zendesk2::PagedCollection, :mock_only do
     end
 
     it "should chain search paging" do
-      matching_records = records.select { |o| o.name.match("2_") }
+      matching_records = records.select { |o| o.name.match(/\A2_/) }
       expect(matching_records).not_to be_empty
 
-      $pry = true
       found_records = client.organizations.search(name: "2_").each_entry.to_a
 
       expect(matching_records.size).to eq(found_records.size)
-
       expect(matching_records).to match_array(found_records)
     end
   end

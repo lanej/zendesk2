@@ -38,11 +38,11 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
   end
 
   def next_page
-    new_page.all("url" => next_page_link) if next_page_link
+    new_page.all("url" => next_page_link, "filtered" => self.filtered) if next_page_link
   end
 
   def previous_page
-    new_page.all("url" => previous_page_link) if previous_page_link
+    new_page.all("url" => previous_page_link, "filtered" => self.filtered) if previous_page_link
   end
 
   # Attempt creation of resource and explode if unsuccessful
@@ -63,11 +63,17 @@ class Zendesk2::PagedCollection < Zendesk2::Collection
 
   # Fetch a collection of resources
   def all(params={})
-    scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
-    body = connection.send(collection_method, scoped_attributes).body
+    if params["filtered"] && (url = params["url"])
+      uri = Addressable::URI.parse(url)
+      query = uri.query_values
+      search(query.delete("query"), query)
+    else
+      scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
+      body = connection.send(collection_method, scoped_attributes).body
 
-    self.load(body[collection_root]) # 'results' is the key for paged seraches
-    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+      self.load(body[collection_root]) # 'results' is the key for paged seraches
+      self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+    end
     self
   end
 

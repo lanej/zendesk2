@@ -4,7 +4,7 @@ class Zendesk2::Client
   end # Real
 
   class Mock
-    def search_organization(query)
+    def search_organization(query, params={})
       terms = Hash[query.split(" ").map { |t| t.split(":") }]
       terms.delete("type") # context already provided
 
@@ -30,7 +30,7 @@ class Zendesk2::Client
         end
       end
 
-      page({}, :organizations, "/search.json", "results", resources: results, query: {query: query})
+      page(params, :organizations, "/search.json", "results", resources: results, query: {query: query})
     end
   end # Mock
 end
