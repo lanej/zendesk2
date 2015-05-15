@@ -21,7 +21,7 @@ class Zendesk2::Client::CreateOrganization < Zendesk2::Client::Request
       error!(:invalid, details: { "name" => [ { "description" => "Name cannot be blank" } ]})
     end
 
-    if self.data[:organizations].values.find { |o| o["name"] == record["name"]}
+    if self.data[:organizations].values.find { |o| o["name"].downcase == record["name"].downcase }
       error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
     end
 

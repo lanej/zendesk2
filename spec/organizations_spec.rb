@@ -24,14 +24,29 @@ describe "organizations" do
     end
 
     it "should hate non-unique names" do
-      expect { client.organizations.create!(name: organization.name) }.to raise_exception(Zendesk2::Error)
-      model = client.organizations.create(name: organization.name)
-      expect(model.errors).to eq({"name" => ["Name: has already been taken"]})
+      # create
+      expect {
+        client.organizations.create!(name: organization.name)
+      }.to raise_exception(Zendesk2::Error)
 
-      model = client.organizations.create(name: mock_uuid)
-      model.name = organization.name
-      model.save
-      expect(model.errors).to eq({"name" => ["Name: has already been taken"]})
+      expect(
+        client.organizations.create(name: organization.name).errors
+      ).to eq("name" => ["Name: has already been taken"])
+
+      expect(
+        client.organizations.create(name: organization.name.upcase).errors
+      ).to eq("name" => ["Name: has already been taken"])
+
+      # update
+      model = client.organizations.create!(name: mock_uuid)
+
+      expect(
+        model.update(name: organization.name).errors
+      ).to eq("name" => ["Name: has already been taken"])
+
+      expect(
+        model.update(name: organization.name.upcase).errors
+      ).to eq("name" => ["Name: has already been taken"])
     end
 
     it "should update name" do

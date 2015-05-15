@@ -17,7 +17,7 @@ class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
     other_organizations = service.data[:organizations].dup
     other_organizations.delete(organization_id)
 
-    if other_organizations.values.find { |o| o["name"] == organization["name"] }
+    if organization["name"] && other_organizations.values.find { |o| o["name"].downcase == organization["name"].downcase }
       error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
     end
 
