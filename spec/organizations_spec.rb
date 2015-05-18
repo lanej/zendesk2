@@ -51,11 +51,11 @@ describe "organizations" do
 
     it "should update name" do
       old_name = organization.name
-      proxy = organization.dup
-      new_name = proxy.name = mock_uuid
+      proxy    = organization.dup
+      new_name = mock_uuid
 
       expect {
-        proxy.save!
+        proxy.update!(name: new_name)
       }.to change { organization.reload.name }.from(old_name).to(new_name)
     end
 

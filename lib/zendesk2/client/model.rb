@@ -30,4 +30,9 @@ class Zendesk2::Client::Model
   def missing_attributes(args)
     ([:service] | args).select{|arg| val = send("#{arg}"); val.nil? || val == "" }
   end
+
+  def update!(attributes)
+    merge_attributes(attributes)
+    save!
+  end
 end
