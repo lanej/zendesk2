@@ -1,7 +1,7 @@
 class Zendesk2::Client::Search < Zendesk2::Client::Request
   request_method :get
-  request_params { |r| { query: r.query } }
-  request_path   { |_| "/search.json" }
+  request_body { |r| { query: r.query } }
+  request_path { |_| "/search.json" }
 
   attr_reader :query
 
