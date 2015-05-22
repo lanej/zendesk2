@@ -14,21 +14,25 @@ describe "memberships" do
   }
 
   it "should be marked as default" do
-    membership           = client.memberships.create!(organization: organization, user: user)
+    membership           = client.memberships.create!(organization: organization, user: user).reload
     another_organization = client.organizations.create!(name: mock_uuid)
 
-    another_membership = client.memberships.create!(organization: another_organization, user: user)
+    another_membership = client.memberships.create!(organization: another_organization, user: user).reload
 
-    expect(membership.default).to be_falsey # for some reason
-    expect(another_membership.default).to be_falsey
+    expect(membership.default).to eq(true)
+    expect(another_membership.default).to eq(false)
 
-    expect { another_membership.default! }.to change { another_membership.reload.default }.from(false).to(true)
+    expect {
+      another_membership.default!
+    }.to change {
+      another_membership.reload.default
+    }.from(false).to(true)
 
     expect(membership.reload.default).to be_falsey
   end
 
   it "should get an organization's memberships" do
-    another_user = client.users.create!(email: mock_email, name: mock_uuid, verified: true)
+    another_user         = client.users.create!(email: mock_email, name: mock_uuid, verified: true)
     another_organization = client.organizations.create!(name: mock_uuid)
 
     another_organization.memberships.create!(user: another_user)

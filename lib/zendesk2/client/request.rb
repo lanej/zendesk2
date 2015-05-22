@@ -53,11 +53,12 @@ class Zendesk2::Client::Request
   end
 
   def page_params!(options)
-    if url = options.delete("url")
-      Faraday::NestedParamsEncoder.decode(URI.parse(url).query)
-    else
-      Cistern::Hash.stringify_keys(options)
-    end
+    page_params = if url = options.delete("url")
+                    Faraday::NestedParamsEncoder.decode(URI.parse(url).query)
+                  else
+                    Cistern::Hash.stringify_keys(options)
+                  end
+    Cistern::Hash.slice(page_params, "per_page", "page")
   end
 
   def page_params?
@@ -65,9 +66,9 @@ class Zendesk2::Client::Request
   end
 
   def request_params
-    if page_params?
-      page_params = page_params!(self.params)
-    end
+    page_params = if page_params?
+                    page_params!(self.params)
+                  end
 
     if self.class.request_params
       self.class.request_params.call(self)

@@ -33,7 +33,7 @@ class Zendesk2::Client::CreateMembership < Zendesk2::Client::Request
 
     resource_id = service.serial_id
 
-    default_membership = false # !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
+    default_membership = !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
 
     resource = {
       "id"              => resource_id,
