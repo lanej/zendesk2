@@ -1,10 +1,14 @@
 class Zendesk2::Client::CreateOrganization < Zendesk2::Client::Request
   request_method :post
   request_path { |_| "/organizations.json" }
-  request_body { |r|  { "organization" => Cistern::Hash.except(r.params["organization"], "id") } }
+  request_body { |r|  { "organization" => r.organization_params } }
 
   def self.accepted_attributes
     %w[details domain_names external_id group_id organization_fields shared_comments shared_tickets tags name notes]
+  end
+
+  def organization_params
+    @_organization_params ||= Cistern::Hash.slice(params.fetch("organization"), *self.class.accepted_attributes)
   end
 
   def mock
@@ -15,7 +19,7 @@ class Zendesk2::Client::CreateOrganization < Zendesk2::Client::Request
       "url"        => url_for("/organizations/#{identity}.json"),
       "created_at" => Time.now.iso8601,
       "updated_at" => Time.now.iso8601,
-    }.merge(Cistern::Hash.slice(params.fetch("organization"), *self.class.accepted_attributes))
+    }.merge(self.organization_params)
 
     unless record["name"]
       error!(:invalid, details: { "name" => [ { "description" => "Name cannot be blank" } ]})

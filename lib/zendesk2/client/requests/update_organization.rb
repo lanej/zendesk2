@@ -3,6 +3,10 @@ class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
   request_path { |r| "/organizations/#{r.organization_id}.json" }
   request_body { |r| { "organization" => Cistern::Hash.except(r.organization, "id") } }
 
+  def organization_params
+    @_organization_params ||= Cistern::Hash.slice(organization, *Zendesk2::Client::CreateOrganization.accepted_attributes)
+  end
+
   def organization
     params.fetch("organization")
   end
@@ -25,7 +29,7 @@ class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
       error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
 
-    record.merge!(Cistern::Hash.slice(organization, *Zendesk2::Client::CreateOrganization.accepted_attributes))
+    record.merge!(organization_params)
 
     mock_response("organization" => record)
   end
