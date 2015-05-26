@@ -3,6 +3,8 @@ class Zendesk2::Client::Search < Zendesk2::Client::Request
   request_body { |r| { query: r.query } }
   request_path { |_| "/search.json" }
 
+  page_params!
+
   attr_reader :query
 
   def _mock(query, params={})

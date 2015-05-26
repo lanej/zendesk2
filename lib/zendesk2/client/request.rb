@@ -58,7 +58,7 @@ class Zendesk2::Client::Request
                   else
                     Cistern::Hash.stringify_keys(options)
                   end
-    Cistern::Hash.slice(page_params, "per_page", "page")
+    Cistern::Hash.slice(page_params, "per_page", "page", "query")
   end
 
   def page_params?

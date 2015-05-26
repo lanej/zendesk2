@@ -5,6 +5,8 @@ class Zendesk2::Client::SearchOrganization < Zendesk2::Client::Request
 
   attr_reader :query
 
+  page_params!
+
   def _mock(query, params={})
     @query = query
     setup(params)
