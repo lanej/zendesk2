@@ -28,7 +28,7 @@ class Zendesk2::Client < Cistern::Service
         # response
         builder.use Faraday::Request::BasicAuthentication, @username, @auth_token
         builder.use Faraday::Response::RaiseError
-        builder.response :json
+        builder.response :json, content_type: /\bjson/
 
         # request
         builder.request :multipart
