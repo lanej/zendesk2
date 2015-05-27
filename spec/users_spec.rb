@@ -73,15 +73,18 @@ describe "users" do
     end
 
     it "should get requested tickets" do
-      ticket = client.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
+      another_user = client.users.create!(email: mock_email, name: mock_uuid)
 
-      expect(user.requested_tickets).to include ticket
+      another_user.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
+      ticket = user.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
+
+      expect(user.requested_tickets).to contain_exactly(ticket)
     end
 
     it "should get ccd tickets", mock_only: true do
       ticket = client.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
 
-      expect(user.ccd_tickets).to include ticket
+      expect(user.ccd_tickets).to contain_exactly(ticket)
     end
 
     it "cannot destroy a user with a ticket" do

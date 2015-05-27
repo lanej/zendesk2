@@ -78,7 +78,10 @@ class Zendesk2::Client::User < Zendesk2::Client::Model
 
   def destroy!
     requires :identity
-    raise "don't nuke yourself" if self.email == service.username
+
+    if self.email == service.username
+      raise "don't nuke yourself"
+    end
 
     merge_attributes(
       service.destroy_user("user" => {"id" => self.identity}).body["user"]
@@ -160,19 +163,15 @@ class Zendesk2::Client::User < Zendesk2::Client::Model
   def tickets
     requires :identity
 
-    service.tickets.load(
-      service.get_requested_tickets("user_id" => self.identity).body["tickets"]
-    )
+    service.tickets(requester_id: self.identity)
   end
   alias requested_tickets tickets
 
-  # @return [Zendesk2::Client::Tickets] tickets this user is CC'eD
+  # @return [Zendesk2::Client::Tickets] tickets this user is CC'd
   def ccd_tickets
     requires :identity
 
-    service.tickets.load(
-      service.get_ccd_tickets("user_id" => self.identity).body["tickets"]
-    )
+    service.tickets(collaborator_id: self.identity)
   end
 
   # @return [Zendesk2::Client::UserIdentities] the identities of this user

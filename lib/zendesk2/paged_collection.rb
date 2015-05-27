@@ -45,37 +45,42 @@ module Zendesk2::PagedCollection
   end
 
   # Attempt creation of resource and explode if unsuccessful
+  #
   # @raise [Zendesk2::Error] if creation was unsuccessful
-  # @return [Cistern::Model]
+  # @return [Zendesk::Client::Model]
   def create!(attributes={})
     model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
     model.save!
   end
 
   # Quietly attempt creation of resource. Check {#new_record?} and {#errors} for success
+  #
   # @see {#create!} to raise an exception on failure
-  # @return [Cistern::Model, FalseClass]
+  # @return [Zendesk::Client::Model, FalseClass]
   def create(attributes={})
     model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
     model.save
   end
 
+  # Iterate over all pages and collect every entry
+  #
+  # @return [Array<Zendesk2::Client::Model>] all entries in all pages
+  def all_entries
+    each_entry.to_a
+  end
+
   # Fetch a collection of resources
   def all(params={})
-    if params["filtered"] && (url = params["url"])
-      query = Faraday::NestedParamsEncoder.decode(URI.parse(url).query)
-      search(query.delete("query"), query)
+    if search_query?(params)
+      search_page(params)
     else
-      scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
-      body = service.send(collection_method, scoped_attributes).body
-
-      self.load(body[collection_root]) # 'results' is the key for paged seraches
-      self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+      collection_page(params)
     end
     self
   end
 
   # Fetch a single of resource
+  #
   # @overload get!(identity)
   #   fetch a un-namespaced specific record or a namespaced record under the current {#scopes}
   #   @param [Integer] identity identity of the record
@@ -91,12 +96,14 @@ module Zendesk2::PagedCollection
   # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
   def get!(identity_or_hash)
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
+
     if identity_or_hash.is_a?(Hash)
       scoped_attributes.merge!(identity_or_hash)
-    else scoped_attributes.merge!("id" => identity_or_hash)
+    else
+      scoped_attributes.merge!("id" => identity_or_hash)
     end
 
-    scoped_attributes = {model_root => scoped_attributes}
+    scoped_attributes = { model_root => scoped_attributes }
 
     if data = self.service.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
@@ -104,6 +111,7 @@ module Zendesk2::PagedCollection
   end
 
   # Quiet version of {#get!}
+  #
   # @see #get!
   # @return [Zendesk2::Model] Fetched model when successful
   # @return [NilClass] return nothing if record cannot be found
@@ -119,5 +127,25 @@ module Zendesk2::PagedCollection
     def scopes
       @scopes ||= []
     end
+  end
+
+  protected
+
+  def search_query?(params)
+    !!params["filtered"] && !!params["url"]
+  end
+
+  def search_page(params)
+    query = Faraday::NestedParamsEncoder.decode(URI.parse(params.fetch("url")).query)
+
+    search(query.delete("query"), query)
+  end
+
+  def collection_page(params)
+    scoped_attributes = self.class.scopes.inject({}) { |r, k| r.merge(k.to_s => send(k)) }.merge(params)
+    body = service.send(collection_method, scoped_attributes).body
+
+    self.load(body[collection_root]) # 'results' is the key for paged seraches
+    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
   end
 end
