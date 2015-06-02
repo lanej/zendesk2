@@ -183,4 +183,9 @@ class Zendesk2::Client::User < Zendesk2::Client::Model
   def memberships
     self.service.memberships(user: self)
   end
+
+  # @return [Zendesk2::Client::Organizations] the organizations of this user through memberships
+  def organizations
+    self.service.organizations(user: self)
+  end
 end

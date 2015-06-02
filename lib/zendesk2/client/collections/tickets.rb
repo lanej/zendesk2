@@ -1,11 +1,15 @@
 class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
+  extend Zendesk2::Attributes
 
   model Zendesk2::Client::Ticket
 
-  attribute :requester_id
-  attribute :collaborator_id
+  attribute :requester_id, type: :integer
+  attribute :collaborator_id, type: :integer
+
+  assoc_accessor :requester
+  assoc_accessor :collaborator
 
   self.collection_root   = "tickets"
   self.model_method      = :get_ticket
@@ -23,7 +27,7 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
 
     body = service.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
 
-    self.load(body[collection_root]) # 'results' is the key for paged seraches
+    self.load(body[collection_root]) # 'results' is the key for paged searches
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     self
   end

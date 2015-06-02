@@ -61,15 +61,17 @@ describe "users" do
     end
   end
 
-  describe "#save" do
+  context "with a user" do
     let!(:user) { client.users.create!(email: mock_email, name: mock_uuid) }
 
-    it "should update organization" do
-      user.organization = organization = client.organizations.create!(name: mock_uuid)
+    describe "#save" do
+      it "should update organization" do
+        user.organization = organization = client.organizations.create!(name: mock_uuid)
 
-      user.save!
+        user.save!
 
-      expect(user.organization).to eq(organization)
+        expect(user.organization).to eq(organization)
+      end
     end
 
     it "should get requested tickets" do
@@ -126,8 +128,8 @@ describe "users" do
       expect {
         initial_identity.destroy
       }.to change { user.identities.all }.
-        from(a_collection_containing_exactly(initial_identity, new_identity)).
-        to(a_collection_containing_exactly(new_identity))
+      from(a_collection_containing_exactly(initial_identity, new_identity)).
+      to(a_collection_containing_exactly(new_identity))
 
       expect(new_identity.reload.primary).to be_falsey
 
@@ -205,6 +207,5 @@ describe "users" do
       expect(query["email"]).to be_nil
       expect(query["jwt"]).not_to be_nil
     end
-
   end
 end

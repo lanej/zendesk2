@@ -34,7 +34,13 @@ require 'zendesk2/client/models/audit_event'
 require_resource("category", plural: "categories")
 require_resource("forum")
 require_resource("group", and: ["get_assignable_groups"])
-require_resource("user", and: ["search_user", "get_current_user", "mark_user_identity_primary"])
+require_resource("user", and: [
+  "search_user",
+  "get_current_user",
+  "mark_user_identity_primary",
+  "get_user_memberships",
+  "get_user_organizations",
+])
 
 require_resource("ticket", and: ["get_requested_tickets", "get_ccd_tickets"])
 require_resource("ticket_audit", except: [:create, :destroy, :update])
@@ -48,15 +54,7 @@ require_resource("organization", and: [
   "get_organization_by_external_id",
   "get_organization_memberships",
   "search_organization",
-  "get_user_memberships",
 ])
 require_resource("user_field")
 require_resource("user_identity", plural: "user_identities")
-
-require "zendesk2/client/models/membership"
-require "zendesk2/client/collections/memberships"
-
-require "zendesk2/client/requests/create_membership"
-require "zendesk2/client/requests/destroy_membership"
-require "zendesk2/client/requests/get_membership"
-require "zendesk2/client/requests/mark_membership_default"
+require_resource("membership", except: [:update], and: "mark_membership_default")

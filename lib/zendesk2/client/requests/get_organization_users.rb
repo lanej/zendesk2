@@ -5,11 +5,14 @@ class Zendesk2::Client::GetOrganizationUsers < Zendesk2::Client::Request
   page_params!
 
   def organization_id
-    params.fetch("organization").fetch("id")
+    params.fetch("organization").fetch("id").to_i
   end
 
   def mock
-    users = self.data[:users].values.select { |u| u["organization_id"].to_i == organization_id.to_i }
+    users = self.data[:users].values.select { |u| u["organization_id"]  == organization_id }
+    users += self.data[:memberships].values.select { |m|
+      m["organization_id"] == organization_id
+    }.map { |m| self.data[:users].fetch(m["user_id"]) }
 
     page(users, root: "users")
   end

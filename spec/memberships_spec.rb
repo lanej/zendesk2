@@ -55,6 +55,19 @@ describe "memberships" do
     expect(another_user.memberships.size).to eq(2)
   end
 
+  it "should get a user's organizations" do
+    another_user = client.users.create!(email: mock_email, name: mock_uuid, verified: true)
+    another_organization = client.organizations.create!(name: mock_uuid)
+
+    another_organization.memberships.create!(user: another_user)
+    another_organization.memberships.create!(user: user)
+    organization.memberships.create!(user: another_user)
+
+    expect(user.organizations.to_a).to contain_exactly(another_organization)
+    expect(another_organization.users.to_a).to contain_exactly(user, another_user)
+    expect(organization.users.to_a).to contain_exactly(another_user)
+  end
+
   describe "create_membership" do
     it "should error when organization does not exist" do
       expect {
