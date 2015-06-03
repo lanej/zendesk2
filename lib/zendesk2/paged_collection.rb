@@ -36,6 +36,10 @@ module Zendesk2::PagedCollection
     end
   end
 
+  def all_entries
+    each_entry.to_a
+  end
+
   def next_page
     new_page.all("url" => next_page_link, "filtered" => self.filtered) if next_page_link
   end
