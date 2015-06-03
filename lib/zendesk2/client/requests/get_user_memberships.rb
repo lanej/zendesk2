@@ -9,8 +9,6 @@ class Zendesk2::Client::GetUserMemberships < Zendesk2::Client::Request
   end
 
   def mock
-    collection = self.data[:memberships].values.select { |m| m["user_id"] == user_id }
-
-    resources(collection, root: "organization_memberships")
+    page(self.data[:memberships].values.select { |m| m["user_id"] == user_id }, root: "organization_memberships")
   end
 end

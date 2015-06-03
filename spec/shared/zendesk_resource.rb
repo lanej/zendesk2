@@ -25,7 +25,7 @@ shared_examples "zendesk resource" do |options={}|
           @resources = 3.times.map { collection.create!(instance_exec(&options[:create_params])) }
         end
 
-        after(:each) { @resources.each { |r| r.destroy } }
+        after(:each) { (@resources || []).each { |r| r.destroy } }
 
         it "should retrieve first page" do
           expect(collection.all("per_page" => "1").size).to eq(1)

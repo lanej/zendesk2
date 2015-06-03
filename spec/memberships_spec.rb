@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe "memberships" do
-  let(:client) { create_client }
-  let(:user)   { client.users.create!(email: mock_email, name: mock_uuid, verified: true) }
-  let(:organization)   { client.organizations.create!(name: mock_uuid) }
+  let!(:client)      { create_client }
+  let!(:user)        { client.users.create!(email: mock_email, name: mock_uuid, verified: true) }
+  let(:organization) { client.organizations.create!(name: mock_uuid) }
 
   include_examples "zendesk resource", {
-    :create_params => lambda { { organization_id: organization.id, user_id: user.id } },
+    :create_params => lambda { { organization_id: client.organizations.create!(name: mock_uuid).identity, user_id: user.id } },
     :collection    => lambda { client.memberships(user: user) },
-    :paged         => false,
+    :paged         => true,
     :update        => false,
     :search        => false,
   }

@@ -1,11 +1,11 @@
 class Zendesk2::Client::Memberships < Zendesk2::Client::Collection
+  include Zendesk2::PagedCollection
   extend Zendesk2::Attributes
 
   model Zendesk2::Client::Membership
 
   attribute :user_id, type: :integer
   attribute :organization_id, type: :integer
-  attribute :count, type: :integer
 
   assoc_accessor :organization
   assoc_accessor :user
@@ -19,12 +19,14 @@ class Zendesk2::Client::Memberships < Zendesk2::Client::Collection
 
     body = if self.user_id && self.organization_id
              {
-               "organization_memberships" => [ service.get_membership("user_id" => self.user_id, "organization_id" => self.organization_id).body["organization_membership"] ]
+               "organization_memberships" => [
+                 service.get_membership("user_id" => self.user_id, "organization_id" => self.organization_id).body["organization_membership"]
+               ]
              }
            elsif self.user_id
-             service.get_user_memberships("membership" => { "user_id" => self.user_id }).body
+             service.get_user_memberships({"membership" => { "user_id" => self.user_id }}.merge(params)).body
            else
-             service.get_organization_memberships("membership" => { "organization_id" => self.organization_id }).body
+             service.get_organization_memberships({"membership" => { "organization_id" => self.organization_id }}.merge(params)).body
            end
 
     self.load(body[collection_root])

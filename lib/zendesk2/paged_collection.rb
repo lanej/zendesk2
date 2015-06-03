@@ -41,11 +41,23 @@ module Zendesk2::PagedCollection
   end
 
   def next_page
-    new_page.all("url" => next_page_link, "filtered" => self.filtered) if next_page_link
+    if next_page_link
+      options = {"url" => next_page_link}
+      if self.respond_to?(:filtered) # searchable
+        options.merge!("filtered" => self.filtered)
+      end
+      new_page.all(options)
+    end
   end
 
   def previous_page
-    new_page.all("url" => previous_page_link, "filtered" => self.filtered) if previous_page_link
+    if previous_page_link
+      options = {"url" => previous_page_link}
+      if self.respond_to?(:filtered) # searchable
+        options.merge!("filtered" => self.filtered)
+      end
+      new_page.all(options)
+    end
   end
 
   # Attempt creation of resource and explode if unsuccessful
@@ -53,7 +65,7 @@ module Zendesk2::PagedCollection
   # @raise [Zendesk2::Error] if creation was unsuccessful
   # @return [Zendesk::Client::Model]
   def create!(attributes={})
-    model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
+    model = self.new(Zendesk2.stringify_keys(attributes).merge(Zendesk2.stringify_keys(self.attributes)))
     model.save!
   end
 
