@@ -24,18 +24,28 @@ class Zendesk2::Client < Cistern::Service
       raise "Missing required options: :username" unless @username
       raise "Missing required options: :password or :token" unless password || @token
 
-      @service = Faraday.new({url: @url}.merge(service_options)) do |builder|
+      @service = Faraday.new({url: @url}.merge(service_options)) do |connection|
         # response
-        builder.use Faraday::Request::BasicAuthentication, @username, @auth_token
-        builder.use Faraday::Response::RaiseError
-        builder.response :json, content_type: /\bjson/
+        connection.use Faraday::Request::BasicAuthentication, @username, @auth_token
+        connection.use Faraday::Response::RaiseError
+        connection.response :json, content_type: /\bjson/
 
         # request
-        builder.request :multipart
-        builder.request :json
+        connection.request :multipart
+        connection.request :json
 
-        builder.use Zendesk2::Logger, @logger
-        builder.adapter adapter
+        # idempotency
+        connection.request :retry,
+          :max                 => 30,
+          :interval            => 1,
+          :interval_randomness => 0.2,
+          :backoff_factor      => 2
+
+        # rate limit
+        connection.use Zendesk2::RateLimit, logger: @logger
+
+        connection.use Zendesk2::Logger, @logger
+        connection.adapter(*adapter)
       end
     end
 

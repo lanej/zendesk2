@@ -38,5 +38,6 @@ require 'zendesk2/error'
 require 'zendesk2/searchable'
 require 'zendesk2/logger'
 require 'zendesk2/paged_collection'
+require 'zendesk2/rate_limit'
 
 require 'zendesk2/client'
