@@ -71,7 +71,7 @@ class Zendesk2::Client::CreateTicket < Zendesk2::Client::Request
     }.merge(create_params)
 
     record["requester_id"] ||= (requester_id && requester_id.to_i) || service.current_user["id"]
-    record["submitter_id"] = service.current_user["id"].to_s
+    record["submitter_id"] = service.current_user["id"].to_i
 
     # @note invalid requester id does NOT cause a 404 or 422
     record["organization_id"] = if requester = service.data[:users][record["requester_id"].to_i]

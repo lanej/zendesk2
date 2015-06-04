@@ -77,10 +77,15 @@ describe "users" do
     it "should get requested tickets" do
       another_user = client.users.create!(email: mock_email, name: mock_uuid)
 
-      another_user.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
-      ticket = user.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
+      2.times.each {
+        another_user.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
+      }
 
-      expect(user.requested_tickets).to contain_exactly(ticket)
+      targets = 2.times.map {
+        user.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
+      }
+
+      expect(user.requested_tickets.all(per_page: 1).all_entries).to match_array(targets)
     end
 
     it "should get ccd tickets", mock_only: true do

@@ -11,10 +11,10 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
   assoc_accessor :requester
   assoc_accessor :collaborator
 
-  self.collection_root   = "tickets"
-  self.model_method      = :get_ticket
-  self.model_root        = "ticket"
-  self.search_type       = "ticket"
+  self.collection_root = "tickets"
+  self.model_method    = :get_ticket
+  self.model_root      = "ticket"
+  self.search_type     = "ticket"
 
   def collection_page(params={})
     collection_method = if requester_id
@@ -31,4 +31,7 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
     self
   end
+
+  scopes << :requester_id
+  scopes << :collaborator_id
 end
