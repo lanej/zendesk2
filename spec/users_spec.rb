@@ -44,8 +44,8 @@ describe "users" do
     end
   end
 
-  describe "#search" do
-    it "should find a user based on details criteria with wildcards and by organization name", mock_only: true do
+  describe "#search", :mock_only do
+    it "should find a user based on details criteria with wildcards and by organization name" do
       # detached user
       client.users.create!(email: mock_email, name: mock_uuid)
 
@@ -58,6 +58,19 @@ describe "users" do
 
       expect(client.users.search(details: "*michelle*", organization: org.name)).to contain_exactly(user)
       expect(client.users.search(details: "*michelle*", organization: org.name[0..6])).to include(user)
+    end
+
+    context "when a user has multiple identities and searching by email" do
+      it "should display the primary email in the results" do
+        user = client.users.create!(email: (primary = mock_email), name: mock_uuid)
+
+        # create some extra identities
+        user.identities.create!(value: mock_email, type: "email")
+        user.identities.create!(value: (target = mock_email), type: "email")
+
+        # primary email should be returned in the results
+        expect(client.users.search(email: target).first.email).to eq(primary)
+      end
     end
   end
 

@@ -27,7 +27,7 @@ class Zendesk2::Client::SearchUser < Zendesk2::Client::Request
 
     # create a copy of each user mapped to a specific user identity
     collection = collection.map do |user|
-      self.data[:identities].values.select{|i| i["type"] == "email" && i["user_id"] == user["id"]}.map do |identity|
+      self.data[:identities].values.select { |i| i["type"] == "email" && i["user_id"] == user["id"] }.map do |identity|
         user.merge("email" => identity["value"])
       end
     end.flatten
@@ -55,11 +55,20 @@ class Zendesk2::Client::SearchUser < Zendesk2::Client::Request
       r.merge(term => condition)
     end
 
-    results = collection.select do |v|
+    munged_results = collection.select do |v|
       compiled_terms.all? do |term, condition|
         condition.is_a?(Regexp) ? condition.match(v[term.to_s]) : v[term.to_s].to_s == condition.to_s
       end
     end
+
+    # return the unmunged data
+    results = munged_results.map { |u|
+      identities = self.data[:identities].values.select { |i| i["user_id"] == u["id"] }
+
+      if identity = identities.find { |i| i["type"] == "email" && i["primary"] } || identities.find { |i| i["type"] == "email" }
+        u.merge!("email" => identity["value"])
+      end
+    }
 
     page(results, params: {"query" => query}, root: "results")
   end
