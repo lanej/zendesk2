@@ -1,7 +1,7 @@
 class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
   request_method :put
   request_path { |r| "/organizations/#{r.organization_id}.json" }
-  request_body { |r| { "organization" => Cistern::Hash.except(r.organization, "id") } }
+  request_body { |r| { "organization" => r.organization_params } }
 
   def organization_params
     @_organization_params ||= Cistern::Hash.slice(organization, *Zendesk2::Client::CreateOrganization.accepted_attributes)
