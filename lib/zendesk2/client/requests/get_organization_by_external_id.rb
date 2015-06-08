@@ -8,7 +8,7 @@ class Zendesk2::Client::GetOrganizationByExternalId < Zendesk2::Client::Request
   end
 
   def mock
-    results = self.data[:organizations].select { |k,v| v["external_id"].to_s == external_id.to_s }.values
+    results = self.data[:organizations].select { |k,v| v["external_id"].to_s.downcase == external_id.to_s.downcase }.values
 
     mock_response("organizations" => results)
   end

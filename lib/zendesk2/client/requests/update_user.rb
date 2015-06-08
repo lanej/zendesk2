@@ -19,7 +19,7 @@ class Zendesk2::Client::UpdateUser < Zendesk2::Client::Request
 
     external_id = user_params["external_id"]
 
-    if external_id && other_users.values.find { |o| o["external_id"].to_s == external_id.to_s }
+    if external_id && other_users.values.find { |o| o["external_id"].to_s.downcase == external_id.to_s.downcase }
       error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
 

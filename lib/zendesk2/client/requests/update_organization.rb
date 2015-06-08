@@ -25,7 +25,7 @@ class Zendesk2::Client::UpdateOrganization < Zendesk2::Client::Request
       error!(:invalid, details: {"name" => [ { "description" => "Name: has already been taken" } ]})
     end
 
-    if organization["external_id"] && other_organizations.values.find { |o| o["external_id"].to_s == organization["external_id"].to_s }
+    if organization["external_id"] && other_organizations.values.find { |o| o["external_id"].to_s.downcase == organization["external_id"].to_s.downcase }
       error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
 

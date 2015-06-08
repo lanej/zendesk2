@@ -28,11 +28,11 @@ class Zendesk2::Client::CreateUser < Zendesk2::Client::Request
       "active"     => true,
     }.merge(user_params)
 
-    if record["external_id"] && self.data[:users].values.find { |o| o["external_id"] == record["external_id"] }
+    if record["external_id"] && self.data[:users].values.find { |o| o["external_id"].to_s.downcase == record["external_id"].to_s.downcase }
       error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
 
-    if (email = record["email"]) && self.data[:identities].find{|k,i| i["type"] == "email" && i["value"] == email}
+    if (email = record["email"]) && self.data[:identities].find { |k,i| i["type"] == "email" && i["value"].to_s.downcase == email.downcase }
       error!(:invalid, :details => {
         "email" => [ {
           "description" => "Email: #{email} is already being used by another user"
