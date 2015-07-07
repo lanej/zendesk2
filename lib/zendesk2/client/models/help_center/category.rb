@@ -27,6 +27,12 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Client::Model
   # @return [String] The API url of this category
   attribute :url, type: :string # ro:yes required:no
 
+  def articles
+    requires :identity
+
+    service.help_center_articles(category_id: self.identity)
+  end
+
   def destroy!
     requires :identity
 
