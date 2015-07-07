@@ -3,6 +3,8 @@ class Zendesk2::Client::GetHelpCenterCategoriesArticles < Zendesk2::Client::Requ
     "/help_center/categories/#{r.category_id}/articles.json"
   }
 
+  page_params!
+
   def category_id
     Integer(
       params.fetch("category_id")
