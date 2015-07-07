@@ -61,7 +61,7 @@ class Zendesk2::Client::Collection
   # @raise [Zendesk2::Error] if the record cannot be found or other request error
   # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
   def get!(identity_or_hash)
-    scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
+    scoped_attributes = self.class.scopes.inject({}) { |r,k| r.merge(k.to_s => send(k)) }
 
     if identity_or_hash.is_a?(Hash)
       scoped_attributes.merge!(identity_or_hash)
@@ -84,5 +84,9 @@ class Zendesk2::Client::Collection
     get!(*args)
   rescue Zendesk2::Error
     nil
+  end
+
+  def new(attributes={})
+    super(self.attributes.merge(attributes))
   end
 end

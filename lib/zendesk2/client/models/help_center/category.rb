@@ -27,6 +27,18 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Client::Model
   # @return [String] The API url of this category
   attribute :url, type: :string # ro:yes required:no
 
+  def destroy!
+    requires :identity
+
+    service.destroy_help_center_category("category" => { "id" => self.identity })
+  end
+
+  def sections
+    requires :identity
+
+    service.help_center_sections(category_id: self.identity)
+  end
+
   def save!
     response = if new_record?
                  requires :name, :locale
@@ -39,11 +51,5 @@ class Zendesk2::Client::HelpCenter::Category < Zendesk2::Client::Model
                end
 
     merge_attributes(response.body["category"])
-  end
-
-  def destroy!
-    requires :identity
-
-    service.destroy_help_center_category("category" => { "id" => self.identity })
   end
 end
