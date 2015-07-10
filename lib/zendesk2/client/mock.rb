@@ -5,7 +5,7 @@ class Zendesk2::Client < Cistern::Service
     attr_accessor :last_request
 
     def self.data
-      @data ||= {
+      @data ||= Hash.new { |h,k| h[k] = {
         :categories             => {},
         :forums                 => {},
         :groups                 => {},
@@ -26,12 +26,25 @@ class Zendesk2::Client < Cistern::Service
         :users                  => {},
         :views                  => {},
       }
+      }
     end
 
     def self.serial_id
       @current_id ||= 0
       @current_id += 1
       @current_id
+    end
+
+    def data
+      self.class.data[@url]
+    end
+
+    def reset
+      data.clear
+    end
+
+    def self.reset
+      data.clear
     end
 
     def serial_id
