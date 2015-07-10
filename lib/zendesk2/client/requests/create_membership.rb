@@ -20,7 +20,7 @@ class Zendesk2::Client::CreateMembership < Zendesk2::Client::Request
   end
 
   def mock
-    find!(:users, user_id)
+    user = find!(:users, user_id)
     find!(:organizations, organization_id,
           :error   => :invalid,
           :details => {
@@ -43,6 +43,12 @@ class Zendesk2::Client::CreateMembership < Zendesk2::Client::Request
     }
 
     self.data[:memberships][resource_id] = resource
+
+    primary_organization = self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
+
+    if primary_organization
+      user.merge!("organization_id" => primary_organization["organization_id"])
+    end
 
     mock_response("organization_membership" => resource)
   end

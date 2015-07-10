@@ -63,9 +63,9 @@ describe "memberships" do
     another_organization.memberships.create!(user: user)
     organization.memberships.create!(user: another_user)
 
-    expect(user.organizations.to_a).to contain_exactly(another_organization)
+    expect(user.organizations.to_a).to         contain_exactly(another_organization)
     expect(another_organization.users.to_a).to contain_exactly(user, another_user)
-    expect(organization.users.to_a).to contain_exactly(another_user)
+    expect(organization.users.to_a).to         contain_exactly(another_user)
   end
 
   describe "create_membership" do

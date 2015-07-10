@@ -45,14 +45,12 @@ class Zendesk2::Client::CreateView < Zendesk2::Client::Request
   def mock
     create_params = view_params.dup
 
-    ap create_params
-
     if create_params["title"].nil? || create_params["title"] == ""
       error!(:invalid, :details => {"base" => [{"title" => "Title: cannot be blank"}]})
     end
 
-    if create_params["any"].nil? || !Array(create_params["any"]).any?
-      error!(:invalid, :details => {"base" => [{"Any" => "Any: cannot be blank"}]})
+    if Array(create_params["any"]).empty? && Array(create_params["all"]).empty?
+      error!(:invalid, :details => {"base" => ["Invalid conditions: You must select at least one condition"]})
     end
 
     identity = service.serial_id
@@ -86,8 +84,8 @@ class Zendesk2::Client::CreateView < Zendesk2::Client::Request
         },
       },
       "conditions"    => {
-        "any" => create_params["any"],
-        "all" => create_params["all"],
+        "any" => Array(create_params["any"]),
+        "all" => Array(create_params["all"]),
       },
     }.merge(create_params)
 

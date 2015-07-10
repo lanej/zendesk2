@@ -55,6 +55,10 @@ class Zendesk2::Client::CreateUser < Zendesk2::Client::Request
       self.data[:identities][user_identity_id] = user_identity
       self.data[:users][user_id] = record.reject { |k,v| k == "email" }
 
+      if organization_id
+        service.create_membership("membership" => { "user_id" => user_id, "organization_id" => organization_id, "default" => true } )
+      end
+
       mock_response({"user" => record}, {status: 201})
     end
   end

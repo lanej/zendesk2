@@ -5,8 +5,9 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
 
   model Zendesk2::Client::Ticket
 
-  attribute :requester_id, type: :integer
+  attribute :requester_id,    type: :integer
   attribute :collaborator_id, type: :integer
+  attribute :view_id,         type: :integer
 
   assoc_accessor :requester
   assoc_accessor :collaborator
@@ -21,6 +22,8 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
                           :get_requested_tickets
                         elsif collaborator_id
                           :get_ccd_tickets
+                        elsif view_id
+                          :get_view_tickets
                         else
                           :get_tickets
                         end
@@ -34,4 +37,5 @@ class Zendesk2::Client::Tickets < Zendesk2::Client::Collection
 
   scopes << :requester_id
   scopes << :collaborator_id
+  scopes << :view_id
 end

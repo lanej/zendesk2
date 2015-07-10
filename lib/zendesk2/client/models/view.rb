@@ -39,6 +39,12 @@ class Zendesk2::Client::View < Zendesk2::Client::Model
     merge_attributes(data["view"])
   end
 
+  def tickets
+    requires :identity
+
+    service.tickets(view_id: self.identity)
+  end
+
   def destroy!
     requires :identity
 
