@@ -72,6 +72,7 @@ Currently support resources:
 * User Identities
 * User Fields
 * Users
+* Views
 
 Help Center resources:
 
