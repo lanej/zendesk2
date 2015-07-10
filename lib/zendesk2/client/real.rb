@@ -11,7 +11,7 @@ class Zendesk2::Client < Cistern::Service
       @logger   = options[:logger]   || Logger.new(nil)
       adapter   = options[:adapter]  || Faraday.default_adapter
       @username = options[:username] || Zendesk2.defaults[:username]
-      @token    = options[:token]    || Zendesk2.defaults[:token]
+      @token    = options.fetch(:token, Zendesk2.defaults[:token])
       password  = options[:password] || Zendesk2.defaults[:password]
 
       service_options = options[:service_options] || {}
@@ -62,6 +62,8 @@ class Zendesk2::Client < Cistern::Service
         req.params.merge!(params)
         req.body = @last_request = body
       end
+    rescue Faraday::ConnectionFailed
+      raise
     rescue Faraday::Error::ClientError => e
       raise Zendesk2::Error.new(e)
     end
