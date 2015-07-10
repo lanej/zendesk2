@@ -1,4 +1,4 @@
-shared_examples "zendesk resource" do |options={}|
+shared_examples "zendesk#resource" do |options={}|
   context "as a resource" do
     let!(:collection)   { instance_exec(&options[:collection]) }
     let(:create_params) { instance_exec(&options[:create_params]) || {} }

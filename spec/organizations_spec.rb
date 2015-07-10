@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "organizations" do
   let(:client) { create_client }
 
-  include_examples "zendesk resource", {
+  include_examples "zendesk#resource", {
     :collection    => lambda { client.organizations },
     :create_params => lambda { { name: mock_uuid } },
     :update_params => lambda { { name: mock_uuid } },

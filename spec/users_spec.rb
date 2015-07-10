@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "users" do
   let(:client) { create_client }
 
-  include_examples "zendesk resource", {
+  include_examples "zendesk#resource", {
     :collection    => lambda { client.users },
     :create_params => lambda { { email: mock_email, name: mock_uuid, verified: true } },
     :update_params => lambda { { name: mock_uuid } },

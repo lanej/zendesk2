@@ -4,7 +4,7 @@ describe "user_identities" do
   let(:client) { create_client }
   let(:user)   { client.users.create(email: mock_email, name: mock_uuid, verified: true) }
 
-  include_examples "zendesk resource", {
+  include_examples "zendesk#resource", {
     :create_params => lambda { { value: "ey+#{mock_uuid}@example.org", type: "email", user_id: user.id } },
     :update_params => lambda { { verified: true } },
     :fetch_params  => lambda { |uc| { "user_id" => uc.user_id, "id" => uc.id } },

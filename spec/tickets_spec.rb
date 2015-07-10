@@ -4,7 +4,7 @@ describe "Zendesk2::Client" do
   let(:client) { create_client }
 
   describe "tickets" do
-    include_examples "zendesk resource", {
+    include_examples "zendesk#resource", {
       :collection    => lambda { client.tickets },
       :create_params => lambda { {subject: mock_uuid, description: mock_uuid} },
       :update_params => lambda { {subject: mock_uuid} },

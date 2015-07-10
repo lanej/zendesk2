@@ -24,6 +24,7 @@ class Zendesk2::Client < Cistern::Service
         :topics                 => {},
         :user_fields            => {},
         :users                  => {},
+        :views                  => {},
       }
     end
 

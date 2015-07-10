@@ -9,7 +9,7 @@ describe "help_center/sections" do
     )
   end
 
-  include_examples "zendesk resource", {
+  include_examples "zendesk#resource", {
     :collection    => lambda { client.help_center_sections },
     :create_params => lambda { { name: mock_uuid, locale: "en-us", category: category } },
     :update_params => lambda { { name: mock_uuid } },

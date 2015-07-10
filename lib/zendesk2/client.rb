@@ -58,3 +58,4 @@ require_resource("organization", and: [
 require_resource("user_field")
 require_resource("user_identity", plural: "user_identities")
 require_resource("membership", except: [:update], and: "mark_membership_default")
+require_resource("view")

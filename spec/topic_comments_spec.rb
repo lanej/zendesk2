@@ -6,7 +6,7 @@ describe "topic_comments" do
   let!(:forum)  { client.forums.create!(name: mock_uuid) }
   let!(:topic)  { client.topics.create!(title: mock_uuid, body: mock_uuid, forum: forum) }
 
-  include_examples "zendesk resource",
+  include_examples "zendesk#resource",
     {
       :create_params => lambda { { body: mock_uuid, topic_id: topic.identity, user_id: user.identity } },
       :update        => false,
