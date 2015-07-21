@@ -25,6 +25,7 @@ class Zendesk2::Client::CreateUser < Zendesk2::Client::Request
       "url"        => url_for("/users/#{user_id}.json"),
       "created_at" => Time.now.iso8601,
       "updated_at" => Time.now.iso8601,
+      "role"       => "end-user",
       "active"     => true,
     }.merge(user_params)
 
