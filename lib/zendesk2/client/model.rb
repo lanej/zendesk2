@@ -1,4 +1,6 @@
 class Zendesk2::Client::Model
+  include Cistern::Model
+
   attr_accessor :errors
 
   # @abstract override in subclass
