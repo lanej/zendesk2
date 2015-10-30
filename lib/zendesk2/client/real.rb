@@ -1,4 +1,4 @@
-class Zendesk2::Client < Cistern::Service
+class Zendesk2::Client
   class Real
 
     attr_accessor :username, :url, :token, :logger, :jwt_token, :last_request

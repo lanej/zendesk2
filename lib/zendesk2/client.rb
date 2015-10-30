@@ -1,4 +1,6 @@
-class Zendesk2::Client < Cistern::Service
+class Zendesk2::Client
+  include Cistern::Client
+
   USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
 
   recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token

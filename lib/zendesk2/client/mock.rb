@@ -1,4 +1,4 @@
-class Zendesk2::Client < Cistern::Service
+class Zendesk2::Client
   class Mock
 
     attr_reader :username, :url, :token, :jwt_token
