@@ -4,7 +4,7 @@ class Zendesk2::Client::CreateUser < Zendesk2::Client::Request
   request_body { |r| { "user" => r.user_params } }
 
   def self.accepted_attributes
-    %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments]
+    %w[name email organization_id external_id alias verified locate_id time_zone phone signature details notes role custom_role_id moderator ticket_restriction only_private_comments user_fields]
   end
 
   def user_params

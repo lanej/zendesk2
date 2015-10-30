@@ -168,6 +168,14 @@ describe "users" do
       expect(initial_identity.reload.primary).to be_falsey
     end
 
+    it "persists #user_fields" do
+      user_fields = { "A" => 1 }
+
+      fields_user = client.users.create!(email: mock_email, name: mock_uuid, user_fields: user_fields)
+      expect(fields_user.user_fields).to eq(user_fields)
+      expect(fields_user.reload.user_fields).to eq(user_fields)
+    end
+
     it "should hate non-unique emails" do
       email = mock_email
       client.users.create!(email: email, name: mock_uuid)

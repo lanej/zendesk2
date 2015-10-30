@@ -56,6 +56,8 @@ class Zendesk2::Client::User < Zendesk2::Client::Model
   attribute :updated_at, type: :time
   # @return [String] The API url of this user
   attribute :url, type: :string
+  # @return [Hash] Custom fields for the user
+  attribute :user_fields
   # @return [Boolean] Zendesk has verified that this user is who he says he is
   attribute :verified, type: :boolean
 
