@@ -1,7 +1,10 @@
 language: ruby
+sudo: false
+cache:
+  - bundler
 rvm:
-  - "2.1.2"
-  - "1.9.3"
+  - "2.2"
+  - "1.9"
 script: "bundle exec rake --trace"
 notifications:
   email:
