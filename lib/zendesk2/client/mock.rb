@@ -56,14 +56,19 @@ class Zendesk2::Client::Mock
     @token               = options[:token]
     @jwt_token           = options[:jwt_token]
 
-    @current_user ||= self.create_user("user" => {"email" => @username, "name" => "Mock Agent"}).body["user"]
+    @current_user ||= self.data[:users].values.find { |u|
+      @username == u["name"]
+    } || self.create_user(
+      "user" => {"email" => @username, "name" => @username}
+    ).body["user"]
+
     @current_user_identity ||= self.data[:identities].values.first
   end
 
   # Lazily re-seeds data after reset
   # @return [Hash] current user response
   def current_user
-    self.data[:users][@current_user["id"]] ||= @current_user
+    self.data[:users][@current_user["id"]]               ||= @current_user
     self.data[:identities][@current_user_identity["id"]] ||= @current_user_identity
 
     @current_user
