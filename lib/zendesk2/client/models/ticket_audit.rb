@@ -23,6 +23,8 @@ class Zendesk2::Client::TicketAudit < Zendesk2::Client::Model
   end
 
   def events
-    (self.attributes[:events] || []).map{|ae| Zendesk2::Client::AuditEvent.for(ae.merge(ticket_audit: self, service: self.service))}
+    (self.attributes[:events] || []).map { |ae|
+      Zendesk2::Client::AuditEvent.for(ae.merge(ticket_audit: self, service: self.service))
+    }
   end
 end
