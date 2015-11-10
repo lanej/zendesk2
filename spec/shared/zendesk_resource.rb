@@ -67,12 +67,12 @@ shared_examples "zendesk#resource" do |options={}|
       expect(record.identity).not_to be_nil
       record.destroy
 
-      if !options.fetch(:delayed_destroy, false) && !Zendesk2::Client.mocking?
+      if !options.fetch(:delayed_destroy, false) && !Zendesk2.mocking?
         expect(record).to be_destroyed
       end
     end
 
-    if options.fetch(:search, true) && Zendesk2::Client.mocking?
+    if options.fetch(:search, true) && Zendesk2.mocking?
       # Search index takes 2-3 minutes according to the docs
       it "should search by hash" do
         @record = collection.create!(create_params)

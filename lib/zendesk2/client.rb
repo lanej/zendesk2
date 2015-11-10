@@ -1,9 +1,6 @@
-class Zendesk2::Client
-  include Cistern::Client
-
-  USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
-
-  recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
+def Kernel.require(file)
+  puts "require '#{file}'"
+  super
 end
 
 def require_resource(resource, options={})
@@ -11,27 +8,27 @@ def require_resource(resource, options={})
   except = Array(options[:except])
   other  = Array(options[:and])
 
-  require "zendesk2/client/models/#{resource}"
-  require "zendesk2/client/collections/#{plural}"
+  require "zendesk2/models/#{resource}"
+  require "zendesk2/collections/#{plural}"
 
-  require "zendesk2/client/requests/create_#{resource}"  unless except.include?(:create)
-  require "zendesk2/client/requests/destroy_#{resource}" unless except.include?(:destroy)
-  require "zendesk2/client/requests/get_#{plural}"       unless except.include?(:index)
-  require "zendesk2/client/requests/get_#{resource}"     unless except.include?(:show)
-  require "zendesk2/client/requests/update_#{resource}"  unless except.include?(:update)
+  require "zendesk2/requests/create_#{resource}"  unless except.include?(:create)
+  require "zendesk2/requests/destroy_#{resource}" unless except.include?(:destroy)
+  require "zendesk2/requests/get_#{plural}"       unless except.include?(:index)
+  require "zendesk2/requests/get_#{resource}"     unless except.include?(:show)
+  require "zendesk2/requests/update_#{resource}"  unless except.include?(:update)
 
-  other.each { |file| require "zendesk2/client/requests/#{file}" }
+  other.each { |file| require "zendesk2/requests/#{file}" }
 end
 
-require 'zendesk2/client/real'
-require 'zendesk2/client/mock'
-require 'zendesk2/client/request'
-require 'zendesk2/client/model'
-require 'zendesk2/client/collection'
-require 'zendesk2/client/help_center'
+require 'zendesk2/real'
+require 'zendesk2/mock'
+require 'zendesk2/request'
+require 'zendesk2/model'
+require 'zendesk2/collection'
+require 'zendesk2/help_center'
 
-require 'zendesk2/client/requests/search'
-require 'zendesk2/client/models/audit_event'
+require 'zendesk2/requests/search'
+require 'zendesk2/models/audit_event'
 
 require_resource("category", plural: "categories")
 require_resource("forum")
@@ -61,3 +58,7 @@ require_resource("user_field")
 require_resource("user_identity", plural: "user_identities")
 require_resource("membership", except: [:update], and: "mark_membership_default")
 require_resource("view", and: ["get_view_tickets"])
+
+def Kernel.require(file)
+  super
+end
