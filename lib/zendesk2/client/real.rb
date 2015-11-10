@@ -53,7 +53,7 @@ class Zendesk2::Client::Real
     url     = options[:url] || File.join(@url, "/api/v2", options[:path])
     params  = options[:params] || {}
     body    = options[:body]
-    headers = {"User-Agent" => USER_AGENT}.merge(options[:headers] || {})
+    headers = {"User-Agent" => Zendesk2::Client::USER_AGENT}.merge(options[:headers] || {})
 
     @service.send(method) do |req|
       req.url(url)
