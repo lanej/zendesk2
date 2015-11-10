@@ -53,7 +53,7 @@ class Zendesk2::Real
     url     = options[:url] || File.join(@url, "/api/v2", options[:path])
     params  = options[:params] || {}
     body    = options[:body]
-    headers = {"User-Agent" => Zendesk2::USER_AGENT}.merge(options[:headers] || {})
+    headers = { "User-Agent" => Zendesk2::USER_AGENT }.merge(options[:headers] || {})
 
     @service.send(method) do |req|
       req.url(url)
@@ -63,7 +63,7 @@ class Zendesk2::Real
     end
   rescue Faraday::ConnectionFailed
     raise
-  rescue Faraday::ErrorError => e
+  rescue Faraday::Error::ClientError => e
     raise Zendesk2::Error.new(e)
   end
 end
