@@ -1,6 +1,10 @@
 class Zendesk2::Client::GetHelpCenterSectionsArticles < Zendesk2::Client::Request
   request_path { |r|
-    "/help_center/sections/#{r.section_id}/articles.json"
+    if locale = r.params["locale"]
+      "/help_center/#{locale}/sections/#{r.section_id}/articles.json"
+    else
+      "/help_center/sections/#{r.section_id}/articles.json"
+    end
   }
 
   page_params!
