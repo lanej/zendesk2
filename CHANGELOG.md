@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.7.5](https://github.com/lanej/zendesk2/tree/v1.7.5) (2016-04-02)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.7.4...v1.7.5)
+
+**Merged pull requests:**
+
+- Add optional locale parameter to get\_help\_center\_sections\_articles [\#42](https://github.com/lanej/zendesk2/pull/42) ([TranquilMarmot](https://github.com/TranquilMarmot))
+
 ## [v1.7.4](https://github.com/lanej/zendesk2/tree/v1.7.4) (2015-11-10)
 [Full Changelog](https://github.com/lanej/zendesk2/compare/v1.7.3...v1.7.4)
 
