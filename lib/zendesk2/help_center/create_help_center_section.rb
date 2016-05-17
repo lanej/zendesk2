@@ -44,6 +44,16 @@ class Zendesk2::CreateHelpCenterSection < Zendesk2::Request
 
     service.data[:help_center_sections][identity] = record
 
+    access_policy = {
+      "viewable_by": "everyone",
+      "managable_by": "staff",
+      "restricted_to_group_ids": [],
+      "restricted_to_organization_ids": [],
+      "required_tags": [],
+      "section_id": identity
+    }
+    service.data[:help_center_access_policies][identity] = access_policy
+
     mock_response("section" => record)
   end
 end

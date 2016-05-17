@@ -29,5 +29,19 @@ describe "help_center/sections" do
     it "lists articles within a section" do
       expect(section.articles.all).to match_array(articles)
     end
+
+    it "shows the access policy for the section" do
+      expect(section.access_policy.viewable_by).to eq("everyone")
+    end
+
+    it "updates the section access policy" do
+      policy = section.access_policy
+      old_viewable_by = policy.viewable_by
+      new_viewable_by = "staff"
+
+      expect {
+        policy.update!(viewable_by: new_viewable_by)
+      }.to change { section.reload.access_policy.viewable_by }.from(old_viewable_by).to(new_viewable_by)
+    end
   end
 end
