@@ -11,6 +11,7 @@ if ENV["MOCK_ZENDESK"] == 'true'
 end
 
 Cistern.formatter = Cistern::Formatter::AwesomePrint
+Cistern.deprecation_warnings = !!ENV['DEBUG']
 
 RSpec.configure do |config|
   if Zendesk2::Client.mocking?
