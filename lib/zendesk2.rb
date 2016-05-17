@@ -14,7 +14,11 @@ require 'time'
 require 'yaml'
 require 'securerandom'
 
-module Zendesk2
+class Zendesk2
+  include Cistern::Client
+
+  USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
+
   def self.defaults
     @defaults ||= begin
                     YAML.load_file(File.expand_path("~/.zendesk2"))
@@ -31,6 +35,9 @@ module Zendesk2
   def self.blank?(string)
     string.nil? || string == ""
   end
+
+
+  recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
 end
 
 require 'zendesk2/attributes'

@@ -8,7 +8,7 @@ module Zendesk2::Searchable
 
   # Search for resources of a certain type.
   #
-  # If you need more control over your search (see Zendesk2::Client::Real#search)
+  # If you need more control over your search (see Zendesk2::Real#search)
   #
   # @example search with a simple hash
   #   client.users.search("email" => "jlane@engineyard.com")

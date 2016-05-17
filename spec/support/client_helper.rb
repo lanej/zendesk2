@@ -9,7 +9,7 @@ module ClientHelper
       :url      => "https://www.zendesk.com",
     }.merge(Zendesk2.defaults).merge(options)
 
-    Zendesk2::Client.new(options)
+    Zendesk2.new(options)
   end
 end
 

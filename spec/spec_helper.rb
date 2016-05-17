@@ -7,15 +7,15 @@ require File.expand_path("../../lib/zendesk2", __FILE__)
 Dir[File.expand_path("../{support,shared}/**/*.rb", __FILE__)].each {|f| require f}
 
 if ENV["MOCK_ZENDESK"] == 'true'
-  Zendesk2::Client.mock!
+  Zendesk2.mock!
 end
 
 Cistern.formatter = Cistern::Formatter::AwesomePrint
 Cistern.deprecation_warnings = !!ENV['DEBUG']
 
 RSpec.configure do |config|
-  if Zendesk2::Client.mocking?
-    config.before(:each) { Zendesk2::Client.reset! }
+  if Zendesk2.mocking?
+    config.before(:each) { Zendesk2.reset! }
   else
     config.filter_run_excluding(mock_only: true)
   end

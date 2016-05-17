@@ -66,7 +66,7 @@ describe "forums" do
         expect(response.env[:url].path).to eq("/api/v2/forums.json")
         expect(response.env[:method]).to eq(:get)
         expect(client.last_request).to eq(nil)
-        skip unless Zendesk2::Client.mocking?
+        skip unless Zendesk2.mocking?
         expect(response.env[:body]["forums"]).to match([
           a_hash_including(
             "id"   => forum.id,

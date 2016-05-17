@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Zendesk2::Client do
+describe Zendesk2 do
   let(:client) { create_client }
 
   context "with an organization" do

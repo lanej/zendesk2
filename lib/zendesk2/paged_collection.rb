@@ -63,7 +63,7 @@ module Zendesk2::PagedCollection
   # Attempt creation of resource and explode if unsuccessful
   #
   # @raise [Zendesk2::Error] if creation was unsuccessful
-  # @return [Zendesk::Client::Model]
+  # @return [Zendesk::Model]
   def create!(attributes={})
     model = self.new(Zendesk2.stringify_keys(attributes).merge(Zendesk2.stringify_keys(self.attributes)))
     model.save!
@@ -72,7 +72,7 @@ module Zendesk2::PagedCollection
   # Quietly attempt creation of resource. Check {#new_record?} and {#errors} for success
   #
   # @see {#create!} to raise an exception on failure
-  # @return [Zendesk::Client::Model, FalseClass]
+  # @return [Zendesk::Model, FalseClass]
   def create(attributes={})
     model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
     model.save
@@ -80,7 +80,7 @@ module Zendesk2::PagedCollection
 
   # Iterate over all pages and collect every entry
   #
-  # @return [Array<Zendesk2::Client::Model>] all entries in all pages
+  # @return [Array<Zendesk2::Model>] all entries in all pages
   def all_entries
     each_entry.to_a
   end

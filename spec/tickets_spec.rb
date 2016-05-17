@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Zendesk2::Client" do
+describe "Zendesk2" do
   let(:client) { create_client }
 
   describe "tickets" do
@@ -25,7 +25,7 @@ describe "Zendesk2::Client" do
 
       ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: {name: "Josh Lane", email: requester_email})
 
-      if Zendesk2::Client.mocking? # this takes some time for realsies
+      if Zendesk2.mocking? # this takes some time for realsies
         requester = client.users.search(email: requester_email).first
         expect(requester).not_to be_nil
 
@@ -120,13 +120,13 @@ describe "Zendesk2::Client" do
 
       events = audit.events
 
-      if Zendesk2::Client.mocking?
+      if Zendesk2.mocking?
         expect(events.size).to eq(1)
       end
 
       event = events.first
       expect(event.body).to eq(body)
-      expect(event).to be_a(Zendesk2::Client::TicketComment)
+      expect(event).to be_a(Zendesk2::TicketComment)
       expect(event.ticket_audit).to eq(audit)
     end
 

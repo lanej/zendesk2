@@ -1,63 +1,124 @@
-class Zendesk2::Client
-  include Cistern::Client
+require 'zendesk2/real'
+require 'zendesk2/mock'
+require 'zendesk2/request'
+require 'zendesk2/model'
+require 'zendesk2/collection'
+require 'zendesk2/help_center'
 
-  USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
+require 'zendesk2/create_category'
+require 'zendesk2/create_forum'
+require 'zendesk2/create_group'
+require 'zendesk2/create_membership'
+require 'zendesk2/create_organization'
+require 'zendesk2/create_ticket'
+require 'zendesk2/create_ticket_field'
+require 'zendesk2/create_topic'
+require 'zendesk2/create_topic_comment'
+require 'zendesk2/create_user'
+require 'zendesk2/create_user_field'
+require 'zendesk2/create_user_identity'
+require 'zendesk2/create_view'
+require 'zendesk2/destroy_category'
+require 'zendesk2/destroy_forum'
+require 'zendesk2/destroy_group'
+require 'zendesk2/destroy_membership'
+require 'zendesk2/destroy_organization'
+require 'zendesk2/destroy_ticket'
+require 'zendesk2/destroy_ticket_field'
+require 'zendesk2/destroy_topic'
+require 'zendesk2/destroy_topic_comment'
+require 'zendesk2/destroy_user'
+require 'zendesk2/destroy_user_field'
+require 'zendesk2/destroy_user_identity'
+require 'zendesk2/destroy_view'
+require 'zendesk2/get_assignable_groups'
+require 'zendesk2/get_categories'
+require 'zendesk2/get_category'
+require 'zendesk2/get_ccd_tickets'
+require 'zendesk2/get_current_user'
+require 'zendesk2/get_forum'
+require 'zendesk2/get_forums'
+require 'zendesk2/get_group'
+require 'zendesk2/get_groups'
+require 'zendesk2/get_membership'
+require 'zendesk2/get_memberships'
+require 'zendesk2/get_organization'
+require 'zendesk2/get_organization_by_external_id'
+require 'zendesk2/get_organization_memberships'
+require 'zendesk2/get_organization_tickets'
+require 'zendesk2/get_organization_users'
+require 'zendesk2/get_organizations'
+require 'zendesk2/get_requested_tickets'
+require 'zendesk2/get_ticket'
+require 'zendesk2/get_ticket_audit'
+require 'zendesk2/get_ticket_audits'
+require 'zendesk2/get_ticket_comments'
+require 'zendesk2/get_ticket_field'
+require 'zendesk2/get_ticket_fields'
+require 'zendesk2/get_tickets'
+require 'zendesk2/get_topic'
+require 'zendesk2/get_topic_comment'
+require 'zendesk2/get_topic_comments'
+require 'zendesk2/get_topics'
+require 'zendesk2/get_user'
+require 'zendesk2/get_user_field'
+require 'zendesk2/get_user_fields'
+require 'zendesk2/get_user_identities'
+require 'zendesk2/get_user_identity'
+require 'zendesk2/get_user_memberships'
+require 'zendesk2/get_user_organizations'
+require 'zendesk2/get_users'
+require 'zendesk2/get_view'
+require 'zendesk2/get_view_tickets'
+require 'zendesk2/get_views'
+require 'zendesk2/mark_membership_default'
+require 'zendesk2/mark_user_identity_primary'
+require 'zendesk2/update_category'
+require 'zendesk2/update_forum'
+require 'zendesk2/update_group'
+require 'zendesk2/update_organization'
+require 'zendesk2/update_ticket'
+require 'zendesk2/update_ticket_field'
+require 'zendesk2/update_topic'
+require 'zendesk2/update_user'
+require 'zendesk2/update_user_field'
+require 'zendesk2/update_user_identity'
+require 'zendesk2/update_view'
 
-  recognizes :url, :logger, :adapter, :username, :password, :token, :jwt_token
-end
+require 'zendesk2/search'
+require 'zendesk2/search_organization'
+require 'zendesk2/search_user'
 
-def require_resource(resource, options={})
-  plural = options[:plural] || "#{resource}s"
-  except = Array(options[:except])
-  other  = Array(options[:and])
+require 'zendesk2/audit_event'
 
-  require "zendesk2/client/models/#{resource}"
-  require "zendesk2/client/collections/#{plural}"
+require 'zendesk2/category'
+require 'zendesk2/forum'
+require 'zendesk2/group'
+require 'zendesk2/membership'
+require 'zendesk2/organization'
+require 'zendesk2/ticket'
+require 'zendesk2/ticket_audit'
+require 'zendesk2/ticket_comment'
+require 'zendesk2/ticket_field'
+require 'zendesk2/topic'
+require 'zendesk2/topic_comment'
+require 'zendesk2/user'
+require 'zendesk2/user_field'
+require 'zendesk2/user_identity'
+require 'zendesk2/view'
 
-  require "zendesk2/client/requests/create_#{resource}"  unless except.include?(:create)
-  require "zendesk2/client/requests/destroy_#{resource}" unless except.include?(:destroy)
-  require "zendesk2/client/requests/get_#{plural}"       unless except.include?(:index)
-  require "zendesk2/client/requests/get_#{resource}"     unless except.include?(:show)
-  require "zendesk2/client/requests/update_#{resource}"  unless except.include?(:update)
-
-  other.each { |file| require "zendesk2/client/requests/#{file}" }
-end
-
-require 'zendesk2/client/real'
-require 'zendesk2/client/mock'
-require 'zendesk2/client/request'
-require 'zendesk2/client/model'
-require 'zendesk2/client/collection'
-require 'zendesk2/client/help_center'
-
-require 'zendesk2/client/requests/search'
-require 'zendesk2/client/models/audit_event'
-
-require_resource("category", plural: "categories")
-require_resource("forum")
-require_resource("group", and: ["get_assignable_groups"])
-require_resource("user", and: [
-  "search_user",
-  "get_current_user",
-  "mark_user_identity_primary",
-  "get_user_memberships",
-  "get_user_organizations",
-])
-
-require_resource("ticket", and: ["get_requested_tickets", "get_ccd_tickets"])
-require_resource("ticket_audit", except: [:create, :destroy, :update])
-require_resource("ticket_field")
-require_resource("topic")
-require_resource("topic_comment", except: [:update])
-require_resource("ticket_comment", except: [:create, :destroy, :update, :show])
-require_resource("organization", and: [
-  "get_organization_users",
-  "get_organization_tickets",
-  "get_organization_by_external_id",
-  "get_organization_memberships",
-  "search_organization",
-])
-require_resource("user_field")
-require_resource("user_identity", plural: "user_identities")
-require_resource("membership", except: [:update], and: "mark_membership_default")
-require_resource("view", and: ["get_view_tickets"])
+require 'zendesk2/categories'
+require 'zendesk2/forums'
+require 'zendesk2/groups'
+require 'zendesk2/memberships'
+require 'zendesk2/organizations'
+require 'zendesk2/ticket_audits'
+require 'zendesk2/ticket_comments'
+require 'zendesk2/ticket_fields'
+require 'zendesk2/tickets'
+require 'zendesk2/topic_comments'
+require 'zendesk2/topics'
+require 'zendesk2/user_fields'
+require 'zendesk2/user_identities'
+require 'zendesk2/users'
+require 'zendesk2/views'
