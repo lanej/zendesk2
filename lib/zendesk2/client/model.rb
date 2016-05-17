@@ -30,7 +30,11 @@ class Zendesk2::Client::Model
 
   # re-define Cistern::Attributes#missing_attributes to require non-blank
   def missing_attributes(args)
-    ([:service] | args).select{|arg| val = send("#{arg}"); val.nil? || val == "" }
+    missing, required = super(args)
+    blank, still_required = required.partition { |_,v| "" == v }
+    missing.merge!(Hash[blank])
+
+    [missing, Hash[still_required]]
   end
 
   def update!(attributes)
