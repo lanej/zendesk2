@@ -3,8 +3,9 @@ sudo: false
 cache:
   - bundler
 rvm:
-  - "2.2"
-  - "1.9"
+  - 2.3
+  - 2.2
+  - 2.1
 script: "bundle exec rake --trace"
 notifications:
   email: false

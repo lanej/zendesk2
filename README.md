@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/lanej/zendesk2)
 [![Dependency Status](https://gemnasium.com/lanej/zendesk2.png)](https://gemnasium.com/lanej/zendesk2)
 
-Ruby client for the [Zendesk V2 API](http://developer.zendesk.com/documentation/rest_api/introduction.html) using [cistern](https://github.com/lanej/cistern) and [faraday](https://github.com/technoweenie/faraday)
+Ruby client for the [Zendesk V2 API](http://developer.zendesk.com/documentation/rest_api/introduction.html) using [cistern](https://github.com/lanej/cistern) and [faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required
 
 ## Installation
 
