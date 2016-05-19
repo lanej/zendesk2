@@ -65,7 +65,7 @@ class Zendesk2::HelpCenter::Section < Zendesk2::Model
 
     response = service.get_help_center_access_policy(section_id: self.identity).body["access_policy"]
     response.merge!({
-      "section_id": self.identity
+      "section_id" => self.identity
     })
 
     service.help_center_access_policy(response)
