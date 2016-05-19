@@ -7,6 +7,14 @@ module Zendesk2::PagedCollection
     klass.send(:extend, ClassMethods)
   end
 
+  module ClassMethods
+    attr_accessor :collection_method, :collection_root, :model_method, :model_root
+
+    def scopes
+      @scopes ||= []
+    end
+  end
+
   def collection_method; self.class.collection_method; end
   def collection_root; self.class.collection_root; end
   def model_method; self.class.model_method; end
@@ -135,14 +143,6 @@ module Zendesk2::PagedCollection
     get!(*args)
   rescue Zendesk2::Error
     nil
-  end
-
-  module ClassMethods
-    attr_accessor :collection_method, :collection_root, :model_method, :model_root
-
-    def scopes
-      @scopes ||= []
-    end
   end
 
   protected

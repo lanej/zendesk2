@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterAccessPolicy < Zendesk2::Request
+class Zendesk2::GetHelpCenterAccessPolicy
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r|
     "/help_center/sections/#{r.section_id}/access_policy.json"

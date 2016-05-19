@@ -1,4 +1,6 @@
-class Zendesk2::UpdateView < Zendesk2::Request
+class Zendesk2::UpdateView
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/views/#{r.view_id}.json"  }
   request_body { |r| { "view" => r.view_params } }

@@ -1,4 +1,6 @@
-class Zendesk2::GetTopicComments < Zendesk2::Request
+class Zendesk2::GetTopicComments
+  include Zendesk2::Request
+
   request_path { |r| "/topics/#{r.topic_id}/comments.json" }
   request_method :get
 

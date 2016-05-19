@@ -1,4 +1,6 @@
-class Zendesk2::GetUserField < Zendesk2::Request
+class Zendesk2::GetUserField
+  include Zendesk2::Request
+
   request_path { |r| "/user_fields/#{r.user_field_id}.json" }
   request_method :get
 

@@ -1,4 +1,6 @@
-class Zendesk2::GetAssignableGroups < Zendesk2::Request
+class Zendesk2::GetAssignableGroups
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r| "/groups/assignable.json" }
 

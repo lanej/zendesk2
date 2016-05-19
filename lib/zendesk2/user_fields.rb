@@ -1,4 +1,6 @@
-class Zendesk2::UserFields < Zendesk2::Collection
+class Zendesk2::UserFields
+  include Zendesk2::Collection
+
   include Zendesk2::Searchable
 
   model Zendesk2::UserField

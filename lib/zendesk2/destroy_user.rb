@@ -1,4 +1,6 @@
-class Zendesk2::DestroyUser < Zendesk2::Request
+class Zendesk2::DestroyUser
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/users/#{r.user_id}.json" }
 

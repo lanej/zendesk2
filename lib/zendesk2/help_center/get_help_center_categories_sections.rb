@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterCategoriesSections < Zendesk2::Request
+class Zendesk2::GetHelpCenterCategoriesSections
+  include Zendesk2::Request
+
   request_path { |r|
     "/help_center/categories/#{r.category_id}/sections.json"
   }

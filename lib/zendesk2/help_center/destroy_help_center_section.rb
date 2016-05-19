@@ -1,4 +1,6 @@
-class Zendesk2::DestroyHelpCenterSection < Zendesk2::Request
+class Zendesk2::DestroyHelpCenterSection
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/help_center/sections/#{r.section_id}.json" }
 

@@ -14,8 +14,8 @@ require 'time'
 require 'yaml'
 require 'securerandom'
 
-class Zendesk2
-  include Cistern::Client
+module Zendesk2
+  include Cistern::Client.with(interface: :module)
 
   USER_AGENT = "Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}".freeze
 
@@ -106,6 +106,8 @@ require 'zendesk2/get_ticket_audits'
 require 'zendesk2/get_ticket_comments'
 require 'zendesk2/get_ticket_field'
 require 'zendesk2/get_ticket_fields'
+require 'zendesk2/get_ticket_metric'
+require 'zendesk2/get_ticket_metrics'
 require 'zendesk2/get_tickets'
 require 'zendesk2/get_topic'
 require 'zendesk2/get_topic_comment'

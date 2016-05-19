@@ -1,22 +1,12 @@
-class Zendesk2
-  class Real
-    def get_ticket_metrics(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::GetTicketMetrics
+  include Zendesk2::Request
 
-      request(
-        :params => page_params,
-        :method => :get,
-        :path   => "/ticket_metrics.json",
-      )
-    end
-  end # Real
+  request_method :get
+  request_path { "/ticket_metrics.json" }
 
-  class Mock
-    def get_ticket_metrics(params={})
-      page(params,
-           :ticket_metrics,
-           "/ticket_metrics.json",
-           "metrics")
-    end
+  page_params!
+
+  def mock
+    page(:ticket_metrics, root: "metrics")
   end
 end

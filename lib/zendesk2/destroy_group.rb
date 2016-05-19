@@ -1,4 +1,6 @@
-class Zendesk2::DestroyGroup < Zendesk2::Request
+class Zendesk2::DestroyGroup
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/groups/#{r.group_id}.json" }
 

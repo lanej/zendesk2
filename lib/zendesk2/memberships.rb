@@ -1,4 +1,6 @@
-class Zendesk2::Memberships < Zendesk2::Collection
+class Zendesk2::Memberships
+  include Zendesk2::Collection
+
   include Zendesk2::PagedCollection
   extend Zendesk2::Attributes
 

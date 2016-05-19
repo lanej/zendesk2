@@ -1,4 +1,6 @@
-class Zendesk2::UpdateHelpCenterCategory < Zendesk2::Request
+class Zendesk2::UpdateHelpCenterCategory
+  include Zendesk2::Request
+
   request_method :put
   request_body { |r| { "category" => r.category_params } }
   request_path { |r|

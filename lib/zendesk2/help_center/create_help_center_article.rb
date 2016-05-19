@@ -1,4 +1,6 @@
-class Zendesk2::CreateHelpCenterArticle < Zendesk2::Request
+class Zendesk2::CreateHelpCenterArticle
+  include Zendesk2::Request
+
   request_method :post
   request_body { |r| { "article" => r.article_params } }
   request_path { |r|

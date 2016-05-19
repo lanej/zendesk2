@@ -1,4 +1,6 @@
-class Zendesk2::UpdateForum < Zendesk2::Request
+class Zendesk2::UpdateForum
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/forums/#{r.forum_id}.json" }
   request_body { |r| { "forum" => r.forum_params } }

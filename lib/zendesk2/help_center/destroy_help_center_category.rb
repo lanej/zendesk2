@@ -1,4 +1,6 @@
-class Zendesk2::DestroyHelpCenterCategory < Zendesk2::Request
+class Zendesk2::DestroyHelpCenterCategory
+  include Zendesk2::Request
+
   request_path { |r| "/help_center/categories/#{r.category_id}.json" }
   request_method :delete
 

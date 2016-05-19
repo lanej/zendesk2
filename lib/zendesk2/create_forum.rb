@@ -1,4 +1,6 @@
-class Zendesk2::CreateForum < Zendesk2::Request
+class Zendesk2::CreateForum
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/forums.json" }
   request_body { |r| {"forum" => r.forum_params } }

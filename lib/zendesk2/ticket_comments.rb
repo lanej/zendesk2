@@ -1,4 +1,6 @@
-class Zendesk2::TicketComments < Zendesk2::Collection
+class Zendesk2::TicketComments
+  include Zendesk2::Collection
+
   include Zendesk2::PagedCollection
 
   model Zendesk2::TicketComment

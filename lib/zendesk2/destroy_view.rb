@@ -1,4 +1,6 @@
-class Zendesk2::DestroyView < Zendesk2::Request
+class Zendesk2::DestroyView
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/views/#{r.view_id}.json" }
 

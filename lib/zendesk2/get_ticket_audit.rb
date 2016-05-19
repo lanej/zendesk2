@@ -1,26 +1,18 @@
-class Zendesk2
-  class Real
-    def get_ticket_audit(params={})
-      id        = params["id"]
-      ticket_id = params["ticket_id"]
+class Zendesk2::GetTicketAudit
+  include Zendesk2::Request
 
-      request(
-        :method => :get,
-        :path => "/tickets/#{ticket_id}/audits/#{id}.json"
-      )
-    end
-  end # Real
+  request_method :get
+  request_path { |r| "/tickets/#{r.ticket_id}/audits/#{r.audit_id}.json" }
 
-  class Mock
-    def get_ticket_audit(params={})
-      id = params["id"]
+  def audit_id
+    params.fetch("id")
+  end
 
-      response(
-        :path => "/ticket_audits/#{id}.json",
-        :body => {
-          "ticket_audit" => find!(:ticket_audits, id)
-        },
-      )
-    end
-  end # Mock
+  def ticket_id
+    params.fetch("ticket_id")
+  end
+
+  def mock(params={})
+    mock_response("ticket_audit" => find!(:ticket_audits, audit_id))
+  end
 end

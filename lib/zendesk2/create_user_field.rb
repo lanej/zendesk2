@@ -1,4 +1,6 @@
-class Zendesk2::CreateUserField < Zendesk2::Request
+class Zendesk2::CreateUserField
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/user_fields.json" }
   request_body { |r| { "user_field" => r.user_field_params } }

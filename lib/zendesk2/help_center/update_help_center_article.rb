@@ -1,4 +1,6 @@
-class Zendesk2::UpdateHelpCenterArticle < Zendesk2::Request
+class Zendesk2::UpdateHelpCenterArticle
+  include Zendesk2::Request
+
   request_method :put
   request_body { |r| { "article" => r.article_params } }
   request_path { |r|

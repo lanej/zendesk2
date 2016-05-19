@@ -1,4 +1,6 @@
-class Zendesk2::CreateHelpCenterCategory < Zendesk2::Request
+class Zendesk2::CreateHelpCenterCategory
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/help_center/categories.json" }
   request_body { |r| {"category" => r.category_params} }

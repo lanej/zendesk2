@@ -1,4 +1,6 @@
-class Zendesk2::HelpCenter::Section < Zendesk2::Model
+class Zendesk2::HelpCenter::Section
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when creating subscriptions

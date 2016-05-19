@@ -1,29 +1,18 @@
-class Zendesk2
-  class Real
-    def update_request(params={})
-      id = params.delete("id")
+class Zendesk2::UpdateRequest
+  include Zendesk2::Client
 
-      request(
-        :method => :put,
-        :path   => "/requests/#{id}.json",
-        :body   => {
-          "request" => params
-        },
-      )
-    end
+  request_method :put
+  request_path { |r| "/requests/#{id}.json" }
+  request_params { |r| { "request" => r.params } }
+
+  def request_id
+    @_request_id ||= params.delete("id")
   end
-  class Mock
-    def update_request(params={})
-      id   = params.delete("id")
-      body = self.data[:tickets][id].merge!(params)
 
-      response(
-        :method => :put,
-        :path   => "/tickets/#{id}.json",
-        :body   => {
-          "request" => body
-        },
-      )
-    end
+  def mock(params={})
+    ticket = find!(:tickets, request_id)
+    ticket.merge!(params)
+
+    mock_response("request" => ticket)
   end
 end

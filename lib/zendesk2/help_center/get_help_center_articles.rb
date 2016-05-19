@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterArticles < Zendesk2::Request
+class Zendesk2::GetHelpCenterArticles
+  include Zendesk2::Request
+
   request_path { |_| "/help_center/articles.json" }
 
   page_params!

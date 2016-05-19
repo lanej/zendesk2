@@ -1,4 +1,6 @@
-class Zendesk2::CreateUserIdentity < Zendesk2::Request
+class Zendesk2::CreateUserIdentity
+  include Zendesk2::Request
+
   request_method :post
   request_path { |r| "/users/#{r.user_id}/identities.json" }
   request_body { |r| { "identity" => r.user_identity_params } }

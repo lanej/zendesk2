@@ -1,32 +1,22 @@
-class Zendesk2
-  class Real
-    def get_ticket_metric(params={})
-      id        = params["id"]
-      ticket_id = params["ticket_id"]
-      if id
-        request(
-          :method => :get,
-          :path => "/ticket_metrics/#{id}.json"
-        )
-      else
-        request(
-          :method => :get,
-          :path => "/tickets/#{ticket_id}/metrics.json"
-        )
-      end
-    end
-  end # Real
+class Zendesk2::GetTicketMetric
+  include Zendesk2::Request
 
-  class Mock
-    def get_ticket_metric(params={})
-      id        = params["id"]
+  request_method :get
+  request_path do |r|
+    metric_id ? "/ticket_metrics/#{r.metric_id}.json" : "/tickets/#{r.ticket_id}/metrics.json"
+  end
 
-      response(
-        :path => "/tickets_metrics/#{id}.json",
-        :body => {
-          "ticket_metric" => find!(:ticket_metrics, id)
-        },
-      )
-    end
-  end # Mock
+  def metric_id
+    params["id"]
+  end
+
+  def ticket_id
+    params.fetch("ticket_id")
+  end
+
+  def mock
+    mock_response(
+      "ticket_metric" => find!(:ticket_metrics, metric_id)
+    )
+  end
 end

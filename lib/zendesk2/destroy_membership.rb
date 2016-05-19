@@ -1,4 +1,6 @@
-class Zendesk2::DestroyMembership < Zendesk2::Request
+class Zendesk2::DestroyMembership
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/organization_memberships/#{r.membership_id}.json" }
 

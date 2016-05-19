@@ -1,4 +1,6 @@
-class Zendesk2::CreateUser < Zendesk2::Request
+class Zendesk2::CreateUser
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/users.json" }
   request_body { |r| { "user" => r.user_params } }

@@ -1,6 +1,15 @@
-class Zendesk2::Collection
-
+module Zendesk2::Collection
   class << self
+    alias cistern_included included
+
+    def included(receiver)
+      cistern_included(receiver)
+      receiver.extend(ClassMethods)
+      super
+    end
+  end
+
+  module ClassMethods
     attr_accessor :collection_method, :collection_root, :model_method, :model_root
 
     attr_writer :namespace
