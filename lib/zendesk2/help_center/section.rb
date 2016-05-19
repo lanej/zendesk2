@@ -60,4 +60,14 @@ class Zendesk2::HelpCenter::Section < Zendesk2::Model
     service.help_center_articles(section_id: self.identity)
   end
 
+  def access_policy
+    requires :identity
+
+    response = service.get_help_center_access_policy(section_id: self.identity).body["access_policy"]
+    response.merge!({
+      "section_id" => self.identity
+    })
+
+    service.help_center_access_policy(response)
+  end
 end
