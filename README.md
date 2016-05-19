@@ -5,7 +5,16 @@
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/lanej/zendesk2)
 [![Dependency Status](https://gemnasium.com/lanej/zendesk2.png)](https://gemnasium.com/lanej/zendesk2)
 
-Ruby client for the [Zendesk V2 API](http://developer.zendesk.com/documentation/rest_api/introduction.html) using [cistern](https://github.com/lanej/cistern) and [faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required
+Ruby client for the [Zendesk V2 API](http://developer.zendesk.com/documentation/rest_api/introduction.html) using [cistern](https://github.com/lanej/cistern) and [faraday](https://github.com/technoweenie/faraday).  
+
+## Version 2.x (Current)
+
+* Ruby > 2.0 is required
+
+## Version 1.x
+
+* See [v1](https://github.com/lanej/zendesk2/tree/v1)
+
 
 ## Installation
 
@@ -24,10 +33,10 @@ Or install it yourself as:
 All support resources have basic mocks.  Error conditions and messaging are constantly changing. Please contribute updates or fixes to the mock if you encounter inconsistencies.
 
 ```ruby
-Zendesk2::Client.mock!
+Zendesk2.mock!
 
-client = Zendesk2::Client.new(...) # Zendesk2::Client::Mock
-client.organizations.create!(name: "foo") # Zendesk2::Client::Organization
+client = Zendesk2.new(...) # Zendesk2::Mock
+client.organizations.create!(name: "foo") # Zendesk2::Organization
 client.organizations.create!(name: "foo") # Zendesk2::Error => Name has already been taken
 ```
 
@@ -48,8 +57,8 @@ Default credentials will be read in from `~/.zendesk2` file in YAML format.
 Url is always required. Username and either password or token are always required.
 
 ```ruby
-Zendesk2::Client.new(url: "http://support.cloud.engineyard.com", username: "mate", token: "asdfghjkl1qwertyuiop5zxcvbnm3")
-=> #<Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …>
+Zendesk2.new(url: "http://support.cloud.engineyard.com", username: "mate", token: "asdfghjkl1qwertyuiop5zxcvbnm3")
+=> #<Zendesk2::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …>
 ```
 
 ### Resources
@@ -84,12 +93,12 @@ All collection are accessed like so:
 
 ```ruby
 client.users.all
-=> <Zendesk2::Client::Users
+=> <Zendesk2::Users
   count=1779,
   next_page_link="https://dev.zendesk.com/api/v2/users.json?page=2",
   previous_page_link=nil
   [
-    <Zendesk2::Client::User
+    <Zendesk2::User
       id=125394183,
       url="https://dev.zendesk.com/api/v2/users/125394183.json",
       ...
@@ -101,7 +110,7 @@ Collections also respond to `create` and `new`
 
 ```ruby
 client.users.create(email: "ohhai@example.org", name: "lulz")
-=> <Zendesk2::Client::User
+=> <Zendesk2::User
   id=234020811,
   ...
   url="https://engineyarddev.zendesk.com/api/v2/users/234020811.json",
@@ -112,7 +121,7 @@ client.users.create(email: "ohhai@example.org", name: "lulz")
 
 ```ruby
 client.users.new(email: "ohhai@example.org")
-=> <Zendesk2::Client::User
+=> <Zendesk2::User
   id=nil,
   ...
   url=nil,
@@ -128,12 +137,12 @@ Paged collections respond to `next_page` and `previous_page` when appropriate.  
 
 ```ruby
 page = client.users.all("per_page" => 1, "page" => 4)
-=> <Zendesk2::Client::Users
+=> <Zendesk2::Users
   count=1780,
   next_page_link="https://dev.zendesk.com/api/v2/users.json?page=5&per_page=1",
   previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=3&per_page=1"
   [
-    <Zendesk2::Client::User
+    <Zendesk2::User
       id=217761652,
       url="https://dev.zendesk.com/api/v2/users/217761652.json",
       external_id=nil,
@@ -145,12 +154,12 @@ page = client.users.all("per_page" => 1, "page" => 4)
 
 ```ruby
 page.next_page
-=> <Zendesk2::Client::Users
+=> <Zendesk2::Users
   count=1780,
   next_page_link="https://dev.zendesk.com/api/v2/users.json?page=6&per_page=1",
   previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=4&per_page=1"
   [
-    <Zendesk2::Client::User
+    <Zendesk2::User
       id=217761742,
       url="https://dev.zendesk.com/api/v2/users/217761742.json",
       ...
@@ -162,12 +171,12 @@ page.next_page
 
 ```ruby
 page.previous_page
-=> <Zendesk2::Client::Users
+=> <Zendesk2::Users
   count=1780,
   next_page_link="https://dev.zendesk.com/api/v2/users.json?page=5&per_page=1",
   previous_page_link="https://dev.zendesk.com/api/v2/users.json?page=3&per_page=1"
   [
-    <Zendesk2::Client::User
+    <Zendesk2::User
       id=217761652,
       url="https://dev.zendesk.com/api/v2/users/217761652.json",
       ...
@@ -182,8 +191,8 @@ page.previous_page
 All models respond to `destroy` and `save` if applicable.  `save` performs a 'create' operation if there is no identity provided or an 'update' if there is an identity.
 
 ```ruby
-Zendesk2::Client::Ticket.new.save        # performs a create
-Zendesk2::Client::Ticket.new(id: 1).save # performs an update
+Zendesk2::Ticket.new.save        # performs a create
+Zendesk2::Ticket.new(id: 1).save # performs an update
 ```
 
 Attributes can be enumerated by the `attributes` method.
