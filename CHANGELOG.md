@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/lanej/zendesk2/tree/HEAD)
+
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.0...HEAD)
+
+**Merged pull requests:**
+
+- use Cistern module interface [\#47](https://github.com/lanej/zendesk2/pull/47) ([lanej](https://github.com/lanej))
+
 ## [v1.8.0](https://github.com/lanej/zendesk2/tree/v1.8.0) (2016-05-19)
 [Full Changelog](https://github.com/lanej/zendesk2/compare/v1.7.5...v1.8.0)
 
