@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.8.0](https://github.com/lanej/zendesk2/tree/v1.8.0) (2016-05-19)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.7.5...v1.8.0)
+
+**Merged pull requests:**
+
+- Add Access Policies for Help Center Sections [\#45](https://github.com/lanej/zendesk2/pull/45) ([omgitsads](https://github.com/omgitsads))
+- remove 1.9 support [\#44](https://github.com/lanej/zendesk2/pull/44) ([lanej](https://github.com/lanej))
+- peel back unnecessary Client namespace [\#41](https://github.com/lanej/zendesk2/pull/41) ([lanej](https://github.com/lanej))
+
 ## [v1.7.5](https://github.com/lanej/zendesk2/tree/v1.7.5) (2016-04-02)
 [Full Changelog](https://github.com/lanej/zendesk2/compare/v1.7.4...v1.7.5)
 
