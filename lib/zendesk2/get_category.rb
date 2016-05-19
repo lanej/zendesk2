@@ -1,4 +1,6 @@
-class Zendesk2::GetCategory < Zendesk2::Request
+class Zendesk2::GetCategory
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r| "/categories/#{r.category_id}.json" }
 

@@ -1,4 +1,6 @@
-class Zendesk2::CreateView < Zendesk2::Request
+class Zendesk2::CreateView
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/views.json" }
   request_body { |r| { "view" => r.view_params } }

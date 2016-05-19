@@ -1,4 +1,6 @@
-class Zendesk2::UserIdentity < Zendesk2::Model
+class Zendesk2::UserIdentity
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned upon creation

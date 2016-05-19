@@ -1,4 +1,6 @@
-class Zendesk2::CreateCategory < Zendesk2::Request
+class Zendesk2::CreateCategory
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/categories.json" }
   request_body { |r| {"category" => r.params["category"]} }

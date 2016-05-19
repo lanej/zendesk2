@@ -1,4 +1,6 @@
-class Zendesk2::DestroyHelpCenterArticle < Zendesk2::Request
+class Zendesk2::DestroyHelpCenterArticle
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/help_center/articles/#{r.article_id}.json" }
 

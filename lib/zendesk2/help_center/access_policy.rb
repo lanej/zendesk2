@@ -1,4 +1,6 @@
-class Zendesk2::HelpCenter::AccessPolicy < Zendesk2::Model
+class Zendesk2::HelpCenter::AccessPolicy
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   # @return [String] Category of users who can view the section

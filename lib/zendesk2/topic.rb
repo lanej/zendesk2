@@ -1,4 +1,6 @@
-class Zendesk2::Topic < Zendesk2::Model
+class Zendesk2::Topic
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   identity :id, type: :integer # ro[yes] mandatory[no]   Automatically assigned upon creation

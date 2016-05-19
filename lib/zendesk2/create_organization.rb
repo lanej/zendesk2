@@ -1,4 +1,6 @@
-class Zendesk2::CreateOrganization < Zendesk2::Request
+class Zendesk2::CreateOrganization
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/organizations.json" }
   request_body { |r|  { "organization" => r.organization_params } }

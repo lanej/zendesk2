@@ -1,4 +1,6 @@
-class Zendesk2::GetTopics < Zendesk2::Request
+class Zendesk2::GetTopics
+  include Zendesk2::Request
+
   request_path { |r| "/topics.json" }
 
   page_params!

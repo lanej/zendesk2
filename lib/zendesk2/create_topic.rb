@@ -1,4 +1,6 @@
-class Zendesk2::CreateTopic < Zendesk2::Request
+class Zendesk2::CreateTopic
+  include Zendesk2::Request
+
   request_method :post
   request_body { |r| { "topic" => r.topic_params } }
   request_path { |_| "/topics.json" }

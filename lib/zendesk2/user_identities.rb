@@ -1,4 +1,6 @@
-class Zendesk2::UserIdentities < Zendesk2::Collection
+class Zendesk2::UserIdentities
+  include Zendesk2::Collection
+
   model Zendesk2::UserIdentity
 
   attribute :user_id, type: :integer

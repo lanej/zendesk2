@@ -1,4 +1,6 @@
-class Zendesk2::TicketFields < Zendesk2::Collection
+class Zendesk2::TicketFields
+  include Zendesk2::Collection
+
   include Zendesk2::Searchable
 
   model Zendesk2::TicketField

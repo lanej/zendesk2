@@ -1,4 +1,6 @@
-class Zendesk2::UpdateUser < Zendesk2::Request
+class Zendesk2::UpdateUser
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/users/#{r.user_id}.json" }
   request_body { |r| {"user" => r.user_params } }

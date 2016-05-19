@@ -1,4 +1,6 @@
-class Zendesk2::GetOrganizationByExternalId < Zendesk2::Request
+class Zendesk2::GetOrganizationByExternalId
+  include Zendesk2::Request
+
   request_method :get
   request_params { |r| { "external_id" => r.external_id } }
   request_path   { |_| "/organizations/search.json" }

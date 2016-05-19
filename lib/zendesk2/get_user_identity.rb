@@ -1,4 +1,6 @@
-class Zendesk2::GetUserIdentity < Zendesk2::Request
+class Zendesk2::GetUserIdentity
+  include Zendesk2::Request
+
   request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" }
 
   def user_identity_id

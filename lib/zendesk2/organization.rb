@@ -1,4 +1,6 @@
-class Zendesk2::Organization < Zendesk2::Model
+class Zendesk2::Organization
+  include Zendesk2::Model
+
 
   # @return [integer] Automatically assigned when creating organization
   identity :id, type: :integer # ro[yes] required[no]

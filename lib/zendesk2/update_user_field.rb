@@ -1,4 +1,6 @@
-class Zendesk2::UpdateUserField < Zendesk2::Request
+class Zendesk2::UpdateUserField
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/user_fields/#{r.user_field_id}.json" }
 

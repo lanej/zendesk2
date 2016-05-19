@@ -1,4 +1,6 @@
-class Zendesk2::GetUsers < Zendesk2::Request
+class Zendesk2::GetUsers
+  include Zendesk2::Request
+
   request_method :get
   request_path { "/users.json" }
 

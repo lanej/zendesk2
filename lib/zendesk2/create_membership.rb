@@ -1,4 +1,6 @@
-class Zendesk2::CreateMembership < Zendesk2::Request
+class Zendesk2::CreateMembership
+  include Zendesk2::Request
+
   request_method :post
   request_path { |r|  "/users/#{r.user_id}/organization_memberships.json" }
   request_body { |r| { "organization_membership" => r.membership_params } }

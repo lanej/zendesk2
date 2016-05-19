@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterSection < Zendesk2::Request
+class Zendesk2::GetHelpCenterSection
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r|
     if locale = r.params.fetch("section")["locale"]

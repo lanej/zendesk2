@@ -1,4 +1,6 @@
-class Zendesk2::UpdateHelpCenterSection < Zendesk2::Request
+class Zendesk2::UpdateHelpCenterSection
+  include Zendesk2::Request
+
   request_method :put
   request_body { |r| { "section" => r.section_params } }
   request_path { |r|

@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterCategory < Zendesk2::Request
+class Zendesk2::GetHelpCenterCategory
+  include Zendesk2::Request
+
   request_path { |r|
     if locale = r.params.fetch("category")["locale"]
       "/help_center/#{locale}/categories/#{r.category_id}.json"

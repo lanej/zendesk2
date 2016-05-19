@@ -1,4 +1,6 @@
-class Zendesk2::CreateHelpCenterSection < Zendesk2::Request
+class Zendesk2::CreateHelpCenterSection
+  include Zendesk2::Request
+
   request_method :post
   request_path { |r| "/help_center/categories/#{r.category_id}/sections.json" }
   request_body { |r| { "section" => r.section_params } }

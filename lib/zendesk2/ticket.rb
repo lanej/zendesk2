@@ -1,4 +1,6 @@
-class Zendesk2::Ticket < Zendesk2::Model
+class Zendesk2::Ticket
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   # @return [Integer] Automatically assigned when creating tickets

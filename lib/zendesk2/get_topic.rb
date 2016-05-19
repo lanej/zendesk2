@@ -1,4 +1,6 @@
-class Zendesk2::GetTopic < Zendesk2::Request
+class Zendesk2::GetTopic
+  include Zendesk2::Request
+
   request_path { |r| "/topics/#{r.topic_id}.json" }
 
   def topic_id

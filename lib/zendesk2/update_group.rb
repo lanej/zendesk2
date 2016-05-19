@@ -1,4 +1,6 @@
-class Zendesk2::UpdateGroup < Zendesk2::Request
+class Zendesk2::UpdateGroup
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/groups/#{r.group_id}.json" }
   request_body { |r| { "group" => r.group_params } }

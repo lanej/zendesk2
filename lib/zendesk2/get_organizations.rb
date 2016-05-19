@@ -1,4 +1,6 @@
-class Zendesk2::GetOrganizations < Zendesk2::Request
+class Zendesk2::GetOrganizations
+  include Zendesk2::Request
+
   request_method :get
   request_path { |_| "/organizations.json" }
 

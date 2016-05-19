@@ -1,4 +1,6 @@
-class Zendesk2::DestroyForum < Zendesk2::Request
+class Zendesk2::DestroyForum
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/forums/#{r.forum_id}.json" }
 

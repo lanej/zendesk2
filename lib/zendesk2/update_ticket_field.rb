@@ -1,4 +1,6 @@
-class Zendesk2::UpdateTicketField < Zendesk2::Request
+class Zendesk2::UpdateTicketField
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/ticket_fields/#{r.ticket_field_id}.json" }
   request_body { |r| { "ticket_field" => r.ticket_field_params } }

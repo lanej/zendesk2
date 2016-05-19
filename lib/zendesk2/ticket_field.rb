@@ -1,4 +1,6 @@
-class Zendesk2::TicketField < Zendesk2::Model
+class Zendesk2::TicketField
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
 
   # @return [integer] Automatically assigned upon creation

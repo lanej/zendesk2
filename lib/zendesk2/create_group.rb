@@ -1,4 +1,6 @@
-class Zendesk2::CreateGroup < Zendesk2::Request
+class Zendesk2::CreateGroup
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/groups.json" }
   request_body { |r|  { "group" => r.group_params } }

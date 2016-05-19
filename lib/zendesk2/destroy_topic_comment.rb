@@ -1,4 +1,6 @@
-class Zendesk2::DestroyTopicComment < Zendesk2::Request
+class Zendesk2::DestroyTopicComment
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" }
 

@@ -1,4 +1,6 @@
-class Zendesk2::MarkUserIdentityPrimary < Zendesk2::Request
+class Zendesk2::MarkUserIdentityPrimary
+  include Zendesk2::Request
+
   request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}/make_primary.json" }
   request_method :put
 

@@ -1,18 +1,12 @@
-class Zendesk2
-  class Real
-    def get_user_fields(params={})
-      page_params = Zendesk2.paging_parameters(params)
+class Zendesk2::GetUserFields
+  include Zendesk2::Request
 
-      request(
-        :params  => page_params,
-        :method  => :get,
-        :path    => "/user_fields.json",
-      )
-    end
-  end
-  class Mock
-    def get_user_fields(params={})
-      collection(:user_fields, "/user_fields.json", "user_fields")
-    end
+  request_method :get
+  request_path { "/user_fields.json" }
+
+  page_params!
+
+  def mock(params={})
+    page(:user_fields)
   end
 end

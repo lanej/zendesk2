@@ -1,4 +1,6 @@
-class Zendesk2::UpdateHelpCenterAccessPolicy < Zendesk2::Request
+class Zendesk2::UpdateHelpCenterAccessPolicy
+  include Zendesk2::Request
+
   request_method :put
   request_body { |r| { "access_policy" => r.access_policy_params } }
   request_path { |r|

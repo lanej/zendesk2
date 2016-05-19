@@ -1,4 +1,6 @@
-class Zendesk2::DestroyCategory < Zendesk2::Request
+class Zendesk2::DestroyCategory
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/categories/#{r.category_id}.json" }
 

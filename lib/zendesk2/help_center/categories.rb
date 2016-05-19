@@ -1,4 +1,6 @@
-class Zendesk2::HelpCenter::Categories < Zendesk2::Collection
+class Zendesk2::HelpCenter::Categories
+  include Zendesk2::Collection
+
   include Zendesk2::PagedCollection
   include Zendesk2::Searchable
 

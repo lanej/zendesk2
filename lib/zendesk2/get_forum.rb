@@ -1,4 +1,6 @@
-class Zendesk2::GetForum < Zendesk2::Request
+class Zendesk2::GetForum
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r| "/forums/#{r.forum_id}.json" }
 

@@ -1,4 +1,4 @@
-class Zendesk2::Model
+module Zendesk2::Model
   include Cistern::Model
 
   attr_accessor :errors

@@ -1,4 +1,6 @@
-class Zendesk2::GetUserMemberships < Zendesk2::Request
+class Zendesk2::GetUserMemberships
+  include Zendesk2::Request
+
   request_method :get
   request_path  { |r| "/users/#{r.user_id}/organization_memberships.json" }
 

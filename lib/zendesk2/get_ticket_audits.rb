@@ -1,4 +1,6 @@
-class Zendesk2::GetTicketAudits < Zendesk2::Request
+class Zendesk2::GetTicketAudits
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r| "/tickets/#{r.ticket_id}/audits.json" }
 

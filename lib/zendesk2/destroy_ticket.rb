@@ -1,4 +1,6 @@
-class Zendesk2::DestroyTicket < Zendesk2::Request
+class Zendesk2::DestroyTicket
+  include Zendesk2::Request
+
   request_method :delete
   request_path { |r| "/tickets/#{r.ticket_id}.json" }
 

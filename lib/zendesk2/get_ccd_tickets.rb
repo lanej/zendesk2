@@ -1,4 +1,6 @@
-class Zendesk2::GetCcdTickets < Zendesk2::Request
+class Zendesk2::GetCcdTickets
+  include Zendesk2::Request
+
   request_path { |r| "/users/#{r.collaborator_id}/tickets/ccd.json" }
 
   page_params!

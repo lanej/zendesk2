@@ -1,4 +1,6 @@
-class Zendesk2::MarkMembershipDefault < Zendesk2::Request
+class Zendesk2::MarkMembershipDefault
+  include Zendesk2::Request
+
   request_method :put
   request_path { |r| "/users/#{r.user_id}/organization_memberships/#{r.identity}/make_default.json" }
 

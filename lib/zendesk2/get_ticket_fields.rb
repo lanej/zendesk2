@@ -1,4 +1,6 @@
-class Zendesk2::GetTicketFields < Zendesk2::Request
+class Zendesk2::GetTicketFields
+  include Zendesk2::Request
+
   request_method :get
   request_path { |_| "/ticket_fields.json" }
 

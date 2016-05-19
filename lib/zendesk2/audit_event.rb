@@ -1,5 +1,7 @@
 # @abstract subclass and implement audit event specific attributes
-class Zendesk2::AuditEvent < Zendesk2::Model
+class Zendesk2::AuditEvent
+  include Zendesk2::Model
+
   extend Zendesk2::Attributes
   extend Forwardable
 

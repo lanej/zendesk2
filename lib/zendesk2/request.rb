@@ -1,39 +1,52 @@
-class Zendesk2::Request
-  def self.request_method(request_method=nil)
-    @request_method ||= request_method
+module Zendesk2::Request
+
+  class << self
+    alias cistern_included included
+
+    def included(receiver)
+      receiver.extend(ClassMethods)
+      cistern_included(receiver)
+      super
+    end
   end
 
-  def self.request_params(&block)
-    @request_params ||= block
-  end
+  module ClassMethods
+    def request_method(request_method=nil)
+      @request_method ||= request_method
+    end
 
-  def self.request_body(&block)
-    @request_body ||= block
-  end
+    def request_params(&block)
+      @request_params ||= block
+    end
 
-  def self.request_path(&block)
-    @request_path ||= block
-  end
+    def request_body(&block)
+      @request_body ||= block
+    end
 
-  def self.page_params!
-    @page_params = true
-  end
+    def request_path(&block)
+      @request_path ||= block
+    end
 
-  def self.page_params?
-    @page_params
-  end
+    def page_params!
+      @page_params = true
+    end
 
-  def self.error_map
-    @@error_map ||= {
-      :invalid => [422, {
-        "error"       => "RecordInvalid",
-        "description" => "Record validation errors",
-      }],
-      :not_found => [404, {
-        "error"       => "RecordNotFound",
-        "description" => "Not found",
-      }],
-    }
+    def page_params?
+      @page_params
+    end
+
+    def error_map
+      @@error_map ||= {
+        :invalid => [422, {
+          "error"       => "RecordInvalid",
+          "description" => "Record validation errors",
+        }],
+        :not_found => [404, {
+          "error"       => "RecordNotFound",
+          "description" => "Not found",
+        }],
+      }
+    end
   end
 
   attr_reader :params

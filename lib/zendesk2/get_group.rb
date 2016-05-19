@@ -1,4 +1,6 @@
-class Zendesk2::GetGroup < Zendesk2::Request
+class Zendesk2::GetGroup
+  include Zendesk2::Request
+
   request_method :get
   request_path { |r| "/groups/#{r.group_id}.json" }
 

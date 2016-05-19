@@ -1,4 +1,6 @@
-class Zendesk2::Category < Zendesk2::Model
+class Zendesk2::Category
+  include Zendesk2::Model
+
 
   # @return [Integer] Automatically assigned during creation
   identity :id, type: :integer

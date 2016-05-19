@@ -1,4 +1,6 @@
-class Zendesk2::SearchOrganization < Zendesk2::Request
+class Zendesk2::SearchOrganization
+  include Zendesk2::Request
+
   request_method :get
   request_path { "/search.json" }
   request_body { |r| { "query" => r.query } }

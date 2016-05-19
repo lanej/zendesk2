@@ -1,4 +1,6 @@
-class Zendesk2::GetHelpCenterArticle < Zendesk2::Request
+class Zendesk2::GetHelpCenterArticle
+  include Zendesk2::Request
+
   request_path { |r|
     if locale = r.params.fetch("article")["locale"]
       "/help_center/#{locale}/articles/#{r.article_id}.json"

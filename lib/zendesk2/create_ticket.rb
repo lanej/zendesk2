@@ -1,4 +1,6 @@
-class Zendesk2::CreateTicket < Zendesk2::Request
+class Zendesk2::CreateTicket
+  include Zendesk2::Request
+
   request_method :post
   request_path { |_| "/tickets.json" }
   request_body { |r| {"ticket" => r.ticket_params} }
