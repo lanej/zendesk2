@@ -1,42 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>Zendesk2 by lanej</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Zendesk2</h1>
-        <h2>Zendesk API V2 client using Cistern</h2>
-        <a href="https://github.com/lanej/zendesk2" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/lanej/zendesk2">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/lanej/zendesk2/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/lanej/zendesk2/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Zendesk2</h1>
+          <p>Zendesk API V2 client using Cistern</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/lanej">lanej</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
 <a id="zendesk2" class="anchor" href="#zendesk2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Zendesk2</h1>
 
-<p><a href="http://travis-ci.org/lanej/zendesk2"><img src="https://secure.travis-ci.org/lanej/zendesk2.png" alt="Build Status"></a>
+<p><a href="http://travis-ci.org/lanej/zendesk2"><img src="https://travis-ci.org/lanej/zendesk2.svg?branch=master" alt="Build Status"></a>
 <a href="http://badge.fury.io/rb/zendesk2"><img src="https://fury-badge.herokuapp.com/rb/zendesk2.png" alt="Gem Version"></a>
 <a href="https://codeclimate.com/github/lanej/zendesk2"><img src="https://codeclimate.com/badge.png" alt="Code Climate"></a>
 <a href="https://gemnasium.com/lanej/zendesk2"><img src="https://gemnasium.com/lanej/zendesk2.png" alt="Dependency Status"></a></p>
 
-<p>Ruby client for the <a href="http://developer.zendesk.com/documentation/rest_api/introduction.html">Zendesk V2 API</a> using <a href="https://github.com/lanej/cistern">cistern</a> and <a href="https://github.com/technoweenie/faraday">faraday</a></p>
+<p>Ruby client for the <a href="http://developer.zendesk.com/documentation/rest_api/introduction.html">Zendesk V2 API</a> using <a href="https://github.com/lanej/cistern">cistern</a> and <a href="https://github.com/technoweenie/faraday">faraday</a>.  Ruby &gt; 2.0 is required</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
@@ -58,10 +68,10 @@
 
 <p>All support resources have basic mocks.  Error conditions and messaging are constantly changing. Please contribute updates or fixes to the mock if you encounter inconsistencies.</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>.mock!
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>.mock!
 
-client <span class="pl-k">=</span> <span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>(...) <span class="pl-c"># Zendesk2::Client::Mock</span>
-client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>) <span class="pl-c"># Zendesk2::Client::Organization</span>
+client <span class="pl-k">=</span> <span class="pl-c1">Zendesk2</span>.<span class="pl-k">new</span>(...) <span class="pl-c"># Zendesk2::Mock</span>
+client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>) <span class="pl-c"># Zendesk2::Organization</span>
 client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>) <span class="pl-c"># Zendesk2::Error =&gt; Name has already been taken</span></pre></div>
 
 <h3>
@@ -80,8 +90,8 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 
 <p>Url is always required. Username and either password or token are always required.</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>(<span class="pl-c1">url:</span> <span class="pl-s"><span class="pl-pds">"</span>http://support.cloud.engineyard.com<span class="pl-pds">"</span></span>, <span class="pl-c1">username:</span> <span class="pl-s"><span class="pl-pds">"</span>mate<span class="pl-pds">"</span></span>, <span class="pl-c1">token:</span> <span class="pl-s"><span class="pl-pds">"</span>asdfghjkl1qwertyuiop5zxcvbnm3<span class="pl-pds">"</span></span>)
-=&gt; <span class="pl-c">#&lt;Zendesk2::Client::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …&gt;</span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>.<span class="pl-k">new</span>(<span class="pl-c1">url:</span> <span class="pl-s"><span class="pl-pds">"</span>http://support.cloud.engineyard.com<span class="pl-pds">"</span></span>, <span class="pl-c1">username:</span> <span class="pl-s"><span class="pl-pds">"</span>mate<span class="pl-pds">"</span></span>, <span class="pl-c1">token:</span> <span class="pl-s"><span class="pl-pds">"</span>asdfghjkl1qwertyuiop5zxcvbnm3<span class="pl-pds">"</span></span>)
+=&gt; <span class="pl-c">#&lt;Zendesk2::Real:0x007fd1bae486b0 @url="http://support.cloud.engineyard.com", @username="mate", @token="asdfghjkl1qwertyuiop5zxcvbnm3", …&gt;</span></pre></div>
 
 <h3>
 <a id="resources" class="anchor" href="#resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resources</h3>
@@ -89,7 +99,7 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 <h4>
 <a id="collections" class="anchor" href="#collections" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Collections</h4>
 
-<p>Currently support resources</p>
+<p>Currently support resources:</p>
 
 <ul>
 <li>Audit Events</li>
@@ -106,17 +116,26 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 <li>User Identities</li>
 <li>User Fields</li>
 <li>Users</li>
+<li>Views</li>
+</ul>
+
+<p>Help Center resources:</p>
+
+<ul>
+<li>Sections</li>
+<li>Articles</li>
+<li>Categories</li>
 </ul>
 
 <p>All collection are accessed like so:</p>
 
 <div class="highlight highlight-source-ruby"><pre>client.users.all
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Users</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Users</span>
   count<span class="pl-k">=</span><span class="pl-c1">1779</span>,
   next_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=2<span class="pl-pds">"</span></span>,
   previous_page_link<span class="pl-k">=</span><span class="pl-c1">nil</span>
   [
-    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
       id<span class="pl-k">=</span><span class="pl-c1">125394183</span>,
       url<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users/125394183.json<span class="pl-pds">"</span></span>,
       ...
@@ -126,7 +145,7 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 <p>Collections also respond to <code>create</code> and <code>new</code></p>
 
 <div class="highlight highlight-source-ruby"><pre>client.users.create(<span class="pl-c1">email:</span> <span class="pl-s"><span class="pl-pds">"</span>ohhai@example.org<span class="pl-pds">"</span></span>, <span class="pl-c1">name:</span> <span class="pl-s"><span class="pl-pds">"</span>lulz<span class="pl-pds">"</span></span>)
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
   id<span class="pl-k">=</span><span class="pl-c1">234020811</span>,
   ...
   url<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://engineyarddev.zendesk.com/api/v2/users/234020811.json<span class="pl-pds">"</span></span>,
@@ -135,7 +154,7 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
   <span class="pl-k">&gt;</span></pre></div>
 
 <div class="highlight highlight-source-ruby"><pre>client.users.<span class="pl-k">new</span>(<span class="pl-c1">email:</span> <span class="pl-s"><span class="pl-pds">"</span>ohhai@example.org<span class="pl-pds">"</span></span>)
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
   id<span class="pl-k">=</span><span class="pl-c1">nil</span>,
   ...
   url<span class="pl-k">=</span><span class="pl-c1">nil</span>,
@@ -150,12 +169,12 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 <p>Paged collections respond to <code>next_page</code> and <code>previous_page</code> when appropriate.  <code>page_size</code> and <code>page</code> can be passed directly to the collection to control size and index.</p>
 
 <div class="highlight highlight-source-ruby"><pre>page <span class="pl-k">=</span> client.users.all(<span class="pl-s"><span class="pl-pds">"</span>per_page<span class="pl-pds">"</span></span> =&gt; <span class="pl-c1">1</span>, <span class="pl-s"><span class="pl-pds">"</span>page<span class="pl-pds">"</span></span> =&gt; <span class="pl-c1">4</span>)
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Users</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Users</span>
   count<span class="pl-k">=</span><span class="pl-c1">1780</span>,
   next_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=5&amp;per_page=1<span class="pl-pds">"</span></span>,
   previous_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=3&amp;per_page=1<span class="pl-pds">"</span></span>
   [
-    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
       id<span class="pl-k">=</span><span class="pl-c1">217761652</span>,
       url<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users/217761652.json<span class="pl-pds">"</span></span>,
       external_id<span class="pl-k">=</span><span class="pl-c1">nil</span>,
@@ -165,12 +184,12 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
   ]</pre></div>
 
 <div class="highlight highlight-source-ruby"><pre>page.next_page
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Users</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Users</span>
   count<span class="pl-k">=</span><span class="pl-c1">1780</span>,
   next_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=6&amp;per_page=1<span class="pl-pds">"</span></span>,
   previous_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=4&amp;per_page=1<span class="pl-pds">"</span></span>
   [
-    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
       id<span class="pl-k">=</span><span class="pl-c1">217761742</span>,
       url<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users/217761742.json<span class="pl-pds">"</span></span>,
       ...
@@ -180,12 +199,12 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
   ]</pre></div>
 
 <div class="highlight highlight-source-ruby"><pre>page.previous_page
-=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Users</span>
+=&gt; <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Users</span>
   count<span class="pl-k">=</span><span class="pl-c1">1780</span>,
   next_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=5&amp;per_page=1<span class="pl-pds">"</span></span>,
   previous_page_link<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users.json?page=3&amp;per_page=1<span class="pl-pds">"</span></span>
   [
-    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">User</span>
+    <span class="pl-k">&lt;</span><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">User</span>
       id<span class="pl-k">=</span><span class="pl-c1">217761652</span>,
       url<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://dev.zendesk.com/api/v2/users/217761652.json<span class="pl-pds">"</span></span>,
       ...
@@ -199,8 +218,8 @@ client.organizations.create!(<span class="pl-c1">name:</span> <span class="pl-s"
 
 <p>All models respond to <code>destroy</code> and <code>save</code> if applicable.  <code>save</code> performs a 'create' operation if there is no identity provided or an 'update' if there is an identity.</p>
 
-<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Ticket</span>.<span class="pl-k">new</span>.save        <span class="pl-c"># performs a create</span>
-<span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Client</span>::<span class="pl-c1">Ticket</span>.<span class="pl-k">new</span>(<span class="pl-c1">id:</span> <span class="pl-c1">1</span>).save <span class="pl-c"># performs an update</span></pre></div>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Ticket</span>.<span class="pl-k">new</span>.save        <span class="pl-c"># performs a create</span>
+<span class="pl-c1">Zendesk2</span>::<span class="pl-c1">Ticket</span>.<span class="pl-k">new</span>(<span class="pl-c1">id:</span> <span class="pl-c1">1</span>).save <span class="pl-c"># performs an update</span></pre></div>
 
 <p>Attributes can be enumerated by the <code>attributes</code> method.</p>
 
@@ -245,25 +264,10 @@ $ gem bump -trv (major|minor|patch)
 <li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
 <li>Create new Pull Request</li>
 </ol>
-        </section>
+      </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/lanej/zendesk2/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/lanej/zendesk2/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/lanej/zendesk2"></a> is maintained by <a href="https://github.com/lanej">lanej</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
   </body>
 </html>
