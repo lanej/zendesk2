@@ -76,6 +76,6 @@ class Zendesk2::HelpCenter::Section
   def translations
     requires :identity, :locale
 
-    service.help_center_translations(source_id: self.identity, source_type: "Section", locale: self.locale)
+    service.help_center_translations(source_id: self.identity, source_type: "Section")
   end
 end

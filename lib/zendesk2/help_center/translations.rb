@@ -14,10 +14,18 @@ class Zendesk2::HelpCenter::Translations
   attribute :source_id, type: :integer
   attribute :source_type, type: :string
   attribute :locale, type: :string
+  attribute :locales, type: :array
+  attribute :outdated, type: :boolean
+  attribute :draft, type: :boolean
 
   scopes << :source_id
   scopes << :source_type
+  
   scopes << :locale
+  scopes << :locales
+
+  scopes << :outdated
+  scopes << :draft
 
   def collection_page(params={})
     body = service.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
