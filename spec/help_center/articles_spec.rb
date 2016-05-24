@@ -19,4 +19,22 @@ describe "help_center/articles" do
     :search_params => lambda { Cistern::Hash.slice(create_params, :title) },
     :search        => true,
   }
+
+  describe "translations" do
+    let!(:article) do
+      client.help_center_articles.create!(:title    => mock_uuid,
+                                          :locale   => "en-us",
+                                          :section  => section
+                                          )
+    end
+    let!(:locale) { mock_uuid }
+
+    include_examples "zendesk#resource", {
+      :collection     => lambda { article.translations },
+      :fetch_params   => lambda { |r| Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
+      :create_params  => lambda { { source_id: article.identity, source_type: "Article", locale: locale, title: mock_uuid } },
+      :update_params  => lambda { { title: mock_uuid } },
+      :search         => false
+    }
+  end
 end

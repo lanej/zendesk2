@@ -72,4 +72,10 @@ class Zendesk2::HelpCenter::Section
 
     cistern.help_center_access_policy(response)
   end
+
+  def translations
+    requires :identity, :locale
+
+    service.help_center_translations(source_id: self.identity, source_type: "Section", locale: self.locale)
+  end
 end
