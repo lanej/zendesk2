@@ -14,7 +14,7 @@ class Zendesk2::CreateUserField
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "active"                => true,
@@ -35,7 +35,7 @@ class Zendesk2::CreateUserField
       "visible_in_portal"     => false,
     }.merge(user_field_params)
 
-    service.data[:user_fields][identity] = record
+    cistern.data[:user_fields][identity] = record
 
     mock_response("user_field" => record)
   end

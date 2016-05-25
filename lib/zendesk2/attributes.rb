@@ -4,7 +4,7 @@ module Zendesk2::Attributes
     collection = options[:collection] || "#{name}s"
     define_method(name) do
       if assoc_id = self.send(assoc_key)
-        self.service.send(collection).get(assoc_id)
+        self.cistern.send(collection).get(assoc_id)
       else self.instance_variable_get("@#{name}")
       end
     end

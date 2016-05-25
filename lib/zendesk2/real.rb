@@ -13,7 +13,7 @@ class Zendesk2::Real
     @token    = options.fetch(:token, Zendesk2.defaults[:token])
     password  = options[:password] || Zendesk2.defaults[:password]
 
-    service_options = options[:service_options] || {}
+    cistern_options = options[:cistern_options] || {}
 
     @auth_token  = password || @token
     @username   += "/token" if @auth_token == @token
@@ -23,7 +23,7 @@ class Zendesk2::Real
     raise "Missing required options: :username" unless @username
     raise "Missing required options: :password or :token" unless password || @token
 
-    @service = Faraday.new({url: @url}.merge(service_options)) do |connection|
+    @cistern = Faraday.new({url: @url}.merge(cistern_options)) do |connection|
       # response
       connection.use Faraday::Request::BasicAuthentication, @username, @auth_token
       connection.use Faraday::Response::RaiseError
@@ -55,7 +55,7 @@ class Zendesk2::Real
     body    = options[:body]
     headers = { "User-Agent" => Zendesk2::USER_AGENT }.merge(options[:headers] || {})
 
-    @service.send(method) do |req|
+    @cistern.send(method) do |req|
       req.url(url)
       req.headers.merge!(headers)
       req.params.merge!(params)

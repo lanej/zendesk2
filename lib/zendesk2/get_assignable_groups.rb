@@ -7,7 +7,7 @@ class Zendesk2::GetAssignableGroups
   page_params!
 
   def mock
-    groups = service.data[:groups].values.select { |group| group.select { |g| !g['deleted'] } }
+    groups = cistern.data[:groups].values.select { |group| group.select { |g| !g['deleted'] } }
 
     page(groups, root: "groups")
   end

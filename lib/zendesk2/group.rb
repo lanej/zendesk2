@@ -21,11 +21,11 @@ class Zendesk2::Group
     data = if new_record?
              requires :name
 
-             service.create_group("group" => self.attributes)
+             cistern.create_group("group" => self.attributes)
            else
              requires :identity
 
-             service.update_group("group" => self.attributes)
+             cistern.update_group("group" => self.attributes)
            end.body["group"]
 
     merge_attributes(data)
@@ -34,7 +34,7 @@ class Zendesk2::Group
   def destroy!
     requires :identity
 
-    service.destroy_group("group" => {"id" => self.identity})
+    cistern.destroy_group("group" => {"id" => self.identity})
 
     self.deleted = true
   end

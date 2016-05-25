@@ -9,10 +9,10 @@ class Zendesk2::DestroyUser
   end
 
   def mock
-    ticket_count = service.data[:tickets].values.select { |t| t["requester_id"].to_i == user_id }.size
+    ticket_count = cistern.data[:tickets].values.select { |t| t["requester_id"].to_i == user_id }.size
 
     if ticket_count < 1
-      service.data[:identities].each { |k,v| service.data[:identities].delete(k) if v["user_id"] == user_id }
+      cistern.data[:identities].each { |k,v| cistern.data[:identities].delete(k) if v["user_id"] == user_id }
 
       mock_response("user" => self.delete!(:users, user_id))
     else

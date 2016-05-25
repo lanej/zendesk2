@@ -14,7 +14,7 @@ class Zendesk2::CreateTicketField
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "active"                => true,

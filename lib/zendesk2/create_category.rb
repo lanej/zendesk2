@@ -10,7 +10,7 @@ class Zendesk2::CreateCategory
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"         => identity,
@@ -19,7 +19,7 @@ class Zendesk2::CreateCategory
       "updated_at" => Time.now.iso8601,
     }.merge(Cistern::Hash.slice(params.fetch("category"), *self.class.accepted_attributes))
 
-    service.data[:categories][identity] = record
+    cistern.data[:categories][identity] = record
 
     mock_response({"category" => record}, {status: 201})
   end

@@ -39,18 +39,18 @@ class Zendesk2::HelpCenter::Section
   def destroy!
     requires :identity
 
-    service.destroy_help_center_section("section" => { "id" => self.identity })
+    cistern.destroy_help_center_section("section" => { "id" => self.identity })
   end
 
   def save!
     response = if new_record?
                  requires :name, :locale, :category_id
 
-                 service.create_help_center_section("section" => self.attributes)
+                 cistern.create_help_center_section("section" => self.attributes)
                else
                  requires :identity
 
-                 service.update_help_center_section("section" => self.attributes)
+                 cistern.update_help_center_section("section" => self.attributes)
                end
 
     merge_attributes(response.body["section"])
@@ -59,17 +59,17 @@ class Zendesk2::HelpCenter::Section
   def articles
     requires :identity
 
-    service.help_center_articles(section_id: self.identity)
+    cistern.help_center_articles(section_id: self.identity)
   end
 
   def access_policy
     requires :identity
 
-    response = service.get_help_center_access_policy(section_id: self.identity).body["access_policy"]
+    response = cistern.get_help_center_access_policy(section_id: self.identity).body["access_policy"]
     response.merge!({
       "section_id" => self.identity
     })
 
-    service.help_center_access_policy(response)
+    cistern.help_center_access_policy(response)
   end
 end

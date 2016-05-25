@@ -73,11 +73,11 @@ class Zendesk2::Ticket
                create_attributes.merge!("requester" => with_requester)
              end
 
-             service.create_ticket("ticket" => create_attributes).body["ticket"]
+             cistern.create_ticket("ticket" => create_attributes).body["ticket"]
            else
              requires :identity
 
-             service.update_ticket("ticket" => self.attributes).body["ticket"]
+             cistern.update_ticket("ticket" => self.attributes).body["ticket"]
            end
 
     merge_attributes(data)
@@ -86,7 +86,7 @@ class Zendesk2::Ticket
   def destroy!
     requires :identity
 
-    service.destroy_ticket("ticket" => {"id" => self.identity})
+    cistern.destroy_ticket("ticket" => {"id" => self.identity})
   end
 
   # Adds a ticket comment
@@ -103,8 +103,8 @@ class Zendesk2::Ticket
 
     comment = Zendesk2.stringify_keys(options).merge("body" => text)
 
-    service.ticket_comments.new(
-      service.update_ticket(
+    cistern.ticket_comments.new(
+      cistern.update_ticket(
         "ticket" => {
           "id"      => self.identity,
           "comment" => comment,
@@ -115,7 +115,7 @@ class Zendesk2::Ticket
 
   # @return [Array<Zendesk2::User>] All users CCD on this ticket
   def collaborators
-    self.collaborator_ids.map { |cid| self.service.users.get(cid) }
+    self.collaborator_ids.map { |cid| self.cistern.users.get(cid) }
   end
 
   # Update list of users to be CCD on this ticket
@@ -126,16 +126,16 @@ class Zendesk2::Ticket
 
   # @return [Zendesk2::TicketAudits] all audits for this ticket
   def audits
-    self.service.ticket_audits(ticket_id: self.identity).all
+    self.cistern.ticket_audits(ticket_id: self.identity).all
   end
 
   # @return [Zendesk2::TicketMetric] metrics for this ticket
   def metrics
-    Zendesk2::TicketMetric.new(self.service.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
+    Zendesk2::TicketMetric.new(self.cistern.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
   end
 
   # @return [Array<Zendesk2::TicketComment>] all comments for this ticket
   def comments
-    self.service.ticket_comments(ticket_id: self.identity).all
+    self.cistern.ticket_comments(ticket_id: self.identity).all
   end
 end

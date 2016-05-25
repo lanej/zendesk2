@@ -5,6 +5,6 @@ class Zendesk2::GetCurrentUser
   request_path { |_| "/users/me.json" }
 
   def mock
-    service.get_user("user" => {"id" => service.current_user.fetch("id")})
+    cistern.get_user("user" => {"id" => cistern.current_user.fetch("id")})
   end
 end

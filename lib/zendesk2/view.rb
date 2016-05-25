@@ -33,9 +33,9 @@ class Zendesk2::View
     }.merge(Cistern::Hash.slice(self.conditions, "any", "all"))
 
     data = if new_record?
-             service.create_view("view" => params)
+             cistern.create_view("view" => params)
            else
-             service.create_view("view" => params)
+             cistern.create_view("view" => params)
            end.body
 
     merge_attributes(data["view"])
@@ -44,12 +44,12 @@ class Zendesk2::View
   def tickets
     requires :identity
 
-    service.tickets(view_id: self.identity)
+    cistern.tickets(view_id: self.identity)
   end
 
   def destroy!
     requires :identity
 
-    service.destroy_view("view" => {"id" => self.identity})
+    cistern.destroy_view("view" => {"id" => self.identity})
   end
 end

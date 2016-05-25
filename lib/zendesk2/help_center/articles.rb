@@ -28,7 +28,7 @@ class Zendesk2::HelpCenter::Articles
                           :get_help_center_articles
                         end
 
-    body = service.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
+    body = cistern.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
 
     self.load(body[collection_root]) # 'results' is the key for paged searches
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))

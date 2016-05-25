@@ -29,18 +29,18 @@ class Zendesk2::TopicComment
   def destroy!
     requires :identity
 
-    service.destroy_topic_comment("topic_comment" => { "id" => self.identity, "topic_id" => self.topic_id })
+    cistern.destroy_topic_comment("topic_comment" => { "id" => self.identity, "topic_id" => self.topic_id })
   end
 
   def save!
     response = if new_record?
                  requires :topic_id, :user_id, :body
 
-                 service.create_topic_comment("topic_comment" => self.attributes)
+                 cistern.create_topic_comment("topic_comment" => self.attributes)
                else
                  requires :identity
 
-                 service.update_topic_comment("topic_comment" => self.attributes)
+                 cistern.update_topic_comment("topic_comment" => self.attributes)
                end
 
     merge_attributes(response.body["topic_comment"])
@@ -49,7 +49,7 @@ class Zendesk2::TopicComment
   def reload
     requires :identity
 
-    if data = self.service.topic_comments("topic_id" => topic_id).get(identity)
+    if data = self.cistern.topic_comments("topic_id" => topic_id).get(identity)
       new_attributes = data.attributes
       merge_attributes(new_attributes)
       self

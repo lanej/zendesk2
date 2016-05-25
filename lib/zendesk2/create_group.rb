@@ -14,7 +14,7 @@ class Zendesk2::CreateGroup
   end
 
   def mock(params={})
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"         => identity,

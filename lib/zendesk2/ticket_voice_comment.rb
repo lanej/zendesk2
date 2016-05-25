@@ -28,7 +28,7 @@ class Zendesk2
     def author
       requires :author_id
 
-      self.service.users.get(self.author_id)
+      self.cistern.users.get(self.author_id)
     end
   end
 end

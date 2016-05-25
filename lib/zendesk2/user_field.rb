@@ -35,11 +35,11 @@ class Zendesk2::UserField
     response = if new_record?
                  requires :type, :title, :key
 
-                 service.create_user_field("user_field" => self.attributes)
+                 cistern.create_user_field("user_field" => self.attributes)
                else
                  requires :identity
 
-                 service.update_user_field("user_field" => self.attributes)
+                 cistern.update_user_field("user_field" => self.attributes)
                end
 
     merge_attributes(response.body["user_field"])
@@ -48,6 +48,6 @@ class Zendesk2::UserField
   def destroy!
     requires :identity
 
-    service.destroy_user_field("user_field" => { "id" => self.identity })
+    cistern.destroy_user_field("user_field" => { "id" => self.identity })
   end
 end

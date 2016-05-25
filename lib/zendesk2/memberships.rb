@@ -22,13 +22,13 @@ class Zendesk2::Memberships
     body = if self.user_id && self.organization_id
              {
                "organization_memberships" => [
-                 service.get_membership("user_id" => self.user_id, "organization_id" => self.organization_id).body["organization_membership"]
+                 cistern.get_membership("user_id" => self.user_id, "organization_id" => self.organization_id).body["organization_membership"]
                ]
              }
            elsif self.user_id
-             service.get_user_memberships({"membership" => { "user_id" => self.user_id }}.merge(params)).body
+             cistern.get_user_memberships({"membership" => { "user_id" => self.user_id }}.merge(params)).body
            else
-             service.get_organization_memberships({"membership" => { "organization_id" => self.organization_id }}.merge(params)).body
+             cistern.get_organization_memberships({"membership" => { "organization_id" => self.organization_id }}.merge(params)).body
            end
 
     self.load(body[collection_root])

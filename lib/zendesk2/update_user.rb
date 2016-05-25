@@ -16,7 +16,7 @@ class Zendesk2::UpdateUser
   def mock
     email = user_params["email"]
 
-    other_users = service.data[:users].dup
+    other_users = cistern.data[:users].dup
     other_users.delete(user_id)
 
     external_id = user_params["external_id"]
@@ -25,7 +25,7 @@ class Zendesk2::UpdateUser
       error!(:invalid, details: {"name" => [ { "description" => "External has already been taken" } ]})
     end
 
-    existing_identity = service.data[:identities].values.find { |i| i["type"] == "email" && i["value"] == email }
+    existing_identity = cistern.data[:identities].values.find { |i| i["type"] == "email" && i["value"] == email }
 
     if !email
       # nvm
@@ -38,7 +38,7 @@ class Zendesk2::UpdateUser
       # no-op email already used
     else
       # add a new identity
-      user_identity_id = service.serial_id
+      user_identity_id = cistern.serial_id
 
       user_identity = {
         "id"         => user_identity_id,
@@ -52,7 +52,7 @@ class Zendesk2::UpdateUser
         "user_id"    => user_id,
       }
 
-      service.data[:identities][user_identity_id] = user_identity
+      cistern.data[:identities][user_identity_id] = user_identity
     end
 
     mock_response("user" => self.find!(:users, user_id).merge!(user_params))

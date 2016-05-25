@@ -18,7 +18,7 @@ class Zendesk2::CreateHelpCenterSection
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     locale = params["locale"] ||= "en-us"
     position = self.data[:help_center_sections].values.select { |a| a["category_id"] == category_id }.size
@@ -27,7 +27,7 @@ class Zendesk2::CreateHelpCenterSection
       "id"                => identity,
       "url"               => url_for("/help_center/#{locale}/sections/#{identity}.json"),
       "html_url"          => html_url_for("/hc/#{locale}/sections/#{identity}.json"),
-      "author_id"         => service.current_user["id"],
+      "author_id"         => cistern.current_user["id"],
       "comments_disabled" => false,
       "label_names"       => [],
       "draft"             => false,
@@ -44,7 +44,7 @@ class Zendesk2::CreateHelpCenterSection
       "outdated"          => false,
     }.merge(section_params)
 
-    service.data[:help_center_sections][identity] = record
+    cistern.data[:help_center_sections][identity] = record
 
     access_policy = {
       "viewable_by"                     => "everyone",
@@ -54,7 +54,7 @@ class Zendesk2::CreateHelpCenterSection
       "required_tags"                   => [],
       "section_id"                      => identity
     }
-    service.data[:help_center_access_policies][identity] = access_policy
+    cistern.data[:help_center_access_policies][identity] = access_policy
 
     mock_response("section" => record)
   end

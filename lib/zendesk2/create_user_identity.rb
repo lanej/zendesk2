@@ -18,7 +18,7 @@ class Zendesk2::CreateUserIdentity
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"         => identity,
@@ -30,13 +30,13 @@ class Zendesk2::CreateUserIdentity
       "user_id"    => user_id,
     }.merge(user_identity_params)
 
-    record.merge("primary" => true) if service.data[:identities].values.find { |ui| ui["user_id"] == user_id }.nil?
+    record.merge("primary" => true) if cistern.data[:identities].values.find { |ui| ui["user_id"] == user_id }.nil?
 
-    if service.data[:identities].values.find { |i| i["value"] == record["value"] }
+    if cistern.data[:identities].values.find { |i| i["value"] == record["value"] }
       error!(:invalid, details: { "value" => [ { "description" => "Value: #{record["value"]} is already being used by another user" } ] })
     end
 
-    service.data[:identities][identity] = record
+    cistern.data[:identities][identity] = record
 
     mock_response("identity" => record)
   end

@@ -11,13 +11,13 @@ class Zendesk2::TicketComments
   self.collection_root   = "comments"
 
   def ticket
-    self.service.tickets.get(self.ticket_id)
+    self.cistern.tickets.get(self.ticket_id)
   end
 
   def all(params={})
     requires :ticket_id
 
-    body = service.send(collection_method, {"ticket_id" => self.ticket_id}.merge(params)).body
+    body = cistern.send(collection_method, {"ticket_id" => self.ticket_id}.merge(params)).body
 
     collection = self.clone.load(body[collection_root])
     collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))

@@ -14,6 +14,6 @@ class Zendesk2::Users
   self.search_request    = :search_user
 
   def current
-    new(service.get_current_user.body["user"])
+    new(cistern.get_current_user.body["user"])
   end
 end

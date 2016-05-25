@@ -12,7 +12,7 @@ class Zendesk2::Organizations
   assoc_accessor :user
 
   def find_by_external_id(external_id)
-    body = service.get_organization_by_external_id("external_id" => external_id).body
+    body = cistern.get_organization_by_external_id("external_id" => external_id).body
     if data = body.delete("organizations")
       collection = self.clone.load(data)
       collection.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
@@ -34,7 +34,7 @@ class Zendesk2::Organizations
                           :get_organizations
                         end
 
-    body = service.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
+    body = cistern.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
 
     self.load(body[collection_root])
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))

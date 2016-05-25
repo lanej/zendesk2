@@ -21,12 +21,12 @@ class Zendesk2::TicketAudit
   def ticket
     requires :ticket_id
 
-    self.service.tickets.get(self.ticket_id)
+    self.cistern.tickets.get(self.ticket_id)
   end
 
   def events
     (self.attributes[:events] || []).map { |ae|
-      Zendesk2::AuditEvent.for(ae.merge(ticket_audit: self, service: self.service))
+      Zendesk2::AuditEvent.for(ae.merge(ticket_audit: self, cistern: self.cistern))
     }
   end
 end

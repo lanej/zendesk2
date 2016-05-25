@@ -24,7 +24,7 @@ class Zendesk2::CreateHelpCenterArticle
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     locale = params["locale"] ||= "en-us"
     position = self.data[:help_center_articles].values.select { |a| a["section_id"] == section_id }.size
@@ -33,7 +33,7 @@ class Zendesk2::CreateHelpCenterArticle
       "id"                => identity,
       "url"               => url_for("/help_center/#{locale}/articles/#{identity}.json"),
       "html_url"          => html_url_for("/hc/#{locale}/articles/#{identity}.json"),
-      "author_id"         => service.current_user["id"],
+      "author_id"         => cistern.current_user["id"],
       "comments_disabled" => false,
       "label_names"       => [],
       "draft"             => false,

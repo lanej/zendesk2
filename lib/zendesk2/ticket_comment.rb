@@ -19,6 +19,6 @@ class Zendesk2::TicketComment < Zendesk2::AuditEvent
   def author
     requires :author_id
 
-    self.service.users.get(self.author_id)
+    self.cistern.users.get(self.author_id)
   end
 end

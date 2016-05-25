@@ -114,16 +114,16 @@ module Zendesk2::Request
   end
 
   def data
-    self.service.data
+    self.cistern.data
   end
 
   def html_url_for(path)
-    File.join(service.url, path.to_s)
+    File.join(cistern.url, path.to_s)
   end
 
   def url_for(path, options={})
     URI.parse(
-      File.join(service.url, "/api/v2", path.to_s)
+      File.join(cistern.url, "/api/v2", path.to_s)
     ).tap do |uri|
       if query = options[:query]
         uri.query = Faraday::NestedParamsEncoder.encode(query)
@@ -132,7 +132,7 @@ module Zendesk2::Request
   end
 
   def real(params={})
-    service.request(:method => self.class.request_method,
+    cistern.request(:method => self.class.request_method,
                     :path   => self.request_path,
                     :body   => self.request_body,
                     :url    => params["url"],
@@ -161,7 +161,7 @@ module Zendesk2::Request
   end
 
   def find!(collection, identity, options={})
-    if resource = self.service.data[collection][identity.to_i]
+    if resource = self.cistern.data[collection][identity.to_i]
       resource
     else
       error!(options[:error] || :not_found, options)
@@ -169,7 +169,7 @@ module Zendesk2::Request
   end
 
   def delete!(collection, identity, options={})
-    self.service.data[collection].delete(identity.to_i) ||
+    self.cistern.data[collection].delete(identity.to_i) ||
       error!(options[:error] || :not_found, options)
   end
 
@@ -185,7 +185,7 @@ module Zendesk2::Request
   end
 
   def resources(collection, options={})
-    page = collection.is_a?(Array) ? collection : service.data[collection.to_sym].values
+    page = collection.is_a?(Array) ? collection : cistern.data[collection.to_sym].values
     root = options.fetch(:root) { !collection.is_a?(Array) && collection.to_s }
 
     mock_response(
@@ -205,7 +205,7 @@ module Zendesk2::Request
 
     offset     = (page_index - 1) * page_size
 
-    resources   = collection.is_a?(Array) ? collection : service.data[collection.to_sym].values
+    resources   = collection.is_a?(Array) ? collection : cistern.data[collection.to_sym].values
     count       = resources.size
     total_pages = (count / page_size) + 1
 
@@ -249,7 +249,7 @@ module Zendesk2::Request
     body                 = options[:response_body] || options[:body]
     method               = options[:method]        || :get
     params               = options[:params]
-    service.last_request = options[:request_body]
+    cistern.last_request = options[:request_body]
     status               = options[:status]        || 200
 
     path = options[:path]

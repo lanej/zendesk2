@@ -21,7 +21,7 @@ module Zendesk2::PagedCollection
   def model_root; self.class.model_root; end
 
   def new_page
-    page = self.class.new(service: self.service)
+    page = self.class.new(cistern: self.cistern)
     page.merge_attributes(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))})
     page
   end
@@ -129,7 +129,7 @@ module Zendesk2::PagedCollection
 
     scoped_attributes = { model_root => scoped_attributes }
 
-    if data = self.service.send(model_method, scoped_attributes).body[self.model_root]
+    if data = self.cistern.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
     end
   end
@@ -159,7 +159,7 @@ module Zendesk2::PagedCollection
 
   def collection_page(params)
     scoped_attributes = self.class.scopes.inject({}) { |r, k| r.merge(k.to_s => send(k)) }.merge(params)
-    body = service.send(collection_method, scoped_attributes).body
+    body = cistern.send(collection_method, scoped_attributes).body
 
     self.load(body[collection_root]) # 'results' is the key for paged seraches
     self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
