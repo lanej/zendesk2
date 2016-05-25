@@ -43,4 +43,18 @@ describe "help_center/sections" do
       }.to change { section.reload.access_policy.viewable_by }.from(old_viewable_by).to(new_viewable_by)
     end
   end
+
+  describe "translations" do
+    let!(:category) { client.help_center_categories.create!(name: mock_uuid, locale: "en-us") }
+    let!(:section)  { category.sections.create!(name: mock_uuid, locale: "en-us") }
+    let!(:locale) { mock_uuid }
+
+    include_examples "zendesk#resource", {
+      :collection     => lambda { section.translations },
+      :fetch_params   => lambda { |r| Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
+      :create_params  => lambda { { source: section, locale: locale, title: mock_uuid } },
+      :update_params  => lambda { { title: mock_uuid } },
+      :search         => false
+    }
+  end
 end

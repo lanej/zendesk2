@@ -47,6 +47,12 @@ class Zendesk2::HelpCenter::Category
     cistern.help_center_sections(category_id: self.identity)
   end
 
+  def translations
+    requires :identity
+
+    cistern.help_center_translations(source_id: self.identity, source_type: "Category")
+  end
+
   def save!
     response = if new_record?
                  requires :name, :locale
