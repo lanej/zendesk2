@@ -55,7 +55,7 @@ class Zendesk2::CreateView
       error!(:invalid, :details => {"base" => ["Invalid conditions: You must select at least one condition"]})
     end
 
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     output = view_params.delete("output") || {}
     columns = (output["columns"] || []).inject([]) { |r,c| r << {"id" => c, "name" => self.class.view_columns.fetch(c)} }
@@ -91,7 +91,7 @@ class Zendesk2::CreateView
       },
     }.merge(create_params)
 
-    service.data[:views][identity] = record
+    cistern.data[:views][identity] = record
 
     mock_response("view" => record)
   end

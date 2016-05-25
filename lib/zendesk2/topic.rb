@@ -27,18 +27,18 @@ class Zendesk2::Topic
   def destroy!
     requires :identity
 
-    service.destroy_topic("topic" => {"id" => self.identity})
+    cistern.destroy_topic("topic" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :title, :body
 
-             service.create_topic("topic" => self.attributes)
+             cistern.create_topic("topic" => self.attributes)
            else
              requires :identity
 
-             service.update_topic("topic" => self.attributes)
+             cistern.update_topic("topic" => self.attributes)
            end.body["topic"]
 
     merge_attributes(data)

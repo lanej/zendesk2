@@ -26,9 +26,9 @@ class Zendesk2::Search
     type  = terms.delete("type")
 
     collection = if type.nil?
-                   service.data.values
+                   cistern.data.values
                  else
-                   service.data[pluralize(type).to_sym]
+                   cistern.data[pluralize(type).to_sym]
                  end
 
     results = collection.values.select { |v| terms.all?{ |term, condition| v[term].to_s == condition.to_s } }

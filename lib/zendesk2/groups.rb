@@ -13,8 +13,8 @@ class Zendesk2::Groups
   self.search_type       = "group"
 
   def assignable
-    data = self.service.get_assignable_groups.body
-    collection = self.service.groups.load(data["groups"])
+    data = self.cistern.get_assignable_groups.body
+    collection = self.cistern.groups.load(data["groups"])
     collection.merge_attributes(Cistern::Hash.slice(data, "next_page", "previous_page", "count"))
   end
 end

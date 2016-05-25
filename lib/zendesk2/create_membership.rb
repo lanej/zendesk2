@@ -33,7 +33,7 @@ class Zendesk2::CreateMembership
       error!(:invalid, description: { "user_id" => [ { "description" => "User has already been taken" } ] })
     end
 
-    resource_id = service.serial_id
+    resource_id = cistern.serial_id
 
     default_membership = !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
 

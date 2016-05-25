@@ -18,7 +18,7 @@ class Zendesk2::CreateTopicComment
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"         => identity,

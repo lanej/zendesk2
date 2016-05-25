@@ -10,7 +10,7 @@ class Zendesk2::GetUserIdentities
   end
 
   def mock
-    identities = service.data[:identities].values.select { |a| a["user_id"] == user_id }
+    identities = cistern.data[:identities].values.select { |a| a["user_id"] == user_id }
 
     page(identities, root: "identities")
   end

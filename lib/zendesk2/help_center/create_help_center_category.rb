@@ -14,7 +14,7 @@ class Zendesk2::CreateHelpCenterCategory
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     locale = params["locale"] ||= "en-us"
     position = self.data[:help_center_categories].size
@@ -23,7 +23,7 @@ class Zendesk2::CreateHelpCenterCategory
       "id"          => identity,
       "url"         => url_for("/help_center/#{locale}/categories/#{identity}.json"),
       "html_url"    => html_url_for("/hc/#{locale}/categories/#{identity}.json"),
-      "author_id"   => service.current_user["id"],
+      "author_id"   => cistern.current_user["id"],
       "position"    => position,
       "created_at"  => Time.now.iso8601,
       "updated_at"  => Time.now.iso8601,

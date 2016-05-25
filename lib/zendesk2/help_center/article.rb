@@ -49,11 +49,11 @@ class Zendesk2::HelpCenter::Article
     response = if new_record?
                  requires :title, :locale, :section_id
 
-                 service.create_help_center_article("article" => self.attributes)
+                 cistern.create_help_center_article("article" => self.attributes)
                else
                  requires :identity
 
-                 service.update_help_center_article("article" => self.attributes)
+                 cistern.update_help_center_article("article" => self.attributes)
                end
 
     merge_attributes(response.body["article"])
@@ -62,6 +62,6 @@ class Zendesk2::HelpCenter::Article
   def destroy!
     requires :identity
 
-    service.destroy_help_center_article("article" => { "id" => self.identity })
+    cistern.destroy_help_center_article("article" => { "id" => self.identity })
   end
 end

@@ -21,18 +21,18 @@ class Zendesk2::Category
   def destroy!
     requires :identity
 
-    service.destroy_category("category" => {"id" => self.identity})
+    cistern.destroy_category("category" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             service.create_category(params).body["category"]
+             cistern.create_category(params).body["category"]
            else
              requires :identity
 
-             service.update_category(params).body["category"]
+             cistern.update_category(params).body["category"]
            end
 
     merge_attributes(data)

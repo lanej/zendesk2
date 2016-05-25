@@ -23,12 +23,12 @@ class Zendesk2::UpdateTicket
     body = self.find!(:tickets, ticket_id).merge!(ticket_params)
 
     if comment
-      comment_id = service.serial_id
+      comment_id = cistern.serial_id
 
-      comment_data = service.data[:ticket_comments][comment_id] = {
+      comment_data = cistern.data[:ticket_comments][comment_id] = {
         "id"          => comment_id,
         "type"        => "Comment",
-        "author_id"   => service.current_user["id"],
+        "author_id"   => cistern.current_user["id"],
         "body"        => comment["body"],
         "html_body"   => "<p>#{comment["body"]}</p>",
         "public"      => comment["public"].nil? ? true : comment["public"],
@@ -37,13 +37,13 @@ class Zendesk2::UpdateTicket
         "ticket_id"   => ticket_id,
       }
 
-      audit_id = service.serial_id
+      audit_id = cistern.serial_id
 
       audit = {
         "id"         => audit_id,
         "ticket_id"  => ticket_id,
         "created_at" => Time.now,
-        "author_id"  => service.current_user["id"],
+        "author_id"  => cistern.current_user["id"],
         "via"        => {
           "channel" => "api",
           "source"  => {

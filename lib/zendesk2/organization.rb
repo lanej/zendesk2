@@ -35,18 +35,18 @@ class Zendesk2::Organization
   def destroy!
     requires :identity
 
-    service.destroy_organization("organization" => {"id" => self.identity})
+    cistern.destroy_organization("organization" => {"id" => self.identity})
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             service.create_organization("organization" => self.attributes)
+             cistern.create_organization("organization" => self.attributes)
            else
              requires :identity
 
-             service.update_organization("organization" => self.attributes)
+             cistern.update_organization("organization" => self.attributes)
            end.body["organization"]
 
     merge_attributes(data)
@@ -56,8 +56,8 @@ class Zendesk2::Organization
   def users
     requires :identity
 
-    service.users.load(
-      service.get_organization_users("organization" => {"id" => self.identity}).body["users"]
+    cistern.users.load(
+      cistern.get_organization_users("organization" => {"id" => self.identity}).body["users"]
     )
   end
 
@@ -65,15 +65,15 @@ class Zendesk2::Organization
   def memberships
     requires :identity
 
-    service.memberships(organization: self)
+    cistern.memberships(organization: self)
   end
 
   # @return [Zendesk2::Tickets] tickets associated with this organization
   def tickets
     requires :identity
 
-    service.tickets.load(
-      service.get_organization_tickets("organization_id" => self.identity).body["tickets"]
+    cistern.tickets.load(
+      cistern.get_organization_tickets("organization_id" => self.identity).body["tickets"]
     )
   end
 end

@@ -16,7 +16,7 @@ class Zendesk2::MarkUserIdentityPrimary
     user_identity = self.find!(:identities, user_identity_id)
 
     # only one user can be primary
-    other_user_identities = service.data[:identities].values.select { |i| i["user_id"] == user_id }
+    other_user_identities = cistern.data[:identities].values.select { |i| i["user_id"] == user_id }
     other_user_identities.map { |i| i["primary"] = false }
 
     user_identity.merge!("primary" => true)

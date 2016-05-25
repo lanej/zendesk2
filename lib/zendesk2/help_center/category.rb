@@ -32,30 +32,30 @@ class Zendesk2::HelpCenter::Category
   def articles
     requires :identity
 
-    service.help_center_articles(category_id: self.identity)
+    cistern.help_center_articles(category_id: self.identity)
   end
 
   def destroy!
     requires :identity
 
-    service.destroy_help_center_category("category" => { "id" => self.identity })
+    cistern.destroy_help_center_category("category" => { "id" => self.identity })
   end
 
   def sections
     requires :identity
 
-    service.help_center_sections(category_id: self.identity)
+    cistern.help_center_sections(category_id: self.identity)
   end
 
   def save!
     response = if new_record?
                  requires :name, :locale
 
-                 service.create_help_center_category("category" => self.attributes)
+                 cistern.create_help_center_category("category" => self.attributes)
                else
                  requires :identity
 
-                 service.update_help_center_category("category" => self.attributes)
+                 cistern.update_help_center_category("category" => self.attributes)
                end
 
     merge_attributes(response.body["category"])

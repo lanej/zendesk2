@@ -10,7 +10,7 @@ class Zendesk2::GetCcdTickets
   end
 
   def mock
-    tickets = service.data[:tickets].values.select { |u| u["collaborator_ids"].include?(collaborator_id) }
+    tickets = cistern.data[:tickets].values.select { |u| u["collaborator_ids"].include?(collaborator_id) }
 
     page(tickets, root: "tickets")
   end

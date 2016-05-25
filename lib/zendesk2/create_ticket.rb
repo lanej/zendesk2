@@ -33,11 +33,11 @@ class Zendesk2::CreateTicket
             ]})
       end
 
-      user_id = if known_user = service.users.search(email: requester['email']).first
+      user_id = if known_user = cistern.users.search(email: requester['email']).first
                   known_user.identity
                 else
                   # name is not required in this case
-                  service.create_user("user" => requester).body["user"]["id"]
+                  cistern.create_user("user" => requester).body["user"]["id"]
                 end
 
       create_params['requester_id'] = user_id.to_i
@@ -48,19 +48,19 @@ class Zendesk2::CreateTicket
     custom_fields = requested_custom_fields.map do |cf|
       field_id = cf["id"].to_i
 
-      if service.data[:ticket_fields][field_id]
+      if cistern.data[:ticket_fields][field_id]
         {"id" => field_id, "value" => cf["value"] }
       else
         # @fixme error ?!
       end
     end.compact
 
-    service.data[:ticket_fields].each do |field_id, field|
+    cistern.data[:ticket_fields].each do |field_id, field|
       requested_custom_fields.find { |cf| cf["id"] == field_id } ||
         custom_fields << {"id" => field_id, "value" => nil }
     end
 
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"               => identity,
@@ -72,14 +72,14 @@ class Zendesk2::CreateTicket
       "custom_fields"    => custom_fields,
     }.merge(create_params)
 
-    record["requester_id"] ||= (requester_id && requester_id.to_i) || service.current_user["id"]
-    record["submitter_id"] = service.current_user["id"].to_i
+    record["requester_id"] ||= (requester_id && requester_id.to_i) || cistern.current_user["id"]
+    record["submitter_id"] = cistern.current_user["id"].to_i
 
-    record["organization_id"] ||= if requester = service.data[:users][record["requester_id"].to_i]
+    record["organization_id"] ||= if requester = cistern.data[:users][record["requester_id"].to_i]
                                     requester["organization_id"]
                                   end
 
-    service.data[:tickets][identity] = record
+    cistern.data[:tickets][identity] = record
 
     mock_response("ticket" => record)
   end

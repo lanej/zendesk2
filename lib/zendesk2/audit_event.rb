@@ -18,7 +18,7 @@ class Zendesk2::AuditEvent
     if klass = all.find{|k| k.name == event_class}
       klass.new(attributes)
     else # handle unrecognized audit events
-      attributes.reject{|k,v| k == :service}
+      attributes.reject{|k,v| k == :cistern}
     end
   end
 

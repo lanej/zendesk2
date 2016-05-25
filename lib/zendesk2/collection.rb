@@ -48,7 +48,7 @@ module Zendesk2::Collection
   # Fetch a collection of resources
   def all(params={})
     scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}.merge(params)
-    body = service.send(collection_method, scoped_attributes).body
+    body = cistern.send(collection_method, scoped_attributes).body
 
     self.load(body[collection_root])
     self.merge_attributes(Cistern::Hash.slice(body, "count"))
@@ -80,7 +80,7 @@ module Zendesk2::Collection
 
     scoped_attributes = { namespace => scoped_attributes }
 
-    if data = self.service.send(model_method, scoped_attributes).body[self.model_root]
+    if data = self.cistern.send(model_method, scoped_attributes).body[self.model_root]
       new(data)
     end
   end

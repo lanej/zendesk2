@@ -14,7 +14,7 @@ class Zendesk2::CreateUser
   end
 
   def mock
-    user_id = service.serial_id
+    user_id = cistern.serial_id
 
     user = params.fetch("user")
 
@@ -41,7 +41,7 @@ class Zendesk2::CreateUser
           "description" => "Email: #{email} is already being used by another user"
         }]})
     else
-      user_identity_id = service.serial_id
+      user_identity_id = cistern.serial_id
 
       user_identity = {
         "id"         => user_identity_id,
@@ -59,7 +59,7 @@ class Zendesk2::CreateUser
       self.data[:users][user_id] = record.reject { |k,v| k == "email" }
 
       if organization_id
-        service.create_membership("membership" => { "user_id" => user_id, "organization_id" => organization_id, "default" => true } )
+        cistern.create_membership("membership" => { "user_id" => user_id, "organization_id" => organization_id, "default" => true } )
       end
 
       mock_response({"user" => record}, {status: 201})

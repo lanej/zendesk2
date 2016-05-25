@@ -14,7 +14,7 @@ class Zendesk2::CreateForum
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"         => identity,
@@ -23,7 +23,7 @@ class Zendesk2::CreateForum
       "updated_at" => Time.now.iso8601,
     }.merge(Cistern::Hash.slice(params.fetch("forum"), *self.class.accepted_attributes))
 
-    service.data[:forums][identity] = record
+    cistern.data[:forums][identity] = record
 
     mock_response({"forum" => record}, {status: 201})
   end

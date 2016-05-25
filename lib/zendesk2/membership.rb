@@ -26,7 +26,7 @@ class Zendesk2::Membership
     data = if new_record?
              requires :organization_id, :user_id
 
-             service.create_membership("membership" => self.attributes).body["organization_membership"]
+             cistern.create_membership("membership" => self.attributes).body["organization_membership"]
            else
              requires :identity
 
@@ -39,13 +39,13 @@ class Zendesk2::Membership
   def destroy!
     requires :identity
 
-    service.destroy_membership("membership" => { "id" => self.identity })
+    cistern.destroy_membership("membership" => { "id" => self.identity })
   end
 
   def default!
     requires :identity, :user_id
 
-    self.service.mark_membership_default(
+    self.cistern.mark_membership_default(
       "membership" => {
         "user_id" => self.user_id,
         "id"      => self.identity

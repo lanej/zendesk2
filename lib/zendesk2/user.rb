@@ -70,11 +70,11 @@ class Zendesk2::User
     data = if new_record?
              requires :name, :email
 
-             service.create_user("user" => self.attributes)
+             cistern.create_user("user" => self.attributes)
            else
              requires :identity
 
-             service.update_user("user" => self.attributes)
+             cistern.update_user("user" => self.attributes)
            end.body["user"]
 
     merge_attributes(data)
@@ -83,12 +83,12 @@ class Zendesk2::User
   def destroy!
     requires :identity
 
-    if self.email == service.username
+    if self.email == cistern.username
       raise "don't nuke yourself"
     end
 
     merge_attributes(
-      service.destroy_user("user" => {"id" => self.identity}).body["user"]
+      cistern.destroy_user("user" => {"id" => self.identity}).body["user"]
     )
   end
 
@@ -105,9 +105,9 @@ class Zendesk2::User
     requires :name, :email
 
     return_to = options[:return_to]
-    token     = self.service.token || options[:token]
+    token     = self.cistern.token || options[:token]
 
-    uri      = URI.parse(self.service.url)
+    uri      = URI.parse(self.cistern.url)
     uri.path = "/access/remote"
 
     raise "timestamp cannot be nil" unless timestamp
@@ -137,9 +137,9 @@ class Zendesk2::User
     requires :name, :email
 
     return_to = options[:return_to]
-    jwt_token = self.service.jwt_token || options[:jwt_token]
+    jwt_token = self.cistern.jwt_token || options[:jwt_token]
 
-    uri       = URI.parse(self.service.url)
+    uri       = URI.parse(self.cistern.url)
     uri.path  = "/access/jwt"
 
     iat = Time.now.to_i
@@ -167,7 +167,7 @@ class Zendesk2::User
   def tickets
     requires :identity
 
-    service.tickets(requester_id: self.identity)
+    cistern.tickets(requester_id: self.identity)
   end
   alias requested_tickets tickets
 
@@ -175,21 +175,21 @@ class Zendesk2::User
   def ccd_tickets
     requires :identity
 
-    service.tickets(collaborator_id: self.identity)
+    cistern.tickets(collaborator_id: self.identity)
   end
 
   # @return [Zendesk2::UserIdentities] the identities of this user
   def identities
-    self.service.user_identities("user_id" => self.identity)
+    self.cistern.user_identities("user_id" => self.identity)
   end
 
   # @return [Zendesk2::Memberships] the organization memberships of this user
   def memberships
-    self.service.memberships(user: self)
+    self.cistern.memberships(user: self)
   end
 
   # @return [Zendesk2::Organizations] the organizations of this user through memberships
   def organizations
-    self.service.organizations(user: self)
+    self.cistern.organizations(user: self)
   end
 end

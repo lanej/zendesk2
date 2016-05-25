@@ -24,18 +24,18 @@ class Zendesk2::Forum
   def destroy!
     requires :identity
 
-    service.destroy_forum("forum" => {"id" => self.identity})
+    cistern.destroy_forum("forum" => {"id" => self.identity})
   end
 
   def save!
     response = if new_record?
                  requires :name
 
-                 service.create_forum("forum" => self.attributes)
+                 cistern.create_forum("forum" => self.attributes)
                else
                  requires :identity
 
-                 service.update_forum("forum" => self.attributes)
+                 cistern.update_forum("forum" => self.attributes)
                end
 
     merge_attributes(response.body["forum"])
