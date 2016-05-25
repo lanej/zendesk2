@@ -53,7 +53,7 @@ describe "help_center/sections" do
     include_examples "zendesk#resource", {
       :collection     => lambda { section.translations },
       :fetch_params   => lambda { |r| Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
-      :create_params  => lambda { { source_id: section.identity, source_type: "Section", locale: locale, title: mock_uuid } },
+      :create_params  => lambda { { source: section, locale: locale, title: mock_uuid } },
       :update_params  => lambda { { title: mock_uuid } },
       :search         => false
     }

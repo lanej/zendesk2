@@ -36,7 +36,7 @@ describe "help_center/categories" do
     include_examples "zendesk#resource", {
       :collection     => lambda { category.translations },
       :fetch_params   => lambda { |r| Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
-      :create_params  => lambda { { source_id: category.identity, source_type: "Category", locale: locale, title: mock_uuid } },
+      :create_params  => lambda { { source: category, locale: locale, title: mock_uuid } },
       :update_params  => lambda { { title: mock_uuid } },
       :search         => false
     }

@@ -32,7 +32,7 @@ describe "help_center/articles" do
     include_examples "zendesk#resource", {
       :collection     => lambda { article.translations },
       :fetch_params   => lambda { |r| Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
-      :create_params  => lambda { { source_id: article.identity, source_type: "Article", locale: locale, title: mock_uuid } },
+      :create_params  => lambda { { source: article, locale: locale, title: mock_uuid } },
       :update_params  => lambda { { title: mock_uuid } },
       :search         => false
     }
