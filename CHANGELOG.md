@@ -2,7 +2,16 @@
 
 ## [Unreleased](https://github.com/lanej/zendesk2/tree/HEAD)
 
-[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.0...HEAD)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.1...HEAD)
+
+**Merged pull requests:**
+
+- separate auth\_id and username [\#50](https://github.com/lanej/zendesk2/pull/50) ([lanej](https://github.com/lanej))
+- s/service/cistern/g [\#49](https://github.com/lanej/zendesk2/pull/49) ([lanej](https://github.com/lanej))
+- Help center translations API [\#48](https://github.com/lanej/zendesk2/pull/48) ([omgitsads](https://github.com/omgitsads))
+
+## [v1.8.1](https://github.com/lanej/zendesk2/tree/v1.8.1) (2016-05-19)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.0...v1.8.1)
 
 **Merged pull requests:**
 
