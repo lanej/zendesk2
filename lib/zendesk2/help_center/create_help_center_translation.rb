@@ -15,7 +15,7 @@ class Zendesk2::CreateHelpCenterTranslation
   end
 
   def mock
-    identity = service.serial_id
+    identity = cistern.serial_id
 
     record = {
       "id"                => identity,
@@ -30,7 +30,7 @@ class Zendesk2::CreateHelpCenterTranslation
       "locale"            => locale,
     }.merge(translation_params)
 
-    service.data[:help_center_translations][mock_translation_key] = record
+    cistern.data[:help_center_translations][mock_translation_key] = record
 
     mock_response("translation" => record)
   end

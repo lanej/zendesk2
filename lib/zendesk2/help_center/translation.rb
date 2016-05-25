@@ -29,18 +29,18 @@ class Zendesk2::HelpCenter::Translation
   def destroy!
     requires :locale, :source_id, :source_type
 
-    service.destroy_help_center_translation("translation" => Cistern::Hash.slice(self.attributes, :source_id, :source_type, :locale))
+    cistern.destroy_help_center_translation("translation" => Cistern::Hash.slice(self.attributes, :source_id, :source_type, :locale))
   end
 
   def save!
     response = if new_record?
                  requires :locale, :source_id, :source_type
 
-                 service.create_help_center_translation("translation" => self.attributes)
+                 cistern.create_help_center_translation("translation" => self.attributes)
                else
                  requires :identity
 
-                 service.update_help_center_translation("translation" => self.attributes)
+                 cistern.update_help_center_translation("translation" => self.attributes)
                end
 
     merge_attributes(response.body["translation"])

@@ -50,7 +50,7 @@ class Zendesk2::HelpCenter::Category
   def translations
     requires :identity
 
-    service.help_center_translations(source_id: self.identity, source_type: "Category")
+    cistern.help_center_translations(source_id: self.identity, source_type: "Category")
   end
 
   def save!
