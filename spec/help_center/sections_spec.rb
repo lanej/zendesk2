@@ -17,7 +17,6 @@ describe "help_center/sections" do
   }
 
   context "with a category, sections, and articles" do
-    let!(:category) { client.help_center_categories.create!(name: mock_uuid, locale: "en-us") }
     let!(:section)  { category.sections.create!(name: mock_uuid, locale: "en-us") }
     let!(:articles) { 2.times.map { section.articles.create(title: mock_uuid, locale: "en-us") } }
 
