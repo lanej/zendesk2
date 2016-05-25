@@ -1,5 +1,6 @@
 class Zendesk2::CreateHelpCenterTranslation
   include Zendesk2::Request
+  include Zendesk2::HelpCenter::TranslationSource::Request
 
   request_method :post
   request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" }
@@ -11,29 +12,6 @@ class Zendesk2::CreateHelpCenterTranslation
 
   def translation_params
     Cistern::Hash.slice(params.fetch("translation"), *self.class.accepted_attributes)
-  end
-
-  def source_id
-    Integer(params.fetch("translation").fetch("source_id"))
-  end
-
-  def source_type
-    params.fetch("translation").fetch("source_type")
-  end
-
-  def source_type_url
-    case source_type
-    when "Article"
-      "articles"
-    when "Section"
-      "sections"
-    when "Category"
-      "categories"
-    end
-  end
-
-  def locale
-    params.fetch("translation").fetch("locale") || "en-us"
   end
 
   def mock
@@ -52,10 +30,7 @@ class Zendesk2::CreateHelpCenterTranslation
       "locale"            => locale,
     }.merge(translation_params)
 
-    # Since Zendesk2::Request#find! calls .to_i on hash keys, we need an integer
-    # key for this.
-    key = [source_type, source_id, locale].join("-").each_byte.inject(0) {|char, acc| acc + char }
-    service.data[:help_center_translations][key] = record
+    service.data[:help_center_translations][mock_translation_key] = record
 
     mock_response("translation" => record)
   end

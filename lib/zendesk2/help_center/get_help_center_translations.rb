@@ -12,7 +12,7 @@ class Zendesk2::GetHelpCenterTranslations
     end
   }
 
-  request_params { |r| r.translations_params }
+  request_params { |r| r.translation_params }
 
   page_params!
 
@@ -24,12 +24,12 @@ class Zendesk2::GetHelpCenterTranslations
     params.fetch("source_type")
   end
 
-  def translations_params
+  def translation_params
     new_params = Cistern::Hash.slice(params, :outdated, :draft)
 
     # Extract locales and dedup "locale"
     locales = params["locales"] || []
-    locales << params["locale"]
+    locales << params["locale"] unless !params["locale"] || params["locale"].empty?
     locales.uniq!
     new_params["locales"] = locales.join(",") unless locales.empty?
 

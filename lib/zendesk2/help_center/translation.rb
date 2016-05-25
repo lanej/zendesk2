@@ -1,5 +1,6 @@
 class Zendesk2::HelpCenter::Translation
   include Zendesk2::Model
+  include Zendesk2::HelpCenter::TranslationSource::Model
 
   extend Zendesk2::Attributes
 
@@ -43,16 +44,5 @@ class Zendesk2::HelpCenter::Translation
                end
 
     merge_attributes(response.body["translation"])
-  end
-
-  def source=(source)
-    if source.is_a?(Zendesk2::HelpCenter::Article)
-      self.source_type = "Article"
-    elsif source.is_a?(Zendesk2::HelpCenter::Section)
-      self.source_type = "Section"
-    elsif source.is_a?(Zendesk2::HelpCenter::Category)
-      self.source_type = "Category"
-    end
-    self.source_id = source.id
   end
 end

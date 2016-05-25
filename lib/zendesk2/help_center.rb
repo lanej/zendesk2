@@ -1,5 +1,7 @@
 module Zendesk2::HelpCenter; end
 
+require 'zendesk2/help_center/translation_source'
+
 require 'zendesk2/help_center/create_help_center_article'
 require 'zendesk2/help_center/create_help_center_category'
 require 'zendesk2/help_center/create_help_center_section'

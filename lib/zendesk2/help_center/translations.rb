@@ -20,18 +20,10 @@ class Zendesk2::HelpCenter::Translations
 
   scopes << :source_id
   scopes << :source_type
-  
+
   scopes << :locale
   scopes << :locales
 
   scopes << :outdated
   scopes << :draft
-
-  def collection_page(params={})
-    body = service.send(collection_method, Cistern::Hash.stringify_keys(self.attributes.merge(params))).body
-
-    self.load(body[collection_root])
-    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
-    self
-  end
 end
