@@ -16,16 +16,16 @@ class Zendesk2::Real
     cistern_options = options[:cistern_options] || {}
 
     @auth_token  = password || @token
-    @username   += "/token" if @auth_token == @token
+    @auth_id     = "#{@username}/token" if @auth_token == @token
     @jwt_token   = options[:jwt_token]
 
     raise "Missing required options: :url" unless @url
-    raise "Missing required options: :username" unless @username
+    raise "Missing required options: :username" unless @auth_id
     raise "Missing required options: :password or :token" unless password || @token
 
     @cistern = Faraday.new({url: @url}.merge(cistern_options)) do |connection|
       # response
-      connection.use Faraday::Request::BasicAuthentication, @username, @auth_token
+      connection.use Faraday::Request::BasicAuthentication, @auth_id, @auth_token
       connection.use Faraday::Response::RaiseError
       connection.response :json, content_type: /\bjson/
 
