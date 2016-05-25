@@ -14,11 +14,11 @@ module Zendesk2::HelpCenter::TranslationSource
 
   module Request
     def source_id
-      Integer(params.fetch("translation").fetch("source_id"))
+      Integer((params["translation"] || params).fetch("source_id"))
     end
 
     def source_type
-      params.fetch("translation").fetch("source_type")
+      (params["translation"] || params).fetch("source_type")
     end
 
     def source_type_url
@@ -33,7 +33,7 @@ module Zendesk2::HelpCenter::TranslationSource
     end
 
     def locale
-      params.fetch("translation").fetch("locale") || "en-us"
+      (params["translation"] || params).fetch("locale") || "en-us"
     end
 
     # Since Zendesk2::Request#find! calls .to_i on hash keys, we need an integer
