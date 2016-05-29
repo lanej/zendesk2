@@ -77,13 +77,15 @@ shared_examples 'zendesk#resource' do |options = {}|
       end
     end
 
-    it 'should be destroyed' do
-      @record = collection.create!(create_params)
-      expect(record.identity).not_to be_nil
-      record.destroy
+    if options.fetch(:destroy, true)
+      it 'should be destroyed' do
+        @record = collection.create!(create_params)
+        expect(record.identity).not_to be_nil
+        record.destroy
 
-      if !options.fetch(:delayed_destroy, false) && !Zendesk2.mocking?
-        expect(record).to be_destroyed
+        if !options.fetch(:delayed_destroy, false) && !Zendesk2.mocking?
+          expect(record).to be_destroyed
+        end
       end
     end
 

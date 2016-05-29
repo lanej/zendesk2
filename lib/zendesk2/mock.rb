@@ -14,6 +14,7 @@ class Zendesk2::Mock
         help_center_categories: {},
         help_center_posts: {},
         help_center_sections: {},
+        help_center_subscriptions: {},
         help_center_topics: {},
         help_center_translations: {},
         identities: {},
