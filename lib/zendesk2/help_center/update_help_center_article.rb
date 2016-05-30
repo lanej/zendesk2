@@ -1,25 +1,23 @@
+# frozen_string_literal: true
 class Zendesk2::UpdateHelpCenterArticle
   include Zendesk2::Request
 
   request_method :put
-  request_body { |r| { "article" => r.article_params } }
-  request_path { |r|
-    if locale = r.article_params["locale"]
-      "/help_center/#{locale}/articles/#{r.article_id}.json"
-    else
-      "/help_center/articles/#{r.article_id}.json"
-    end
-  }
+  request_body do |r| { 'article' => r.article_params } end
+  request_path do |r|
+    locale = r.article_params['locale']
+    locale ? "/help_center/#{locale}/articles/#{r.article_id}.json" : "/help_center/articles/#{r.article_id}.json"
+  end
 
   def article_params
-    @_article_params ||= Cistern::Hash.slice(params.fetch("article"), *Zendesk2::CreateHelpCenterArticle.accepted_attributes)
+    Cistern::Hash.slice(params.fetch('article'), *Zendesk2::CreateHelpCenterArticle.accepted_attributes)
   end
 
   def article_id
-    params.fetch("article").fetch("id")
+    params.fetch('article').fetch('id')
   end
 
   def mock
-    mock_response("article" => self.find!(:help_center_articles, article_id).merge!(article_params))
+    mock_response('article' => find!(:help_center_articles, article_id).merge!(article_params))
   end
 end

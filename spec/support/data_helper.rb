@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DataHelper
   def mock_email
     "zendesk2+#{mock_uuid}@example.org"

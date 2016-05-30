@@ -1,18 +1,19 @@
+# frozen_string_literal: true
 class Zendesk2::GetTopicComment
   include Zendesk2::Request
 
   request_method :get
-  request_path { |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" }
+  request_path do |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" end
 
   def topic_id
-    params.fetch("topic_comment").fetch("topic_id")
+    params.fetch('topic_comment').fetch('topic_id')
   end
 
   def topic_comment_id
-    params.fetch("topic_comment").fetch("id")
+    params.fetch('topic_comment').fetch('id')
   end
 
   def mock
-    mock_response("topic_comment" => self.find!(:topic_comments, topic_comment_id))
+    mock_response('topic_comment' => find!(:topic_comments, topic_comment_id))
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::AccessPolicy
   include Zendesk2::Model
 
@@ -20,7 +21,7 @@ class Zendesk2::HelpCenter::AccessPolicy
   def save!
     requires :section_id
 
-    response = cistern.update_help_center_access_policy("access_policy" => self.attributes, "section_id" => self.section_id)
-    merge_attributes(response.body["access_policy"])
+    response = cistern.update_help_center_access_policy('access_policy' => attributes, 'section_id' => section_id)
+    merge_attributes(response.body['access_policy'])
   end
 end

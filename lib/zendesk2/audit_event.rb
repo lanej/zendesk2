@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # @abstract subclass and implement audit event specific attributes
 class Zendesk2::AuditEvent
   include Zendesk2::Model
@@ -14,11 +15,12 @@ class Zendesk2::AuditEvent
   end
 
   def self.for(attributes)
-    event_class = "Zendesk2::Ticket#{attributes["type"]}"
-    if klass = all.find{|k| k.name == event_class}
+    event_class = "Zendesk2::Ticket#{attributes['type']}"
+    klass = all.find { |k| k.name == event_class }
+    if klass
       klass.new(attributes)
     else # handle unrecognized audit events
-      attributes.reject{|k,v| k == :cistern}
+      attributes.reject { |k, _v| k == :cistern }
     end
   end
 

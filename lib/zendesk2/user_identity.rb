@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::UserIdentity
   include Zendesk2::Model
 
@@ -27,12 +28,12 @@ class Zendesk2::UserIdentity
     data = if new_record?
              requires :type, :value, :user_id
 
-             cistern.create_user_identity("user_identity" => self.attributes)
+             cistern.create_user_identity('user_identity' => attributes)
            else
              requires :identity
 
-             cistern.update_user_identity("user_identity" => self.attributes)
-           end.body["identity"]
+             cistern.update_user_identity('user_identity' => attributes)
+           end.body['identity']
 
     merge_attributes(data)
   end
@@ -40,20 +41,22 @@ class Zendesk2::UserIdentity
   def destroy!
     requires :identity
 
-    cistern.destroy_user_identity("user_identity" => { "user_id" => self.user_id, "id" => self.identity })
+    cistern.destroy_user_identity('user_identity' => { 'user_id' => user_id, 'id' => identity })
   end
 
   def reload
     requires :identity
 
-    if model = self.cistern.user_identities("user_id" => user_id).get(identity)
-      merge_attributes(model.attributes)
-      self
-    end
+    model = cistern.user_identities('user_id' => user_id).get(identity)
+
+    return false unless model
+
+    merge_attributes(model.attributes)
+    self
   end
 
   def primary!
-    self.cistern.mark_user_identity_primary("user_identity" => { "user_id" => self.user_id, "id" => self.identity })
+    cistern.mark_user_identity_primary('user_identity' => { 'user_id' => user_id, 'id' => identity })
     self.primary = true
   end
 end

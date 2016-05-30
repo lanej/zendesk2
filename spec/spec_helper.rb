@@ -1,26 +1,21 @@
+# frozen_string_literal: true
 ENV['MOCK_ZENDESK'] ||= 'true'
 
 Bundler.require(:test)
 
-require File.expand_path("../../lib/zendesk2", __FILE__)
+require File.expand_path('../../lib/zendesk2', __FILE__)
 
-Dir[File.expand_path("../{support,shared}/**/*.rb", __FILE__)].each {|f| require f}
+Dir[File.expand_path('../{support,shared}/**/*.rb', __FILE__)].each do |f| require f end
 
-if ENV["MOCK_ZENDESK"] == 'true'
-  Zendesk2.mock!
-end
+Zendesk2.mock! if ENV['MOCK_ZENDESK'] == 'true'
 
 Cistern.formatter = Cistern::Formatter::AwesomePrint
-Cistern.deprecation_warnings = !!ENV['DEBUG']
+Cistern.deprecation_warnings = ENV['DEBUG']
 
 RSpec.configure do |config|
-  if Zendesk2.mocking?
-    config.before(:each) { Zendesk2.reset! }
-  else
-    config.filter_run_excluding(mock_only: true)
-  end
-  config.filter_run(:focus => true)
+  Zendesk2.mocking? ? config.before(:each) { Zendesk2.reset! } : config.filter_run_excluding(mock_only: true)
+  config.filter_run(focus: true)
   config.run_all_when_everything_filtered = true
 
-  config.order = "random"
+  config.order = 'random'
 end

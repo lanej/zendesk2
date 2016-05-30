@@ -1,14 +1,15 @@
+# frozen_string_literal: true
 class Zendesk2::GetMembership
   include Zendesk2::Request
 
   request_method :get
-  request_path { |r| "/organization_memberships/#{r.membership_id}.json" }
+  request_path do |r| "/organization_memberships/#{r.membership_id}.json" end
 
   def membership_id
-    params.fetch("organization_membership").fetch("id")
+    params.fetch('organization_membership').fetch('id')
   end
 
   def mock
-    mock_response("organization_membership" => find!(:memberships, membership_id))
+    mock_response('organization_membership' => find!(:memberships, membership_id))
   end
 end

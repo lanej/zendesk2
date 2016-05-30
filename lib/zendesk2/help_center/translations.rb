@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::Translations
   include Zendesk2::Collection
 
@@ -7,9 +8,9 @@ class Zendesk2::HelpCenter::Translations
   model Zendesk2::HelpCenter::Translation
 
   self.collection_method = :get_help_center_translations
-  self.collection_root   = "translations"
+  self.collection_root   = 'translations'
   self.model_method      = :get_help_center_translation
-  self.model_root        = "translation"
+  self.model_root        = 'translation'
 
   attribute :source_id, type: :integer
   attribute :source_type, type: :string

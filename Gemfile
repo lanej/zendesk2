@@ -1,15 +1,14 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in zendesk2.gemspec
 gemspec
 
 gem 'rake'
- # To avoid warnings from JWT
+# To avoid warnings from JWT
 gem 'json', '~> 1.8'
-
-group :development, :test do
-  gem 'pry-nav'
-end
+gem 'rubocop', '~> 0.40', require: false
+gem 'pry-nav'
 
 group :test do
   gem 'awesome_print'

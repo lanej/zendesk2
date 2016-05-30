@@ -1,21 +1,22 @@
+# frozen_string_literal: true
 class Zendesk2::UpdateForum
   include Zendesk2::Request
 
   request_method :put
-  request_path { |r| "/forums/#{r.forum_id}.json" }
-  request_body { |r| { "forum" => r.forum_params } }
+  request_path do |r| "/forums/#{r.forum_id}.json" end
+  request_body do |r| { 'forum' => r.forum_params } end
 
   def forum_params
-    Cistern::Hash.slice(params.fetch("forum"), *Zendesk2::CreateForum.accepted_attributes)
+    Cistern::Hash.slice(params.fetch('forum'), *Zendesk2::CreateForum.accepted_attributes)
   end
 
   def forum_id
-    params.fetch("forum").fetch("id")
+    params.fetch('forum').fetch('id')
   end
 
   def mock
     mock_response(
-      "forum" => find!(:forums, forum_id).merge!(forum_params),
+      'forum' => find!(:forums, forum_id).merge!(forum_params)
     )
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TicketField
   include Zendesk2::Model
 
@@ -49,12 +50,12 @@ class Zendesk2::TicketField
     data = if new_record?
              requires :type, :title
 
-             cistern.create_ticket_field("ticket_field" => self.attributes)
+             cistern.create_ticket_field('ticket_field' => attributes)
            else
              requires :identity
 
-             cistern.update_ticket_field("ticket_field" => self.attributes)
-           end.body["ticket_field"]
+             cistern.update_ticket_field('ticket_field' => attributes)
+           end.body['ticket_field']
 
     merge_attributes(data)
   end
@@ -62,6 +63,6 @@ class Zendesk2::TicketField
   def destroy!
     requires :identity
 
-    cistern.destroy_ticket_field("ticket_field" => { "id" => self.identity })
+    cistern.destroy_ticket_field('ticket_field' => { 'id' => identity })
   end
 end

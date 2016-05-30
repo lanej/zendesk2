@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::UserFields
   include Zendesk2::Collection
 
@@ -8,8 +9,8 @@ class Zendesk2::UserFields
   attribute :count
 
   self.collection_method = :get_user_fields
-  self.collection_root   = "user_fields"
+  self.collection_root   = 'user_fields'
   self.model_method      = :get_user_field
-  self.model_root        = "user_field"
-  self.search_type       = "user_field"
+  self.model_root        = 'user_field'
+  self.search_type       = 'user_field'
 end

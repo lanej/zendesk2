@@ -1,10 +1,11 @@
-require "logger"
+# frozen_string_literal: true
+require 'logger'
 
+# Faraday middleware to block and sleep on rate limit events
 class Zendesk2::RateLimit
-
   attr_reader :logger
 
-  def initialize(app, options={})
+  def initialize(app, options = {})
     @app    = app
     @logger = options[:logger] || ::Logger.new(nil)
   end

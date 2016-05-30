@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::UserIdentities
   include Zendesk2::Collection
 
@@ -7,10 +8,10 @@ class Zendesk2::UserIdentities
   attribute :count, type: :integer
 
   self.collection_method = :get_user_identities
-  self.collection_root   = "identities"
+  self.collection_root   = 'identities'
   self.model_method      = :get_user_identity
-  self.model_root        = "identity"
-  self.namespace         = "user_identity"
+  self.model_root        = 'identity'
+  self.namespace         = 'user_identity'
 
   scopes << :user_id
 end

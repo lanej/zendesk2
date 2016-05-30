@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TicketAudit
   include Zendesk2::Model
 
@@ -21,12 +22,12 @@ class Zendesk2::TicketAudit
   def ticket
     requires :ticket_id
 
-    self.cistern.tickets.get(self.ticket_id)
+    cistern.tickets.get(ticket_id)
   end
 
   def events
-    (self.attributes[:events] || []).map { |ae|
-      Zendesk2::AuditEvent.for(ae.merge(ticket_audit: self, cistern: self.cistern))
+    (attributes[:events] || []).map { |ae|
+      Zendesk2::AuditEvent.for(ae.merge(ticket_audit: self, cistern: cistern))
     }
   end
 end

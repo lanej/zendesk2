@@ -1,29 +1,28 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
-describe "organizations" do
+describe 'organizations' do
   let(:client) { create_client }
 
-  include_examples "zendesk#resource", {
-    :collection    => lambda { client.organizations },
-    :create_params => lambda { { name: mock_uuid } },
-    :update_params => lambda { { name: mock_uuid } },
-  }
+  include_examples 'zendesk#resource', collection: -> { client.organizations },
+                                       create_params: -> { { name: mock_uuid } },
+                                       update_params: -> { { name: mock_uuid } }
 
-  describe "with an organization" do
+  describe 'with an organization' do
     let(:organization) { client.organizations.create!(name: mock_uuid) }
 
-    it "should get #users" do
+    it 'should get #users' do
       user = client.users.create!(email: "#{mock_uuid}@example.org", name: mock_uuid, organization: organization)
       expect(organization.users).to include user
     end
 
-    it "should get #tickets" do
+    it 'should get #tickets' do
       user = client.users.create!(email: "#{mock_uuid}@example.org", name: mock_uuid, organization: organization)
       ticket = client.tickets.create!(subject: "#{mock_uuid}@example.org", description: mock_uuid, requester: user)
       expect(organization.tickets).to include ticket
     end
 
-    it "should hate non-unique names" do
+    it 'should hate non-unique names' do
       # create
       expect {
         client.organizations.create!(name: organization.name)
@@ -31,25 +30,25 @@ describe "organizations" do
 
       expect(
         client.organizations.create(name: organization.name).errors
-      ).to eq("name" => ["Name: has already been taken"])
+      ).to eq('name' => ['Name: has already been taken'])
 
       expect(
         client.organizations.create(name: organization.name.upcase).errors
-      ).to eq("name" => ["Name: has already been taken"])
+      ).to eq('name' => ['Name: has already been taken'])
 
       # update
       model = client.organizations.create!(name: mock_uuid)
 
       expect(
         model.update(name: organization.name).errors
-      ).to eq("name" => ["Name: has already been taken"])
+      ).to eq('name' => ['Name: has already been taken'])
 
       expect(
         model.update(name: organization.name.upcase).errors
-      ).to eq("name" => ["Name: has already been taken"])
+      ).to eq('name' => ['Name: has already been taken'])
     end
 
-    it "should update name" do
+    it 'should update name' do
       old_name = organization.name
       proxy    = organization.dup
       new_name = mock_uuid
@@ -59,7 +58,7 @@ describe "organizations" do
       }.to change { organization.reload.name }.from(old_name).to(new_name)
     end
 
-    it "should be able to find organizations by external id" do
+    it 'should be able to find organizations by external id' do
       external_id = organization.external_id = mock_uuid
       organization.save!
 
@@ -68,47 +67,48 @@ describe "organizations" do
   end
 end
 
-describe "#create_organization" do
+describe '#create_organization' do
   let(:client) { create_client }
 
-  it "should prevent duplicate external_ids" do
+  it 'should prevent duplicate external_ids' do
     external_id = mock_uuid
 
-    client.create_organization("organization" => { "name" => mock_uuid, external_id: nil }) # fine
-    client.create_organization("organization" => { "name" => mock_uuid, external_id: nil }) # also fine
-    client.create_organization("organization" => { "name" => mock_uuid, external_id: external_id}) # it's cool
+    client.create_organization('organization' => { 'name' => mock_uuid, external_id: nil }) # fine
+    client.create_organization('organization' => { 'name' => mock_uuid, external_id: nil }) # also fine
+    client.create_organization('organization' => { 'name' => mock_uuid, external_id: external_id }) # it's cool
 
     expect {
-      client.create_organization("organization" => {"name" => mock_uuid, external_id: external_id})
+      client.create_organization('organization' => { 'name' => mock_uuid, external_id: external_id })
     }.to raise_exception(Zendesk2::Error, /External has already been taken/)
   end
 
-  it "should correctly respond" do
-    body = { "organization" => {"name" => (name = mock_uuid)} }
+  it 'should correctly respond' do
+    body = { 'organization' => { 'name' => (name = mock_uuid) } }
 
     response = client.create_organization(body)
 
     expect(response.status).to eq(201)
-    expect(response.env[:url].path).to eq("/api/v2/organizations.json")
+    expect(response.env[:url].path).to eq('/api/v2/organizations.json')
     expect(response.env[:method]).to eq(:post)
     expect(client.last_request).to match(body)
-    expect(response.env[:body]["organization"]).to match(
+    expect(response.env[:body]['organization']).to match(
       a_hash_including(
-        "name" => name,
-      ))
+        'name' => name
+      )
+    )
   end
 end
 
-context "with a organization" do
+context 'with a organization' do
   let(:client)        { create_client }
   let!(:organization) { client.organizations.create!(name: mock_uuid) }
 
-  describe "#destroy_organization" do
-    it "should require a valid organization" do
+  describe '#destroy_organization' do
+    it 'should require a valid organization' do
       expect {
         client.destroy_organization(
-          "organization" => {
-            "id" => 999999999,
+          'organization' => {
+            'id' => 999_999_999,
           }
         )
       }.to raise_error(Zendesk2::Error) { |e|
@@ -116,10 +116,10 @@ context "with a organization" do
       }
     end
 
-    it "should correctly respond" do
+    it 'should correctly respond' do
       response = client.destroy_organization(
-        "organization" => {
-          "id" => organization.id,
+        'organization' => {
+          'id' => organization.id,
         }
       )
 
@@ -131,28 +131,29 @@ context "with a organization" do
     end
   end
 
-  describe "#get_organizations" do
-    it "should correctly respond" do
+  describe '#get_organizations' do
+    it 'should correctly respond' do
       response = client.get_organizations
 
       expect(response.status).to eq(200)
-      expect(response.env[:url].path).to eq("/api/v2/organizations.json")
+      expect(response.env[:url].path).to eq('/api/v2/organizations.json')
       expect(response.env[:method]).to eq(:get)
       expect(client.last_request).to eq(nil)
       skip unless Zendesk2.mocking?
-      expect(response.env[:body]["organizations"]).to match([
-        a_hash_including(
-          "id"   => organization.id,
-        )])
+      expect(response.env[:body]['organizations']).to match([
+                                                              a_hash_including(
+                                                                'id' => organization.id
+                                                              ),
+                                                            ])
     end
   end
 
-  describe "#get_organization" do
-    it "should require a valid organization" do
+  describe '#get_organization' do
+    it 'should require a valid organization' do
       expect {
         client.get_organization(
-          "organization" => {
-            "id" => 999999999,
+          'organization' => {
+            'id' => 999_999_999,
           }
         )
       }.to raise_error(Zendesk2::Error) { |e|
@@ -160,10 +161,10 @@ context "with a organization" do
       }
     end
 
-    it "should correctly respond" do
+    it 'should correctly respond' do
       response = client.get_organization(
-        "organization" => {
-          "id" => organization.id,
+        'organization' => {
+          'id' => organization.id,
         }
       )
 
@@ -171,21 +172,22 @@ context "with a organization" do
       expect(response.env[:url].path).to eq("/api/v2/organizations/#{organization.id}.json")
       expect(response.env[:method]).to eq(:get)
       expect(client.last_request).to eq(nil)
-      expect(response.env[:body]["organization"]).to match(
+      expect(response.env[:body]['organization']).to match(
         a_hash_including(
-          "id"   => organization.id,
-          "url"  => response.env[:url].to_s,
-        ))
+          'id'   => organization.id,
+          'url'  => response.env[:url].to_s
+        )
+      )
     end
   end
 
-  describe "#update_organization" do
-    it "should require a valid organization" do
+  describe '#update_organization' do
+    it 'should require a valid organization' do
       expect {
         client.update_organization(
-          "organization" => {
-            "id"   => 999999999,
-            "name" => mock_uuid,
+          'organization' => {
+            'id'   => 999_999_999,
+            'name' => mock_uuid,
           }
         )
       }.to raise_error(Zendesk2::Error) { |e|
@@ -193,38 +195,41 @@ context "with a organization" do
       }
     end
 
-    it "should prevent duplicate external_ids" do
+    it 'should prevent duplicate external_ids' do
       external_id = mock_uuid
 
       organization         = client.organizations.create!(name: mock_uuid)
       another_organization = client.organizations.create!(name: mock_uuid)
 
-      client.update_organization("organization" => {"id" => organization.id, external_id: nil}) # fine
-      client.update_organization("organization" => {"id" => another_organization.id, external_id: external_id}) # also fine
+      # fine
+      client.update_organization('organization' => { 'id' => organization.id, external_id: nil })
+      # also fine
+      client.update_organization('organization' => { 'id' => another_organization.id, external_id: external_id })
 
       expect {
-        client.update_organization("organization" => {"id" => organization.id, external_id: external_id})
+        client.update_organization('organization' => { 'id' => organization.id, external_id: external_id })
       }.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
 
-    it "should correctly respond" do
+    it 'should correctly respond' do
       response = client.update_organization(
-        "organization" => {
-          "id"   => organization.id,
-          "name" => (name = mock_uuid),
+        'organization' => {
+          'id'   => organization.id,
+          'name' => (name = mock_uuid),
         }
       )
 
       expect(response.status).to eq(200)
       expect(response.env[:url].path).to eq("/api/v2/organizations/#{organization.id}.json")
       expect(response.env[:method]).to eq(:put)
-      expect(client.last_request).to eq("organization" => {"name" => name})
-      expect(response.env[:body]["organization"]).to match(
+      expect(client.last_request).to eq('organization' => { 'name' => name })
+      expect(response.env[:body]['organization']).to match(
         a_hash_including(
-          "id"   => organization.id,
-          "url"  => response.env[:url].to_s,
-          "name" => name,
-        ))
+          'id'   => organization.id,
+          'url'  => response.env[:url].to_s,
+          'name' => name
+        )
+      )
     end
   end
 end

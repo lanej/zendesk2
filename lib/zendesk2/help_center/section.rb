@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::Section
   include Zendesk2::Model
 
@@ -20,7 +21,8 @@ class Zendesk2::HelpCenter::Section
   attribute :name, type: :string # ro:no required:yes
   # @return [Boolean] Whether the section is out of date
   attribute :outdated, type: :boolean # ro:yes required:no
-  # @return [Integer] The position of this section in the section list. By default the section is added to the end of the list
+  # @return [Integer] The position of this section in the section list. By default the section is added to the end of
+  #   the list
   attribute :position, type: :integer # ro:no required:no
   # @return [String] The sorting of articles within this section. By default it's set to manual. See sorting below.
   attribute :sorting, type: :string # ro:no required:no
@@ -39,36 +41,34 @@ class Zendesk2::HelpCenter::Section
   def destroy!
     requires :identity
 
-    cistern.destroy_help_center_section("section" => { "id" => self.identity })
+    cistern.destroy_help_center_section('section' => { 'id' => identity })
   end
 
   def save!
     response = if new_record?
                  requires :name, :locale, :category_id
 
-                 cistern.create_help_center_section("section" => self.attributes)
+                 cistern.create_help_center_section('section' => attributes)
                else
                  requires :identity
 
-                 cistern.update_help_center_section("section" => self.attributes)
+                 cistern.update_help_center_section('section' => attributes)
                end
 
-    merge_attributes(response.body["section"])
+    merge_attributes(response.body['section'])
   end
 
   def articles
     requires :identity
 
-    cistern.help_center_articles(section_id: self.identity)
+    cistern.help_center_articles(section_id: identity)
   end
 
   def access_policy
     requires :identity
 
-    response = cistern.get_help_center_access_policy(section_id: self.identity).body["access_policy"]
-    response.merge!({
-      "section_id" => self.identity
-    })
+    response = cistern.get_help_center_access_policy(section_id: identity).body['access_policy']
+    response['section_id'] = identity
 
     cistern.help_center_access_policy(response)
   end
@@ -76,6 +76,6 @@ class Zendesk2::HelpCenter::Section
   def translations
     requires :identity
 
-    cistern.help_center_translations(source_id: self.identity, source_type: "Section")
+    cistern.help_center_translations(source_id: identity, source_type: 'Section')
   end
 end

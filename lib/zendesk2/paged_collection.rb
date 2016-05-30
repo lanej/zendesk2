@@ -1,12 +1,14 @@
+# frozen_string_literal: true
 # adds {#create!} method to {Cistern::Collection}.
 module Zendesk2::PagedCollection
   def self.included(klass)
     klass.send(:attribute, :count)
-    klass.send(:attribute, :next_page_link, {:aliases => "next_page"})
-    klass.send(:attribute, :previous_page_link, {:aliases => "previous_page"})
+    klass.send(:attribute, :next_page_link, aliases: 'next_page')
+    klass.send(:attribute, :previous_page_link, aliases: 'previous_page')
     klass.send(:extend, ClassMethods)
   end
 
+  # add methods for explicitly defining constants within the collection response
   module ClassMethods
     attr_accessor :collection_method, :collection_root, :model_method, :model_root
 
@@ -15,14 +17,25 @@ module Zendesk2::PagedCollection
     end
   end
 
-  def collection_method; self.class.collection_method; end
-  def collection_root; self.class.collection_root; end
-  def model_method; self.class.model_method; end
-  def model_root; self.class.model_root; end
+  def collection_method
+    self.class.collection_method
+  end
+
+  def collection_root
+    self.class.collection_root
+  end
+
+  def model_method
+    self.class.model_method
+  end
+
+  def model_root
+    self.class.model_root
+  end
 
   def new_page
-    page = self.class.new(cistern: self.cistern)
-    page.merge_attributes(self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))})
+    page = self.class.new(cistern: cistern)
+    page.merge_attributes(self.class.scopes.inject({}) { |a, e| a.merge(e.to_s => public_send(e)) })
     page
   end
 
@@ -39,31 +52,23 @@ module Zendesk2::PagedCollection
     return to_enum(:each_entry) unless block_given?
     page = self
     while page
-      page.to_a.each { |r| yield r }
+      page.to_a.each do |r| yield r end
       page = page.next_page
     end
   end
 
-  def all_entries
-    each_entry.to_a
-  end
-
   def next_page
     if next_page_link
-      options = {"url" => next_page_link}
-      if self.respond_to?(:filtered) # searchable
-        options.merge!("filtered" => self.filtered)
-      end
+      options = { 'url' => next_page_link }
+      options['filtered'] = filtered if respond_to?(:filtered) # searchable
       new_page.all(options)
     end
   end
 
   def previous_page
     if previous_page_link
-      options = {"url" => previous_page_link}
-      if self.respond_to?(:filtered) # searchable
-        options.merge!("filtered" => self.filtered)
-      end
+      options = { 'url' => previous_page_link }
+      options['filtered'] = filtered if respond_to?(:filtered) # searchable
       new_page.all(options)
     end
   end
@@ -72,8 +77,8 @@ module Zendesk2::PagedCollection
   #
   # @raise [Zendesk2::Error] if creation was unsuccessful
   # @return [Zendesk::Model]
-  def create!(attributes={})
-    model = self.new(Zendesk2.stringify_keys(attributes).merge(Zendesk2.stringify_keys(self.attributes)))
+  def create!(attributes = {})
+    model = new(Zendesk2.stringify_keys(attributes).merge(Zendesk2.stringify_keys(self.attributes)))
     model.save!
   end
 
@@ -81,8 +86,8 @@ module Zendesk2::PagedCollection
   #
   # @see {#create!} to raise an exception on failure
   # @return [Zendesk::Model, FalseClass]
-  def create(attributes={})
-    model = self.new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
+  def create(attributes = {})
+    model = new(attributes.merge(Zendesk2.stringify_keys(self.attributes)))
     model.save
   end
 
@@ -94,7 +99,7 @@ module Zendesk2::PagedCollection
   end
 
   # Fetch a collection of resources
-  def all(params={})
+  def all(params = {})
     if search_query?(params)
       search_page(params)
     else
@@ -119,19 +124,18 @@ module Zendesk2::PagedCollection
   # @raise [Zendesk2::Error] if the record cannot be found or other request error
   # @return [Zendesk2::Model] fetched resource corresponding to value of {Zendesk2::Collection#model}
   def get!(identity_or_hash)
-    scoped_attributes = self.class.scopes.inject({}){|r,k| r.merge(k.to_s => send(k))}
+    scoped_attributes = self.class.scopes.inject({}) { |a, e| a.merge(e.to_s => send(e)) }
 
     if identity_or_hash.is_a?(Hash)
       scoped_attributes.merge!(identity_or_hash)
     else
-      scoped_attributes.merge!("id" => identity_or_hash)
+      scoped_attributes['id'] = identity_or_hash
     end
 
     scoped_attributes = { model_root => scoped_attributes }
 
-    if data = self.cistern.send(model_method, scoped_attributes).body[self.model_root]
-      new(data)
-    end
+    data = cistern.send(model_method, scoped_attributes).body[model_root]
+    new(data) if data
   end
 
   # Quiet version of {#get!}
@@ -148,20 +152,20 @@ module Zendesk2::PagedCollection
   protected
 
   def search_query?(params)
-    !!params["filtered"] && !!params["url"]
+    params['filtered'] && params['url']
   end
 
   def search_page(params)
-    query = Faraday::NestedParamsEncoder.decode(URI.parse(params.fetch("url")).query)
+    query = Faraday::NestedParamsEncoder.decode(URI.parse(params.fetch('url')).query)
 
-    search(query.delete("query"), query)
+    search(query.delete('query'), query)
   end
 
   def collection_page(params)
-    scoped_attributes = self.class.scopes.inject({}) { |r, k| r.merge(k.to_s => send(k)) }.merge(params)
+    scoped_attributes = self.class.scopes.inject({}) { |a, e| a.merge(e.to_s => send(e)) }.merge(params)
     body = cistern.send(collection_method, scoped_attributes).body
 
-    self.load(body[collection_root]) # 'results' is the key for paged seraches
-    self.merge_attributes(Cistern::Hash.slice(body, "count", "next_page", "previous_page"))
+    load(body[collection_root]) # 'results' is the key for paged seraches
+    merge_attributes(Cistern::Hash.slice(body, 'count', 'next_page', 'previous_page'))
   end
 end

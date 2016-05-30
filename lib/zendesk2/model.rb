@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Zendesk2::Model
   include Cistern::Model
 
@@ -14,12 +15,12 @@ module Zendesk2::Model
   def save
     save!
   rescue Zendesk2::Error => exception
-    self.errors = exception.response[:body]["details"].inject({}){|r,(k,v)| r.merge(k => v.map{|e| e["type"] || e["description"]})} rescue nil
+    self.errors = error_details(exception)
     self
   end
 
   def destroyed?
-    !self.reload
+    !reload
   end
 
   def destroy
@@ -31,7 +32,7 @@ module Zendesk2::Model
   # re-define Cistern::Attributes#missing_attributes to require non-blank
   def missing_attributes(args)
     missing, required = super(args)
-    blank, still_required = required.partition { |_,v| "" == v }
+    blank, still_required = required.partition { |_, v| '' == v }
     missing.merge!(Hash[blank])
 
     [missing, Hash[still_required]]
@@ -40,5 +41,15 @@ module Zendesk2::Model
   def update!(attributes)
     merge_attributes(attributes)
     save!
+  end
+
+  private
+
+  def error_details(exception)
+    exception.response[:body]['details'].inject({}) do |a, (k, v)|
+      a.merge(k => v.map { |e| e['type'] || e['description'] })
+    end
+  rescue
+    nil
   end
 end
