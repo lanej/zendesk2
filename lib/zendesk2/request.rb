@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 module Zendesk2::Request
-
   class << self
     alias cistern_included included
 
@@ -10,8 +10,9 @@ module Zendesk2::Request
     end
   end
 
+  # provide class-level request information
   module ClassMethods
-    def request_method(request_method=nil)
+    def request_method(request_method = nil)
       @request_method ||= request_method
     end
 
@@ -36,15 +37,15 @@ module Zendesk2::Request
     end
 
     def error_map
-      @@error_map ||= {
-        :invalid => [422, {
-          "error"       => "RecordInvalid",
-          "description" => "Record validation errors",
-        }],
-        :not_found => [404, {
-          "error"       => "RecordNotFound",
-          "description" => "Not found",
-        }],
+      @error_map ||= {
+        invalid: [422, {
+          'error'       => 'RecordInvalid',
+          'description' => 'Record validation errors',
+        },],
+        not_found: [404, {
+          'error'       => 'RecordNotFound',
+          'description' => 'Not found',
+        },],
       }
     end
   end
@@ -55,23 +56,25 @@ module Zendesk2::Request
     @params = Cistern::Hash.stringify_keys(params)
   end
 
-  def _mock(params={})
+  def _mock(params = {})
     setup(params)
     mock
   end
 
-  def _real(params={})
+  def _real(params = {})
     setup(params)
     real
   end
 
   def page_params!(options)
-    page_params = if url = options.delete("url")
+    url = options.delete('url')
+
+    page_params = if url
                     Faraday::NestedParamsEncoder.decode(URI.parse(url).query)
                   else
                     Cistern::Hash.stringify_keys(options)
                   end
-    Cistern::Hash.slice(page_params, "per_page", "page", "query")
+    Cistern::Hash.slice(page_params, 'per_page', 'page', 'query')
   end
 
   def page_params?
@@ -79,9 +82,7 @@ module Zendesk2::Request
   end
 
   def request_params
-    page_params = if page_params?
-                    page_params!(self.params)
-                  end
+    page_params = (page_params!(params) if page_params?)
 
     if self.class.request_params
       self.class.request_params.call(self)
@@ -94,7 +95,7 @@ module Zendesk2::Request
     case (generator = self.class.request_path)
     when Proc then
       generator.call(self)
-    else raise ArgumentError.new("Couldn't generate request_path from #{generator.inspect}")
+    else raise ArgumentError, "Couldn't generate request_path from #{generator.inspect}"
     end
   end
 
@@ -109,97 +110,92 @@ module Zendesk2::Request
 
   def pluralize(word)
     pluralized = word.dup
-    [[/y$/, 'ies'], [/$/, 's']].find{|regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex)}
+    [[/y$/, 'ies'], [/$/, 's']].find do |regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex) end
     pluralized
   end
 
   def data
-    self.cistern.data
+    cistern.data
   end
 
   def html_url_for(path)
     File.join(cistern.url, path.to_s)
   end
 
-  def url_for(path, options={})
+  def url_for(path, options = {})
     URI.parse(
-      File.join(cistern.url, "/api/v2", path.to_s)
+      File.join(cistern.url, '/api/v2', path.to_s),
     ).tap do |uri|
-      if query = options[:query]
-        uri.query = Faraday::NestedParamsEncoder.encode(query)
-      end
+      query = options[:query]
+      query && (uri.query = Faraday::NestedParamsEncoder.encode(query))
     end.to_s
   end
 
-  def real(params={})
-    cistern.request(:method => self.class.request_method,
-                    :path   => self.request_path,
-                    :body   => self.request_body,
-                    :url    => params["url"],
-                    :params => self.request_params,
-                   )
+  def real(params = {})
+    cistern.request(method: self.class.request_method,
+                    path: request_path,
+                    body: request_body,
+                    url: params['url'],
+                    params: request_params,)
   end
 
-  def real_request(params={})
+  def real_request(params = {})
     request({
-      :method => self.class.request_method,
-      :path   => self.request_path(params),
-      :body   => self.request_body(params),
-    }.merge(cistern::hash.slice(params, :method, :path, :body, :headers)))
+      method: self.class.request_method,
+      path: request_path(params),
+      body: request_body(params),
+    }.merge(cistern.hash.slice(params, :method, :path, :body, :headers),),)
   end
 
-  def mock_response(body, options={})
+  def mock_response(body, options = {})
     response(
-      :method        => self.class.request_method,
-      :path          => options[:path]    || self.request_path,
-      :request_body  => self.request_body,
-      :response_body => body,
-      :headers       => options[:headers] || {},
-      :status        => options[:status]  || 200,
-      :params        => options[:params]  || self.request_params,
+      method: self.class.request_method,
+      path: options[:path] || request_path,
+      request_body: request_body,
+      response_body: body,
+      headers: options[:headers] || {},
+      status: options[:status]  || 200,
+      params: options[:params]  || request_params,
     )
   end
 
-  def find!(collection, identity, options={})
-    if resource = self.cistern.data[collection][identity.to_i]
-      resource
-    else
-      error!(options[:error] || :not_found, options)
-    end
+  def find!(collection, identity, options = {})
+    resource = cistern.data[collection][identity.to_i]
+    resource || error!(options[:error] || :not_found, options)
   end
 
-  def delete!(collection, identity, options={})
-    self.cistern.data[collection].delete(identity.to_i) ||
+  def delete!(collection, identity, options = {})
+    cistern.data[collection].delete(identity.to_i) ||
       error!(options[:error] || :not_found, options)
   end
 
-  def error!(type, options={})
+  def error!(type, options = {})
     status, body = self.class.error_map[type]
-    body.merge!("details" => options[:details]) if options[:details]
+    body['details'] = options[:details] if options[:details]
 
     response(
-      :path   => self.request_path,
-      :status => status,
-      :body   => body,
+      path: request_path,
+      status: status,
+      body: body,
     )
   end
 
-  def resources(collection, options={})
+  def resources(collection, options = {})
     page = collection.is_a?(Array) ? collection : cistern.data[collection.to_sym].values
     root = options.fetch(:root) { !collection.is_a?(Array) && collection.to_s }
 
     mock_response(
       root    => page,
-      "count" => page.size,
+      'count' => page.size,
     )
   end
 
-  def page(collection, options={})
+  def page(collection, options = {})
     url_params = options[:params] || params
     page_params = page_params!(params)
 
-    page_size  = (page_params.delete("per_page") || 50).to_i
-    page_index = (page_params.delete("page") || 1).to_i
+    page_size  = (page_params.delete('per_page') || 50).to_i
+    page_index = (page_params.delete('page') || 1).to_i
     root       = options.fetch(:root) { !collection.is_a?(Array) && collection.to_s }
     path       = options[:path] || request_path
 
@@ -210,24 +206,24 @@ module Zendesk2::Request
     total_pages = (count / page_size) + 1
 
     next_page = if page_index < total_pages
-                  url_for(path, query: {"page" => page_index + 1, "per_page" =>  page_size}.merge(url_params))
+                  url_for(path, query: { 'page' => page_index + 1, 'per_page' => page_size }.merge(url_params))
                 end
     previous_page = if page_index > 1
-                      url_for(path, query: {"page" => page_index - 1, "per_page" =>  page_size}.merge(url_params))
+                      url_for(path, query: { 'page' => page_index - 1, 'per_page' => page_size }.merge(url_params))
                     end
 
     resource_page = resources.slice(offset, page_size)
 
     body = {
       root            => resource_page,
-      "count"         => count,
-      "next_page"     => next_page,
-      "previous_page" => previous_page,
+      'count'         => count,
+      'next_page'     => next_page,
+      'previous_page' => previous_page,
     }
 
     response(
-      :body => body,
-      :path => path
+      body: body,
+      path: path,
     )
   end
 
@@ -245,18 +241,18 @@ module Zendesk2::Request
   # \@request_body is special because it's need for spec assertions but
   # {Faraday::Env} replaces the request body with the response body after
   # the request and the reference is lost
-  def response(options={})
+  def response(options = {})
     body                 = options[:response_body] || options[:body]
     method               = options[:method]        || :get
     params               = options[:params]
     cistern.last_request = options[:request_body]
-    status               = options[:status]        || 200
+    status               = options[:status] || 200
 
     path = options[:path]
     url  = options[:url] || url_for(path, query: params)
 
-    request_headers  = {"Accept"       => "application/json"}
-    response_headers = {"Content-Type" => "application/json; charset=utf-8"}
+    request_headers  = { 'Accept'       => 'application/json' }
+    response_headers = { 'Content-Type' => 'application/json; charset=utf-8' }
 
     # request phase
     # * :method - :get, :post, ...
@@ -269,17 +265,17 @@ module Zendesk2::Request
     # * :body   - the response body
     # * :response_headers
     env = Faraday::Env.from(
-      :method           => method,
-      :url              => URI.parse(url),
-      :body             => body,
-      :request_headers  => request_headers,
-      :response_headers => response_headers,
-      :status           => status,
+      method: method,
+      url: URI.parse(url),
+      body: body,
+      request_headers: request_headers,
+      response_headers: response_headers,
+      status: status,
     )
 
     Faraday::Response::RaiseError.new.on_complete(env) ||
       Faraday::Response.new(env)
   rescue Faraday::Error::ClientError => e
-    raise Zendesk2::Error.new(e)
+    raise Zendesk2::Error, e
   end
 end

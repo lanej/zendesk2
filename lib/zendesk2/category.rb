@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 class Zendesk2::Category
   include Zendesk2::Model
-
 
   # @return [Integer] Automatically assigned during creation
   identity :id, type: :integer
@@ -21,18 +21,18 @@ class Zendesk2::Category
   def destroy!
     requires :identity
 
-    cistern.destroy_category("category" => {"id" => self.identity})
+    cistern.destroy_category('category' => { 'id' => identity })
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             cistern.create_category(params).body["category"]
+             cistern.create_category(params).body['category']
            else
              requires :identity
 
-             cistern.update_category(params).body["category"]
+             cistern.update_category(params).body['category']
            end
 
     merge_attributes(data)
@@ -41,6 +41,11 @@ class Zendesk2::Category
   protected
 
   def params
-    {"category" => Cistern::Hash.slice(Zendesk2.stringify_keys(attributes), *Zendesk2::CreateCategory.accepted_attributes)}
+    {
+      'category' => Cistern::Hash.slice(
+        Zendesk2.stringify_keys(attributes),
+        *Zendesk2::CreateCategory.accepted_attributes
+      ),
+    }
   end
 end

@@ -1,19 +1,17 @@
-class Zendesk2
-  class TicketCommentPrivacyChange < AuditEvent
+# frozen_string_literal: true
+class Zendesk2::TicketCommentPrivacyChange < AuditEvent
+  # @return [integer] Automatically assigned when creating events
+  identity :id, type: :integer
 
-    # @return [integer] Automatically assigned when creating events
-    identity :id, type: :integer
+  # @return [Integer] The id if the comment that changed privacy
+  attribute :comment_id, type: :integer
+  # @return [Boolean] Tells if the comment was made public or private
+  attribute :public, type: :boolean
 
-    # @return [Integer] The id if the comment that changed privacy
-    attribute :comment_id, type: :integer
-    # @return [Boolean] Tells if the comment was made public or private
-    attribute :public, type: :boolean
+  # @return [Zendesk2::TicketComment] ticket comment pertaining to this privacy change
+  def comment
+    requires :comment_id
 
-    # @return [Zendesk2::TicketComment] ticket comment pertaining to this privacy change
-    def comment
-      requires :comment_id
-
-      self.cistern.ticket_comments.get(self.comment_id)
-    end
+    cistern.ticket_comments.get(comment_id)
   end
 end

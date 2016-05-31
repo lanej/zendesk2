@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::User
   include Zendesk2::Model
 
@@ -46,11 +47,13 @@ class Zendesk2::User
   attribute :shared, type: :boolean
   # @return [String] The signature of this user. Only agents and admins can have signatures
   attribute :signature, type: :string
-  # @return [Boolean] Tickets from suspended users are also suspended, and these users cannot log in to the end-user portal
+  # @return [Boolean] Tickets from suspended users are also suspended, and these users cannot log in to the end-user
+  #   portal
   attribute :suspended, type: :boolean
   # @return [Array] The tags of the user. Only present if your account has user tagging enabled
   attribute :tags, type: :array
-  # @return [String] Specified which tickets this user has access to. Possible values are: "organization", "groups", "assigned", "requested", null
+  # @return [String] Specified which tickets this user has access to.
+  #   Possible values are: "organization", "groups", "assigned", "requested", null
   attribute :ticket_restriction, type: :string
   # @return [String] The time-zone of this user
   attribute :time_zone, type: :string
@@ -70,12 +73,12 @@ class Zendesk2::User
     data = if new_record?
              requires :name, :email
 
-             cistern.create_user("user" => self.attributes)
+             cistern.create_user('user' => attributes)
            else
              requires :identity
 
-             cistern.update_user("user" => self.attributes)
-           end.body["user"]
+             cistern.update_user('user' => attributes)
+           end.body['user']
 
     merge_attributes(data)
   end
@@ -83,17 +86,15 @@ class Zendesk2::User
   def destroy!
     requires :identity
 
-    if self.email == cistern.username
-      raise "don't nuke yourself"
-    end
+    raise "don't nuke yourself" if email == cistern.username
 
     merge_attributes(
-      cistern.destroy_user("user" => {"id" => self.identity}).body["user"]
+      cistern.destroy_user('user' => { 'id' => identity }).body['user']
     )
   end
 
   def destroyed?
-    !reload || !self.active
+    !reload || !active
   end
 
   # @param [Time] timestamp time sent with intial handshake
@@ -101,28 +102,26 @@ class Zendesk2::User
   # @return [String] remote authentication login url
   # Using this method requires you to implement the additional (user-defined) /handshake endpoint
   # @see http://www.zendesk.com/support/api/remote-authentication
-  def login_url(timestamp, options={})
+  def login_url(timestamp, options = {})
     requires :name, :email
 
     return_to = options[:return_to]
-    token     = self.cistern.token || options[:token]
+    token     = cistern.token || options[:token]
 
-    uri      = URI.parse(self.cistern.url)
-    uri.path = "/access/remote"
+    uri      = URI.parse(cistern.url)
+    uri.path = '/access/remote'
 
-    raise "timestamp cannot be nil" unless timestamp
+    raise 'timestamp cannot be nil' unless timestamp
 
-    hash_str = "#{self.name}#{self.email}#{token}#{timestamp}"
+    hash_str = "#{name}#{email}#{token}#{timestamp}"
     query_values = {
       'name'      => name,
       'email'     => email,
       'timestamp' => timestamp,
-      'hash'      => Digest::MD5.hexdigest(hash_str)
+      'hash'      => Digest::MD5.hexdigest(hash_str),
     }
 
-    unless Zendesk2.blank?(return_to)
-      query_values['return_to'] = return_to
-    end
+    query_values['return_to'] = return_to unless Zendesk2.blank?(return_to)
 
     uri.query = Faraday::NestedParamsEncoder.encode(query_values)
 
@@ -137,26 +136,24 @@ class Zendesk2::User
     requires :name, :email
 
     return_to = options[:return_to]
-    jwt_token = self.cistern.jwt_token || options[:jwt_token]
+    jwt_token = cistern.jwt_token || options[:jwt_token]
 
-    uri       = URI.parse(self.cistern.url)
-    uri.path  = "/access/jwt"
+    uri       = URI.parse(cistern.url)
+    uri.path  = '/access/jwt'
 
     iat = Time.now.to_i
     jti = "#{iat}/#{rand(36**64).to_s(36)}"
     payload = JWT.encode({
-      :iat    => iat, # Seconds since epoch, determine when this token is stale
-      :jti    => jti, # Unique token id, helps prevent replay attacks
-      :name   => self.name,
-      :email  => self.email,
-    }, jwt_token)
+                           iat: iat, # Seconds since epoch, determine when this token is stale
+                           jti: jti, # Unique token id, helps prevent replay attacks
+                           name: name,
+                           email: email,
+                         }, jwt_token)
 
     query_values = {
-      'jwt' => payload
+      'jwt' => payload,
     }
-    unless Zendesk2.blank?(return_to)
-      query_values['return_to'] = return_to
-    end
+    query_values['return_to'] = return_to unless Zendesk2.blank?(return_to)
 
     uri.query = Faraday::NestedParamsEncoder.encode(query_values)
 
@@ -167,7 +164,7 @@ class Zendesk2::User
   def tickets
     requires :identity
 
-    cistern.tickets(requester_id: self.identity)
+    cistern.tickets(requester_id: identity)
   end
   alias requested_tickets tickets
 
@@ -175,21 +172,21 @@ class Zendesk2::User
   def ccd_tickets
     requires :identity
 
-    cistern.tickets(collaborator_id: self.identity)
+    cistern.tickets(collaborator_id: identity)
   end
 
   # @return [Zendesk2::UserIdentities] the identities of this user
   def identities
-    self.cistern.user_identities("user_id" => self.identity)
+    cistern.user_identities('user_id' => identity)
   end
 
   # @return [Zendesk2::Memberships] the organization memberships of this user
   def memberships
-    self.cistern.memberships(user: self)
+    cistern.memberships(user: self)
   end
 
   # @return [Zendesk2::Organizations] the organizations of this user through memberships
   def organizations
-    self.cistern.organizations(user: self)
+    cistern.organizations(user: self)
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TicketFields
   include Zendesk2::Collection
 
@@ -8,8 +9,8 @@ class Zendesk2::TicketFields
   attribute :count, type: :integer
 
   self.collection_method = :get_ticket_fields
-  self.collection_root   = "ticket_fields"
+  self.collection_root   = 'ticket_fields'
   self.model_method      = :get_ticket_field
-  self.model_root        = "ticket_field"
-  self.search_type       = "ticket_field"
+  self.model_root        = 'ticket_field'
+  self.search_type       = 'ticket_field'
 end

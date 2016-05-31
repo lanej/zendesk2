@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 class Zendesk2::GetHelpCenterArticles
   include Zendesk2::Request
 
-  request_path { |_| "/help_center/articles.json" }
+  request_path do |_| '/help_center/articles.json' end
 
   page_params!
 
   def mock
-    page(:help_center_articles, root: "articles")
+    page(:help_center_articles, root: 'articles')
   end
 end

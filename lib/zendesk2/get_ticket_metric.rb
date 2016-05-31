@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::GetTicketMetric
   include Zendesk2::Request
 
@@ -7,16 +8,16 @@ class Zendesk2::GetTicketMetric
   end
 
   def metric_id
-    params["id"]
+    params['id']
   end
 
   def ticket_id
-    params.fetch("ticket_id")
+    params.fetch('ticket_id')
   end
 
   def mock
     mock_response(
-      "ticket_metric" => find!(:ticket_metrics, metric_id)
+      'ticket_metric' => find!(:ticket_metrics, metric_id)
     )
   end
 end

@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 class Zendesk2::Organization
   include Zendesk2::Model
-
 
   # @return [integer] Automatically assigned when creating organization
   identity :id, type: :integer # ro[yes] required[no]
@@ -35,19 +35,19 @@ class Zendesk2::Organization
   def destroy!
     requires :identity
 
-    cistern.destroy_organization("organization" => {"id" => self.identity})
+    cistern.destroy_organization('organization' => { 'id' => identity })
   end
 
   def save!
     data = if new_record?
              requires :name
 
-             cistern.create_organization("organization" => self.attributes)
+             cistern.create_organization('organization' => attributes)
            else
              requires :identity
 
-             cistern.update_organization("organization" => self.attributes)
-           end.body["organization"]
+             cistern.update_organization('organization' => attributes)
+           end.body['organization']
 
     merge_attributes(data)
   end
@@ -57,7 +57,7 @@ class Zendesk2::Organization
     requires :identity
 
     cistern.users.load(
-      cistern.get_organization_users("organization" => {"id" => self.identity}).body["users"]
+      cistern.get_organization_users('organization' => { 'id' => identity }).body['users']
     )
   end
 
@@ -73,7 +73,7 @@ class Zendesk2::Organization
     requires :identity
 
     cistern.tickets.load(
-      cistern.get_organization_tickets("organization_id" => self.identity).body["tickets"]
+      cistern.get_organization_tickets('organization_id' => identity).body['tickets']
     )
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TopicComment
   include Zendesk2::Model
 
@@ -29,30 +30,32 @@ class Zendesk2::TopicComment
   def destroy!
     requires :identity
 
-    cistern.destroy_topic_comment("topic_comment" => { "id" => self.identity, "topic_id" => self.topic_id })
+    cistern.destroy_topic_comment('topic_comment' => { 'id' => identity, 'topic_id' => topic_id })
   end
 
   def save!
     response = if new_record?
                  requires :topic_id, :user_id, :body
 
-                 cistern.create_topic_comment("topic_comment" => self.attributes)
+                 cistern.create_topic_comment('topic_comment' => attributes)
                else
                  requires :identity
 
-                 cistern.update_topic_comment("topic_comment" => self.attributes)
+                 cistern.update_topic_comment('topic_comment' => attributes)
                end
 
-    merge_attributes(response.body["topic_comment"])
+    merge_attributes(response.body['topic_comment'])
   end
 
   def reload
     requires :identity
 
-    if data = self.cistern.topic_comments("topic_id" => topic_id).get(identity)
-      new_attributes = data.attributes
-      merge_attributes(new_attributes)
-      self
-    end
+    data = cistern.topic_comments('topic_id' => topic_id).get(identity)
+
+    return unless data
+
+    new_attributes = data.attributes
+    merge_attributes(new_attributes)
+    self
   end
 end

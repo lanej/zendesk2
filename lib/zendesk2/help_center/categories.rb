@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::Categories
   include Zendesk2::Collection
 
@@ -7,7 +8,7 @@ class Zendesk2::HelpCenter::Categories
   model Zendesk2::HelpCenter::Category
 
   self.collection_method = :get_help_center_categories
-  self.collection_root   = "categories"
+  self.collection_root   = 'categories'
   self.model_method      = :get_help_center_category
-  self.model_root        = "category"
+  self.model_root        = 'category'
 end

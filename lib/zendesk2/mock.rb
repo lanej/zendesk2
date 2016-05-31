@@ -1,31 +1,33 @@
+# frozen_string_literal: true
 class Zendesk2::Mock
   attr_reader :username, :url, :token, :jwt_token
   attr_accessor :last_request
 
   def self.data
-    @data ||= Hash.new { |h,k| h[k] = {
-      :categories                   => {},
-      :forums                       => {},
-      :groups                       => {},
-      :help_center_access_policies  => {},
-      :help_center_articles         => {},
-      :help_center_categories       => {},
-      :help_center_sections         => {},
-      :help_center_translations     => {},
-      :identities                   => {},
-      :memberships                  => {},
-      :organizations                => {},
-      :ticket_audits                => {},
-      :ticket_comments              => {},
-      :ticket_fields                => {},
-      :ticket_metrics               => {},
-      :tickets                      => {},
-      :topic_comments               => {},
-      :topics                       => {},
-      :user_fields                  => {},
-      :users                        => {},
-      :views                        => {},
-    }
+    @data ||= Hash.new { |h, k|
+      h[k] = {
+        categories: {},
+        forums: {},
+        groups: {},
+        help_center_access_policies: {},
+        help_center_articles: {},
+        help_center_categories: {},
+        help_center_sections: {},
+        help_center_translations: {},
+        identities: {},
+        memberships: {},
+        organizations: {},
+        ticket_audits: {},
+        ticket_comments: {},
+        ticket_fields: {},
+        ticket_metrics: {},
+        tickets: {},
+        topic_comments: {},
+        topics: {},
+        user_fields: {},
+        users: {},
+        views: {},
+      }
     }
   end
 
@@ -51,27 +53,28 @@ class Zendesk2::Mock
     self.class.serial_id
   end
 
-  def initialize(options={})
+  def initialize(options = {})
     @url                 = options[:url]
     @path                = URI.parse(url).path
-    @username, @password = options[:username], options[:password]
+    @username = options[:username]
+    @password = options[:password]
     @token               = options[:token]
     @jwt_token           = options[:jwt_token]
 
-    @current_user ||= self.data[:users].values.find { |u|
-      @username == u["name"]
-    } || self.create_user(
-      "user" => {"email" => @username, "name" => @username}
-    ).body["user"]
+    @current_user ||= data[:users].values.find { |u|
+      @username == u['name']
+    } || create_user(
+      'user' => { 'email' => @username, 'name' => @username }
+    ).body['user']
 
-    @current_user_identity ||= self.data[:identities].values.first
+    @current_user_identity ||= data[:identities].values.first
   end
 
   # Lazily re-seeds data after reset
   # @return [Hash] current user response
   def current_user
-    self.data[:users][@current_user["id"]]               ||= @current_user
-    self.data[:identities][@current_user_identity["id"]] ||= @current_user_identity
+    data[:users][@current_user['id']]               ||= @current_user
+    data[:identities][@current_user_identity['id']] ||= @current_user_identity
 
     @current_user
   end

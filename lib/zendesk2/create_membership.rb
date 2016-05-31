@@ -1,57 +1,58 @@
+# frozen_string_literal: true
 class Zendesk2::CreateMembership
   include Zendesk2::Request
 
   request_method :post
-  request_path { |r|  "/users/#{r.user_id}/organization_memberships.json" }
-  request_body { |r| { "organization_membership" => r.membership_params } }
+  request_path do |r| "/users/#{r.user_id}/organization_memberships.json" end
+  request_body do |r| { 'organization_membership' => r.membership_params } end
 
   def self.accepted_params
-    %w[user_id organization_id default]
+    %w(user_id organization_id default)
   end
 
   def membership_params
-    @_membership_params ||= Cistern::Hash.slice(params.fetch("membership"), *self.class.accepted_params)
+    @_membership_params ||= Cistern::Hash.slice(params.fetch('membership'), *self.class.accepted_params)
   end
 
   def user_id
-    params.fetch("membership").fetch("user_id").to_i
+    params.fetch('membership').fetch('user_id').to_i
   end
 
   def organization_id
-    params.fetch("membership").fetch("organization_id").to_i
+    params.fetch('membership').fetch('organization_id').to_i
   end
 
   def mock
     user = find!(:users, user_id)
     find!(:organizations, organization_id,
-          :error   => :invalid,
-          :details => {
-            "organization" => [ { "description" => "Organization cannot be blank" } ],
+          error: :invalid,
+          details: {
+            'organization' => [{ 'description' => 'Organization cannot be blank' }],
           })
 
-    if self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["organization_id"] == organization_id }
-      error!(:invalid, description: { "user_id" => [ { "description" => "User has already been taken" } ] })
+    if data[:memberships].values.find { |m| m['user_id'] == user_id && m['organization_id'] == organization_id }
+      error!(:invalid, description: { 'user_id' => [{ 'description' => 'User has already been taken' }] })
     end
 
     resource_id = cistern.serial_id
 
-    default_membership = !self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
+    default_membership = !data[:memberships].values.find { |m| m['user_id'] == user_id && m['default'] }
 
     resource = {
-      "id"              => resource_id,
-      "user_id"         => user_id,
-      "organization_id" => organization_id,
-      "default"         => default_membership,
+      'id'              => resource_id,
+      'user_id'         => user_id,
+      'organization_id' => organization_id,
+      'default'         => default_membership,
     }
 
-    self.data[:memberships][resource_id] = resource
+    data[:memberships][resource_id] = resource
 
-    primary_organization = self.data[:memberships].values.find { |m| m["user_id"] == user_id && m["default"] }
+    primary_organization = data[:memberships].values.find { |m| m['user_id'] == user_id && m['default'] }
 
     if primary_organization
-      user.merge!("organization_id" => primary_organization["organization_id"])
+      user['organization_id'] = primary_organization['organization_id']
     end
 
-    mock_response("organization_membership" => resource)
+    mock_response('organization_membership' => resource)
   end
 end

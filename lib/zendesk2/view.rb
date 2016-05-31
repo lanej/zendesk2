@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::View
   include Zendesk2::Model
 
@@ -24,32 +25,42 @@ class Zendesk2::View
   attribute :updated_at, type: :time
 
   def save!
+    new_record? ? create : update
+  end
+
+  def create
     requires :execution, :title
 
-    params = {
-      "title"  => self.title,
-      "active" => self.active,
-      "output" => Cistern::Hash.slice(self.execution, "sort_by", "sort_order", "group_by", "group_order", "columns")
-    }.merge(Cistern::Hash.slice(self.conditions, "any", "all"))
+    data = cistern.create_view('view' => request_data).body
+    merge_attributes(data['view'])
+  end
 
-    data = if new_record?
-             cistern.create_view("view" => params)
-           else
-             cistern.create_view("view" => params)
-           end.body
+  def update
+    requires :identity
 
-    merge_attributes(data["view"])
+    data = cistern.update_view('view' => request_data.merge('id' => identity)).body
+    merge_attributes(data['view'])
   end
 
   def tickets
     requires :identity
 
-    cistern.tickets(view_id: self.identity)
+    cistern.tickets(view_id: identity)
   end
 
   def destroy!
     requires :identity
 
-    cistern.destroy_view("view" => {"id" => self.identity})
+    cistern.destroy_view('view' => { 'id' => identity })
+  end
+
+  protected
+
+  def request_data
+    Cistern::Hash.slice(conditions, 'any', 'all').merge(
+      'title' => title,
+      'active' => active,
+      'output' => Cistern::Hash.slice(execution, 'sort_by', 'sort_order', 'group_by', 'group_order', 'columns')
+    )
   end
 end

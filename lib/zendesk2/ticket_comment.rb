@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TicketComment < Zendesk2::AuditEvent
   # @return [Integer] Automatically assigned when creating events
   identity :id, type: :integer
@@ -19,6 +20,6 @@ class Zendesk2::TicketComment < Zendesk2::AuditEvent
   def author
     requires :author_id
 
-    self.cistern.users.get(self.author_id)
+    cistern.users.get(author_id)
   end
 end

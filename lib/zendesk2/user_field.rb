@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::UserField
   include Zendesk2::Model
 
@@ -14,7 +15,8 @@ class Zendesk2::UserField
   attribute :custom_field_options, type: :array
   # @return [String] User-defined description of this field's purpose
   attribute :description, type: :string
-  # @return [String] create A unique key that identifies this custom field. This is used for updating the field and referencing in placeholders.
+  # @return [String] create a unique key that identifies this custom field.
+  # This is used for updating the field and referencing in placeholders.
   attribute :key, type: :string
   # @return [Integer] Ordering of the field relative to other fields
   attribute :position, type: :integer
@@ -24,7 +26,8 @@ class Zendesk2::UserField
   attribute :tag, type: :string
   # @return [String] The title of the custom field
   attribute :title, type: :string
-  # @return [String] Supported types: "text", "textarea", "checkbox", "date", "integer", "decimal", "regexp", "tagger" (custom dropdown)
+  # @return [String] Supported types: "text", "textarea", "checkbox", "date", "integer", "decimal", "regexp", "tagger"
+  # (custom dropdown)
   attribute :type, type: :string
   # @return [Time] The time of the last update of the ticket field
   attribute :updated_at, type: :time
@@ -35,19 +38,19 @@ class Zendesk2::UserField
     response = if new_record?
                  requires :type, :title, :key
 
-                 cistern.create_user_field("user_field" => self.attributes)
+                 cistern.create_user_field('user_field' => attributes)
                else
                  requires :identity
 
-                 cistern.update_user_field("user_field" => self.attributes)
+                 cistern.update_user_field('user_field' => attributes)
                end
 
-    merge_attributes(response.body["user_field"])
+    merge_attributes(response.body['user_field'])
   end
 
   def destroy!
     requires :identity
 
-    cistern.destroy_user_field("user_field" => { "id" => self.identity })
+    cistern.destroy_user_field('user_field' => { 'id' => identity })
   end
 end

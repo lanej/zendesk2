@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::Article
   include Zendesk2::Model
 
@@ -6,7 +7,8 @@ class Zendesk2::HelpCenter::Article
   # @return [Integer] Automatically assigned when the article is created
   identity :id, type: :integer # ro:yes required:no
 
-  # @return [Integer] The id of the user who wrote the article (set to the user who made the request on create by default)
+  # @return [Integer] The id of the user who wrote the article (set to the user who made the request on create by
+  #   default)
   attribute :author_id, type: :integer # ro:no required:no
   # @return [String] The body of the article
   attribute :body, type: :string # ro:no required:no
@@ -18,7 +20,8 @@ class Zendesk2::HelpCenter::Article
   attribute :draft, type: :boolean # ro:no required:no
   # @return [String] The url of the article in Help Center
   attribute :html_url, type: :string # ro:yes required:no
-  # @return [String] An array of label names associated with this article. By default no label names are used (only available on certain plans)
+  # @return [String] An array of label names associated with this article. By default no label names are used (only
+  #   available on certain plans)
   attribute :label_names, type: :string # ro:no required:no
   # @return [String] The locale that the article is being displayed in
   attribute :locale, type: :string # ro:no required:yes
@@ -48,26 +51,26 @@ class Zendesk2::HelpCenter::Article
   def translations
     requires :identity
 
-    cistern.help_center_translations(source_id: self.identity, source_type: "Article")
+    cistern.help_center_translations(source_id: identity, source_type: 'Article')
   end
 
   def save!
     response = if new_record?
                  requires :title, :locale, :section_id
 
-                 cistern.create_help_center_article("article" => self.attributes)
+                 cistern.create_help_center_article('article' => attributes)
                else
                  requires :identity
 
-                 cistern.update_help_center_article("article" => self.attributes)
+                 cistern.update_help_center_article('article' => attributes)
                end
 
-    merge_attributes(response.body["article"])
+    merge_attributes(response.body['article'])
   end
 
   def destroy!
     requires :identity
 
-    cistern.destroy_help_center_article("article" => { "id" => self.identity })
+    cistern.destroy_help_center_article('article' => { 'id' => identity })
   end
 end

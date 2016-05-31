@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Zendesk2::HelpCenter; end
 
 require 'zendesk2/help_center/translation_source'

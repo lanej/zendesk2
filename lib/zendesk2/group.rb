@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::Group
   include Zendesk2::Model
 
@@ -21,12 +22,12 @@ class Zendesk2::Group
     data = if new_record?
              requires :name
 
-             cistern.create_group("group" => self.attributes)
+             cistern.create_group('group' => attributes)
            else
              requires :identity
 
-             cistern.update_group("group" => self.attributes)
-           end.body["group"]
+             cistern.update_group('group' => attributes)
+           end.body['group']
 
     merge_attributes(data)
   end
@@ -34,12 +35,12 @@ class Zendesk2::Group
   def destroy!
     requires :identity
 
-    cistern.destroy_group("group" => {"id" => self.identity})
+    cistern.destroy_group('group' => { 'id' => identity })
 
     self.deleted = true
   end
 
   def destroyed?
-    self.deleted
+    deleted
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::HelpCenter::Translation
   include Zendesk2::Model
   include Zendesk2::HelpCenter::TranslationSource::Model
@@ -11,7 +12,7 @@ class Zendesk2::HelpCenter::Translation
   attribute :url, type: :string # ro:yes required:no
   # @return [String] The url of the translation in Help Center
   attribute :html_url, type: :string # ro:yes required:no
-  # @return [Integer]	The id of the item that has this translation
+  # @return [Integer] The id of the item that has this translation
   attribute :source_id, type: :integer # ro:yes required:no
   # @return [String] The type of the item that has this translation. Can be Article, Section, or Category
   attribute :source_type, type: :string # ro:yes required:no
@@ -29,20 +30,22 @@ class Zendesk2::HelpCenter::Translation
   def destroy!
     requires :locale, :source_id, :source_type
 
-    cistern.destroy_help_center_translation("translation" => Cistern::Hash.slice(self.attributes, :source_id, :source_type, :locale))
+    cistern.destroy_help_center_translation(
+      'translation' => Cistern::Hash.slice(attributes, :source_id, :source_type, :locale)
+    )
   end
 
   def save!
     response = if new_record?
                  requires :locale, :source_id, :source_type
 
-                 cistern.create_help_center_translation("translation" => self.attributes)
+                 cistern.create_help_center_translation('translation' => attributes)
                else
                  requires :identity
 
-                 cistern.update_help_center_translation("translation" => self.attributes)
+                 cistern.update_help_center_translation('translation' => attributes)
                end
 
-    merge_attributes(response.body["translation"])
+    merge_attributes(response.body['translation'])
   end
 end

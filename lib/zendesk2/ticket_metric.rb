@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::TicketMetric < Cistern::Model
   extend Zendesk2::Attributes
 
@@ -48,7 +49,6 @@ class Zendesk2::TicketMetric < Cistern::Model
   def ticket
     requires :ticket_id
 
-    self.cistern.tickets.get(self.ticket_id)
+    cistern.tickets.get(ticket_id)
   end
-
 end

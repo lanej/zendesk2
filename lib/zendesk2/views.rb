@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::Views
   include Zendesk2::Collection
 
@@ -7,7 +8,7 @@ class Zendesk2::Views
   model Zendesk2::View
 
   self.collection_method = :get_views
-  self.collection_root   = "views"
+  self.collection_root   = 'views'
   self.model_method      = :get_view
-  self.model_root        = "view"
+  self.model_root        = 'view'
 end

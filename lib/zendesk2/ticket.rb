@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Zendesk2::Ticket
   include Zendesk2::Model
 
@@ -27,7 +28,8 @@ class Zendesk2::Ticket
   attribute :has_incidents, type: :boolean
   # @return [Integer] The organization of the requester
   attribute :organization_id, type: :integer
-  # @return [String] Priority, defines the urgency with which the ticket should be addressed: "urgent", "high", "normal", "low"
+  # @return [String] Priority, defines the urgency with which the ticket should be addressed:
+  #   "urgent", "high", "normal", "low"
   attribute :priority, type: :string
   # @return [Integer] The problem this incident is linked to, if any
   attribute :problem_id, type: :integer
@@ -67,17 +69,17 @@ class Zendesk2::Ticket
     data = if new_record?
              requires :subject, :description
 
-             create_attributes = self.attributes.dup
+             create_attributes = attributes.dup
 
-             if with_requester = (@requester || nil) && Zendesk2.stringify_keys(@requester)
-               create_attributes.merge!("requester" => with_requester)
-             end
+             with_requester = (@requester || nil) && Zendesk2.stringify_keys(@requester)
 
-             cistern.create_ticket("ticket" => create_attributes).body["ticket"]
+             with_requester && create_attributes['requester'] = with_requester
+
+             cistern.create_ticket('ticket' => create_attributes).body['ticket']
            else
              requires :identity
 
-             cistern.update_ticket("ticket" => self.attributes).body["ticket"]
+             cistern.update_ticket('ticket' => attributes).body['ticket']
            end
 
     merge_attributes(data)
@@ -86,7 +88,7 @@ class Zendesk2::Ticket
   def destroy!
     requires :identity
 
-    cistern.destroy_ticket("ticket" => {"id" => self.identity})
+    cistern.destroy_ticket('ticket' => { 'id' => identity })
   end
 
   # Adds a ticket comment
@@ -96,26 +98,26 @@ class Zendesk2::Ticket
   # @option options [Array] :attachments Attachment to upload with comment
   # @option options [Boolean] :public (true)
   # @return [Zendesk2::TicketComment]
-  def comment(text, options={})
+  def comment(text, options = {})
     requires :identity
 
     options[:public] = true if options[:public].nil?
 
-    comment = Zendesk2.stringify_keys(options).merge("body" => text)
+    comment = Zendesk2.stringify_keys(options).merge('body' => text)
 
     cistern.ticket_comments.new(
       cistern.update_ticket(
-        "ticket" => {
-          "id"      => self.identity,
-          "comment" => comment,
+        'ticket' => {
+          'id'      => identity,
+          'comment' => comment,
         }
-      ).body["audit"]["events"].first
+      ).body['audit']['events'].first
     )
   end
 
   # @return [Array<Zendesk2::User>] All users CCD on this ticket
   def collaborators
-    self.collaborator_ids.map { |cid| self.cistern.users.get(cid) }
+    collaborator_ids.map { |cid| cistern.users.get(cid) }
   end
 
   # Update list of users to be CCD on this ticket
@@ -126,16 +128,16 @@ class Zendesk2::Ticket
 
   # @return [Zendesk2::TicketAudits] all audits for this ticket
   def audits
-    self.cistern.ticket_audits(ticket_id: self.identity).all
+    cistern.ticket_audits(ticket_id: identity).all
   end
 
   # @return [Zendesk2::TicketMetric] metrics for this ticket
   def metrics
-    Zendesk2::TicketMetric.new(self.cistern.get_ticket_metric("ticket_id" => self.identity).body["ticket_metric"])
+    Zendesk2::TicketMetric.new(cistern.get_ticket_metric('ticket_id' => identity).body['ticket_metric'])
   end
 
   # @return [Array<Zendesk2::TicketComment>] all comments for this ticket
   def comments
-    self.cistern.ticket_comments(ticket_id: self.identity).all
+    cistern.ticket_comments(ticket_id: identity).all
   end
 end

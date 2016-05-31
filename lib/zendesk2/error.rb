@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 class Zendesk2::Error < StandardError
-
   attr_reader :wrapped_exception, :response
   def initialize(wrapped_exception)
     @wrapped_exception = wrapped_exception

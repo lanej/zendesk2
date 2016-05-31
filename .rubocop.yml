@@ -1,0 +1,28 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  DisplayCopNames: true
+Metrics/LineLength:
+  Max: 120
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+Metrics/AbcSize:
+  Max: 75
+Metrics/MethodLength:
+  Max: 50
+Metrics/ClassLength:
+  Max: 300
+Metrics/ModuleLength:
+  Max: 300
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/PerceivedComplexity:
+  Max: 10
+Style/TrailingCommaInArguments:
+  Enabled: false
+  #EnforcedStyleForMultiline: consistent_comma # this is very broke
