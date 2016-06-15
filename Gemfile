@@ -14,4 +14,5 @@ group :test do
   gem 'awesome_print'
   gem 'rspec', '~> 3.2'
   gem 'rack-test'
+  gem 'simplecov', require: false
 end
