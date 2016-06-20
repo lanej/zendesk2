@@ -27,9 +27,9 @@ describe 'memberships' do
     expect(membership.default).to eq(true)
     expect(another_membership.default).to eq(false)
 
-    expect {
+    expect do
       another_membership.default!
-    }.to change {
+    end.to change {
       another_membership.reload.default
     }.from(false).to(true)
 
@@ -75,9 +75,9 @@ describe 'memberships' do
 
   describe 'create_membership' do
     it 'should error when organization does not exist' do
-      expect {
+      expect do
         client.create_membership('membership' => { 'user_id' => user.identity, 'organization_id' => 99 })
-      }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
+      end.to raise_exception(Zendesk2::Error, /RecordInvalid/)
     end
 
     it 'should error when creating a duplicate membership' do
@@ -86,18 +86,18 @@ describe 'memberships' do
                                  'organization_id' => organization.identity,
                                })
 
-      expect {
+      expect do
         client.create_membership('membership' => {
                                    'user_id' => user.identity,
                                    'organization_id' => organization.identity,
                                  })
-      }.to raise_exception(Zendesk2::Error, /RecordInvalid/)
+      end.to raise_exception(Zendesk2::Error, /RecordInvalid/)
     end
 
     it 'should error when user does not exist' do
-      expect {
+      expect do
         client.create_membership('membership' => { 'user_id' => 99, 'organization_id' => organization.identity })
-      }.to raise_exception(Zendesk2::Error, /RecordNotFound/)
+      end.to raise_exception(Zendesk2::Error, /RecordNotFound/)
     end
   end
 end

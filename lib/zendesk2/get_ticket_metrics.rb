@@ -3,7 +3,7 @@ class Zendesk2::GetTicketMetrics
   include Zendesk2::Request
 
   request_method :get
-  request_path do '/ticket_metrics.json' end
+  request_path { '/ticket_metrics.json' }
 
   page_params!
 

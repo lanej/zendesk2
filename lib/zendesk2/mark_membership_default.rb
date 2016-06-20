@@ -3,7 +3,7 @@ class Zendesk2::MarkMembershipDefault
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/users/#{r.user_id}/organization_memberships/#{r.identity}/make_default.json" end
+  request_path { |r| "/users/#{r.user_id}/organization_memberships/#{r.identity}/make_default.json" }
 
   def identity
     params.fetch('membership').fetch('id')
@@ -17,7 +17,7 @@ class Zendesk2::MarkMembershipDefault
     if (membership = find!(:memberships, identity)) && (membership['user_id'] == user_id)
       # only one user can be default
       other_user_memberships = data[:memberships].values.select { |m| m['user_id'] == user_id }
-      other_user_memberships.each do |i| i['default'] = false end
+      other_user_memberships.each { |i| i['default'] = false }
       membership['default'] = true
 
       mock_response(params)

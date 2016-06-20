@@ -3,7 +3,7 @@ class Zendesk2::GetCategories
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_| '/categories.json' end
+  request_path { |_| '/categories.json' }
 
   page_params!
 

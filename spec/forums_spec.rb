@@ -32,13 +32,13 @@ describe 'forums' do
 
     context '#destroy_forum' do
       it 'should require a valid forum' do
-        expect {
+        expect do
           client.destroy_forum(
             'forum' => {
               'id' => 999_999_999,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end
@@ -77,13 +77,13 @@ describe 'forums' do
 
     context '#get_forum' do
       it 'should require a valid forum' do
-        expect {
+        expect do
           client.get_forum(
             'forum' => {
               'id' => 999_999_999,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end
@@ -110,14 +110,14 @@ describe 'forums' do
 
     context '#update_forum' do
       it 'should require a valid forum' do
-        expect {
+        expect do
           client.update_forum(
             'forum' => {
               'id'   => 999_999_999,
               'name' => mock_uuid,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end

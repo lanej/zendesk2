@@ -3,7 +3,7 @@ class Zendesk2::GetViews
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_r| '/views.json' end
+  request_path { |_r| '/views.json' }
 
   page_params!
 

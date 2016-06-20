@@ -3,7 +3,7 @@ class Zendesk2::DestroyGroup
   include Zendesk2::Request
 
   request_method :delete
-  request_path do |r| "/groups/#{r.group_id}.json" end
+  request_path { |r| "/groups/#{r.group_id}.json" }
 
   def group_id
     params.fetch('group').fetch('id')

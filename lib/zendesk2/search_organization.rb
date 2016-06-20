@@ -3,8 +3,8 @@ class Zendesk2::SearchOrganization
   include Zendesk2::Request
 
   request_method :get
-  request_path do '/search.json' end
-  request_body do |r| { 'query' => r.query } end
+  request_path { '/search.json' }
+  request_body { |r| { 'query' => r.query } }
 
   attr_reader :query
 
@@ -32,20 +32,20 @@ class Zendesk2::SearchOrganization
     organization_name = terms.delete('name')
     organization_name && terms['name'] = "*#{organization_name}*"
 
-    compiled_terms = terms.inject({}) { |r, (term, raw_condition)|
+    compiled_terms = terms.inject({}) do |r, (term, raw_condition)|
       condition = if raw_condition.include?('*')
                     Regexp.compile(raw_condition.gsub('*', '.*'), Regexp::IGNORECASE)
                   else
                     raw_condition
                   end
       r.merge(term => condition)
-    }
+    end
 
-    results = collection.select { |v|
+    results = collection.select do |v|
       compiled_terms.all? do |term, condition|
         condition.is_a?(Regexp) ? condition.match(v[term.to_s]) : v[term.to_s].to_s == condition.to_s
       end
-    }
+    end
 
     page(results, params: { 'query' => query }, root: 'results')
   end

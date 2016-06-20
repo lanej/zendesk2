@@ -4,8 +4,8 @@ class Zendesk2::UpdateHelpCenterTranslation
   include Zendesk2::HelpCenter::TranslationSource::Request
 
   request_method :put
-  request_body do |r| { 'translation' => r.translation_params } end
-  request_path do |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" end
+  request_body { |r| { 'translation' => r.translation_params } }
+  request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" }
 
   def translation_params
     Cistern::Hash.slice(params.fetch('translation'), *Zendesk2::CreateHelpCenterTranslation.accepted_attributes)

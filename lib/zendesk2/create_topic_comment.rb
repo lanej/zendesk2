@@ -3,8 +3,8 @@ class Zendesk2::CreateTopicComment
   include Zendesk2::Request
 
   request_method :post
-  request_path do |r| "/topics/#{r.topic_id}/comments.json" end
-  request_body do |r| { 'topic_comment' => r.topic_comment_params } end
+  request_path { |r| "/topics/#{r.topic_id}/comments.json" }
+  request_body { |r| { 'topic_comment' => r.topic_comment_params } }
 
   def self.accepted_attributes
     %w(user_id body informative)

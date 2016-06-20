@@ -3,7 +3,7 @@ class Zendesk2::UpdateHelpCenterArticle
   include Zendesk2::Request
 
   request_method :put
-  request_body do |r| { 'article' => r.article_params } end
+  request_body { |r| { 'article' => r.article_params } }
   request_path do |r|
     locale = r.article_params['locale']
     locale ? "/help_center/#{locale}/articles/#{r.article_id}.json" : "/help_center/articles/#{r.article_id}.json"

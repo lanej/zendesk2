@@ -3,7 +3,7 @@ class Zendesk2::GetTicketAudit
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/tickets/#{r.ticket_id}/audits/#{r.audit_id}.json" end
+  request_path { |r| "/tickets/#{r.ticket_id}/audits/#{r.audit_id}.json" }
 
   def audit_id
     params.fetch('id')

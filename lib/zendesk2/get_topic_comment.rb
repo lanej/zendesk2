@@ -3,7 +3,7 @@ class Zendesk2::GetTopicComment
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" end
+  request_path { |r| "/topics/#{r.topic_id}/comments/#{r.topic_comment_id}.json" }
 
   def topic_id
     params.fetch('topic_comment').fetch('topic_id')

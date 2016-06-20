@@ -3,8 +3,8 @@ class Zendesk2::CreateMembership
   include Zendesk2::Request
 
   request_method :post
-  request_path do |r| "/users/#{r.user_id}/organization_memberships.json" end
-  request_body do |r| { 'organization_membership' => r.membership_params } end
+  request_path { |r| "/users/#{r.user_id}/organization_memberships.json" }
+  request_body { |r| { 'organization_membership' => r.membership_params } }
 
   def self.accepted_params
     %w(user_id organization_id default)

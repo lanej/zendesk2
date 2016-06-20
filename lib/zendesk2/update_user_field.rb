@@ -3,7 +3,7 @@ class Zendesk2::UpdateUserField
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/user_fields/#{r.user_field_id}.json" end
+  request_path { |r| "/user_fields/#{r.user_field_id}.json" }
 
   def user_field_id
     params.fetch('user_field').fetch('id')

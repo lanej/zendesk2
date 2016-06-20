@@ -2,7 +2,7 @@
 class Zendesk2::GetTopicComments
   include Zendesk2::Request
 
-  request_path do |r| "/topics/#{r.topic_id}/comments.json" end
+  request_path { |r| "/topics/#{r.topic_id}/comments.json" }
   request_method :get
 
   page_params!

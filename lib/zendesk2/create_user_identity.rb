@@ -3,8 +3,8 @@ class Zendesk2::CreateUserIdentity
   include Zendesk2::Request
 
   request_method :post
-  request_path do |r| "/users/#{r.user_id}/identities.json" end
-  request_body do |r| { 'identity' => r.user_identity_params } end
+  request_path { |r| "/users/#{r.user_id}/identities.json" }
+  request_body { |r| { 'identity' => r.user_identity_params } }
 
   def self.accepted_attributes
     %w(primary verified type value user_id)

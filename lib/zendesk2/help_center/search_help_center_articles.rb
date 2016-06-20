@@ -2,7 +2,7 @@
 class Zendesk2::SearchHelpCenterArticles
   include Zendesk2::Request
 
-  request_path do |_| '/help_center/articles/search.json' end
+  request_path { |_| '/help_center/articles/search.json' }
 
   attr_reader :query
 

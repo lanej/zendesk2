@@ -3,7 +3,7 @@ class Zendesk2::GetCategory
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/categories/#{r.category_id}.json" end
+  request_path { |r| "/categories/#{r.category_id}.json" }
 
   def category_id
     params.fetch('category').fetch('id')

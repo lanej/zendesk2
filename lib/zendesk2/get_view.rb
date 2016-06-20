@@ -3,7 +3,7 @@ class Zendesk2::GetView
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/views/#{r.view_id}.json" end
+  request_path { |r| "/views/#{r.view_id}.json" }
 
   def view_id
     params.fetch('view').fetch('id')

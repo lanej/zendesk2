@@ -3,7 +3,7 @@ class Zendesk2::GetUsers
   include Zendesk2::Request
 
   request_method :get
-  request_path do '/users.json' end
+  request_path { '/users.json' }
 
   page_params!
 

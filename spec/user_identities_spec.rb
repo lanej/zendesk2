@@ -17,26 +17,26 @@ describe 'user_identities' do
     let(:another_user) { client.users.create(email: mock_email, name: mock_uuid, verified: true) }
 
     it 'should prevent duplicate identities across users' do
-      expect {
+      expect do
         client.create_user_identity(
           'user_identity' => { 'type' => 'email', 'value' => user.email, 'user_id' => another_user.id }
         )
-      }.to raise_exception(Zendesk2::Error, /is already being used by another user/)
+      end.to raise_exception(Zendesk2::Error, /is already being used by another user/)
     end
 
     it 'should prevent duplicate identities on the same user' do
-      expect {
+      expect do
         client.create_user_identity(
           'user_identity' => { 'type' => 'email', 'value' => user.email, 'user_id' => user.id }
         )
-      }.to raise_exception(Zendesk2::Error, /is already being used by another user/)
+      end.to raise_exception(Zendesk2::Error, /is already being used by another user/)
     end
 
     it 'should be allowed if the user is deleted' do
       email = user.email
       user.destroy
 
-      expect {
+      expect do
         client.create_user_identity(
           'user_identity' => {
             'type'    => 'email',
@@ -44,7 +44,7 @@ describe 'user_identities' do
             'user_id' => another_user.id,
           }
         )
-      }.to change { another_user.identities.all.count }.by(1)
+      end.to change { another_user.identities.all.count }.by(1)
     end
   end
 end

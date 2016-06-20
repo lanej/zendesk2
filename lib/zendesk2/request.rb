@@ -110,7 +110,7 @@ module Zendesk2::Request
 
   def pluralize(word)
     pluralized = word.dup
-    [[/y$/, 'ies'], [/$/, 's']].find do |regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex) end
+    [[/y$/, 'ies'], [/$/, 's']].find { |regex, replace| pluralized.gsub!(regex, replace) if pluralized.match(regex) }
     pluralized
   end
 

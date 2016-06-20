@@ -3,8 +3,8 @@ class Zendesk2::CreateOrganization
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/organizations.json' end
-  request_body do |r| { 'organization' => r.organization_params } end
+  request_path { |_| '/organizations.json' }
+  request_body { |r| { 'organization' => r.organization_params } }
 
   def self.accepted_attributes
     %w(details domain_names external_id group_id organization_fields shared_comments shared_tickets tags name notes)
@@ -33,9 +33,9 @@ class Zendesk2::CreateOrganization
     end
 
     external_id = record['external_id']
-    matching_organization = external_id && data[:organizations].values.find { |o|
+    matching_organization = external_id && data[:organizations].values.find do |o|
       o['external_id'].to_s.casecmp(external_id.to_s.downcase).zero?
-    }
+    end
 
     if matching_organization
       error!(:invalid, details: { 'name' => [{ 'description' => 'External has already been taken' }] })

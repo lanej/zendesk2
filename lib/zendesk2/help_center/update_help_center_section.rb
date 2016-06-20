@@ -3,7 +3,7 @@ class Zendesk2::UpdateHelpCenterSection
   include Zendesk2::Request
 
   request_method :put
-  request_body do |r| { 'section' => r.section_params } end
+  request_body { |r| { 'section' => r.section_params } }
   request_path do |r|
     locale = r.section_params['locale']
     locale ? "/help_center/#{locale}/sections/#{r.section_id}.json" : "/help_center/sections/#{r.section_id}.json"

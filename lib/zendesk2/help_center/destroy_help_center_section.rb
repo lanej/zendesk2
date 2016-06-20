@@ -3,7 +3,7 @@ class Zendesk2::DestroyHelpCenterSection
   include Zendesk2::Request
 
   request_method :delete
-  request_path do |r| "/help_center/sections/#{r.section_id}.json" end
+  request_path { |r| "/help_center/sections/#{r.section_id}.json" }
 
   def section_id
     params.fetch('section').fetch('id')

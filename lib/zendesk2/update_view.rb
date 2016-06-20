@@ -3,8 +3,8 @@ class Zendesk2::UpdateView
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/views/#{r.view_id}.json" end
-  request_body do |r| { 'view' => r.view_params } end
+  request_path { |r| "/views/#{r.view_id}.json" }
+  request_body { |r| { 'view' => r.view_params } }
 
   def self.accepted_attributes
     Zendesk2::CreateView.accepted_attributes
@@ -24,9 +24,9 @@ class Zendesk2::UpdateView
     update_params = view_params
 
     output = update_params.delete('output') || {}
-    columns = (output['columns'] || []).inject([]) { |a, e|
+    columns = (output['columns'] || []).inject([]) do |a, e|
       a + [{ 'id' => e, 'name' => Zendesk2::CreateView.view_columns.fetch(c) }]
-    }
+    end
 
     body['updated_at'] = Time.now.iso8601
 

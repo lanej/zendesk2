@@ -3,8 +3,8 @@ class Zendesk2::CreateUser
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/users.json' end
-  request_body do |r| { 'user' => r.user_params } end
+  request_path { |_| '/users.json' }
+  request_body { |r| { 'user' => r.user_params } }
 
   def self.accepted_attributes
     %w(name email organization_id external_id alias verified locate_id time_zone phone signature details notes role
@@ -32,18 +32,18 @@ class Zendesk2::CreateUser
     }.merge(user_params)
 
     external_id = record['external_id']
-    matching_external_id = external_id && data[:users].values.find { |o|
+    matching_external_id = external_id && data[:users].values.find do |o|
       o['external_id'].to_s.casecmp(external_id.to_s.downcase).zero?
-    }
+    end
 
     if matching_external_id
       error!(:invalid, details: { 'name' => [{ 'description' => 'External has already been taken' }] })
     end
 
     email = record['email']
-    matching_identity = email && data[:identities].values.find { |i|
+    matching_identity = email && data[:identities].values.find do |i|
       i['type'] == 'email' && i['value'].to_s.casecmp(email.downcase).zero?
-    }
+    end
 
     if matching_identity
       error!(:invalid, details: {

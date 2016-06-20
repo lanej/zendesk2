@@ -31,27 +31,27 @@ describe Zendesk2 do
 
     context 'and a view that filters by that organization' do
       let!(:user) { client.users.create!(email: mock_email, name: mock_uuid, verified: true) }
-      let!(:view) {
+      let!(:view) do
         client.views.create!(
           title: mock_uuid,
           conditions: {
             'all' => [{ 'field' => 'organization_id', 'operator' => 'is', 'value' => organization.identity.to_s }],
           }
         )
-      }
+      end
 
       before do
         client.memberships.create(user: user, organization: organization)
       end
 
-      let!(:tickets) {
-        Array.new(2) {
+      let!(:tickets) do
+        Array.new(2) do
           client.tickets.create!(subject: mock_uuid,
                                  description: mock_uuid,
                                  requester: user,
                                  organization: organization)
-        }
-      }
+        end
+      end
 
       before do
         another_organization = client.organizations.create!(name: mock_uuid)
@@ -59,9 +59,9 @@ describe Zendesk2 do
 
         client.memberships.create(user: another_user, organization: another_organization)
 
-        2.times.each {
+        2.times.each do
           client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: another_user)
-        }
+        end
       end
 
       it 'should find only that organizations tickets' do

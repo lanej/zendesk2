@@ -3,7 +3,7 @@ class Zendesk2::CreateHelpCenterArticle
   include Zendesk2::Request
 
   request_method :post
-  request_body do |r| { 'article' => r.article_params } end
+  request_body { |r| { 'article' => r.article_params } }
   request_path do |r|
     locale = r.article_params['locale']
     if locale

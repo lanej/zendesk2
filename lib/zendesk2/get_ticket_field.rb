@@ -3,7 +3,7 @@ class Zendesk2::GetTicketField
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/ticket_fields/#{r.ticket_field_id}.json" end
+  request_path { |r| "/ticket_fields/#{r.ticket_field_id}.json" }
 
   def ticket_field_id
     params.fetch('ticket_field').fetch('id').to_i

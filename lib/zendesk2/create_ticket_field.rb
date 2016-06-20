@@ -3,8 +3,8 @@ class Zendesk2::CreateTicketField
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/ticket_fields.json' end
-  request_body do |r| { 'ticket_field' => r.ticket_field_params } end
+  request_path { |_| '/ticket_fields.json' }
+  request_body { |r| { 'ticket_field' => r.ticket_field_params } }
 
   def self.accepted_attributes
     %w(type title description position active required collapsed_for_agents regexp_for_validation title_in_portal

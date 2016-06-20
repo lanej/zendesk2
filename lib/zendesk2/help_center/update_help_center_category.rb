@@ -3,7 +3,7 @@ class Zendesk2::UpdateHelpCenterCategory
   include Zendesk2::Request
 
   request_method :put
-  request_body do |r| { 'category' => r.category_params } end
+  request_body { |r| { 'category' => r.category_params } }
   request_path do |r|
     locale = r.category_params['locale']
     locale ? "/help_center/#{locale}/categories/#{r.category_id}.json" : "/help_center/categories/#{r.category_id}.json"

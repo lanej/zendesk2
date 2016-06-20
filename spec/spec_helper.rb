@@ -5,7 +5,7 @@ Bundler.require(:test)
 
 require File.expand_path('../../lib/zendesk2', __FILE__)
 
-Dir[File.expand_path('../{support,shared}/**/*.rb', __FILE__)].each do |f| require f end
+Dir[File.expand_path('../{support,shared}/**/*.rb', __FILE__)].each { |f| require f }
 
 Zendesk2.mock! if ENV['MOCK_ZENDESK'] == 'true'
 

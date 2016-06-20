@@ -3,7 +3,7 @@ class Zendesk2::DestroyUser
   include Zendesk2::Request
 
   request_method :delete
-  request_path do |r| "/users/#{r.user_id}.json" end
+  request_path { |r| "/users/#{r.user_id}.json" }
 
   def user_id
     @_user_id ||= params.fetch('user').fetch('id').to_i
@@ -13,7 +13,7 @@ class Zendesk2::DestroyUser
     ticket_count = cistern.data[:tickets].values.select { |t| t['requester_id'].to_i == user_id }.size
 
     if ticket_count < 1
-      cistern.data[:identities].each do |k, v| cistern.data[:identities].delete(k) if v['user_id'] == user_id end
+      cistern.data[:identities].each { |k, v| cistern.data[:identities].delete(k) if v['user_id'] == user_id }
 
       mock_response('user' => delete!(:users, user_id))
     else

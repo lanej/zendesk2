@@ -2,9 +2,9 @@
 class Zendesk2::UpdateUserIdentity
   include Zendesk2::Request
 
-  request_path do |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" end
+  request_path { |r| "/users/#{r.user_id}/identities/#{r.user_identity_id}.json" }
   request_method :put
-  request_body do |r| { 'identity' => r.user_identity_params } end
+  request_body { |r| { 'identity' => r.user_identity_params } }
 
   def self.accepted_attributes
     %w(verified)

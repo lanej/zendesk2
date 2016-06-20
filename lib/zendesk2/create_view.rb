@@ -3,8 +3,8 @@ class Zendesk2::CreateView
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/views.json' end
-  request_body do |r| { 'view' => r.view_params } end
+  request_path { |_| '/views.json' }
+  request_body { |r| { 'view' => r.view_params } }
 
   def self.accepted_attributes
     %w(title all any active output restriction)
@@ -56,9 +56,9 @@ class Zendesk2::CreateView
     identity = cistern.serial_id
 
     output = view_params.delete('output') || {}
-    columns = (output['columns'] || []).inject([]) { |a, e|
+    columns = (output['columns'] || []).inject([]) do |a, e|
       a << { 'id' => e, 'name' => self.class.view_columns.fetch(e) }
-    }
+    end
 
     record = {
       'id'               => identity,

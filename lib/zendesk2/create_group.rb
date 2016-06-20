@@ -3,8 +3,8 @@ class Zendesk2::CreateGroup
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/groups.json' end
-  request_body do |r| { 'group' => r.group_params } end
+  request_path { |_| '/groups.json' }
+  request_body { |r| { 'group' => r.group_params } }
 
   def self.accepted_attributes
     %w(name)

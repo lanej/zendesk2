@@ -3,7 +3,7 @@ class Zendesk2::GetTicketComments
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/tickets/#{r.ticket_id}/comments.json" end
+  request_path { |r| "/tickets/#{r.ticket_id}/comments.json" }
 
   def ticket_id
     params.fetch('ticket_id').to_i

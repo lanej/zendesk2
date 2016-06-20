@@ -17,8 +17,8 @@ class Zendesk2::GetHelpCenterCategoriesArticles
   def mock
     find!(:help_center_categories, category_id)
 
-    mock_response('articles' => data[:help_center_articles].values.select { |s|
+    mock_response('articles' => data[:help_center_articles].values.select do |s|
       data[:help_center_sections].fetch(s['section_id'])['category_id'] == category_id
-    })
+    end)
   end
 end

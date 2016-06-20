@@ -31,13 +31,13 @@ describe 'categories' do
 
     context '#destroy_category' do
       it 'should require a valid category' do
-        expect {
+        expect do
           client.destroy_category(
             'category' => {
               'id' => 999_999_999,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end
@@ -76,13 +76,13 @@ describe 'categories' do
 
     context '#get_category' do
       it 'should require a valid category' do
-        expect {
+        expect do
           client.get_category(
             'category' => {
               'id' => 999_999_999,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end
@@ -109,14 +109,14 @@ describe 'categories' do
 
     context '#update_category' do
       it 'should require a valid category' do
-        expect {
+        expect do
           client.update_category(
             'category' => {
               'id'   => 999_999_999,
               'name' => mock_uuid,
             }
           )
-        }.to raise_error(Zendesk2::Error) { |e|
+        end.to raise_error(Zendesk2::Error) { |e|
           expect(e.response[:status]).to eq(404)
         }
       end

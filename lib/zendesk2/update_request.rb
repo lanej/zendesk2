@@ -3,8 +3,8 @@ class Zendesk2::UpdateRequest
   include Zendesk2::Client
 
   request_method :put
-  request_path do |_r| "/requests/#{id}.json" end
-  request_params do |r| { 'request' => r.params } end
+  request_path { |_r| "/requests/#{id}.json" }
+  request_params { |r| { 'request' => r.params } }
 
   def request_id
     @_request_id ||= params.delete('id')

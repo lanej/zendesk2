@@ -3,7 +3,7 @@ class Zendesk2::GetGroup
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/groups/#{r.group_id}.json" end
+  request_path { |r| "/groups/#{r.group_id}.json" }
 
   def group_id
     @_group_id ||= params.fetch('group').fetch('id')

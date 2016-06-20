@@ -3,8 +3,8 @@ class Zendesk2::UpdateTopic
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/topics/#{r.topic_id}.json" end
-  request_body do |r| { 'topic' => r.topic_params } end
+  request_path { |r| "/topics/#{r.topic_id}.json" }
+  request_body { |r| { 'topic' => r.topic_params } }
 
   def topic_id
     params.fetch('topic').fetch('id').to_i

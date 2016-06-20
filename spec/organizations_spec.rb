@@ -24,9 +24,9 @@ describe 'organizations' do
 
     it 'should hate non-unique names' do
       # create
-      expect {
+      expect do
         client.organizations.create!(name: organization.name)
-      }.to raise_exception(Zendesk2::Error)
+      end.to raise_exception(Zendesk2::Error)
 
       expect(
         client.organizations.create(name: organization.name).errors
@@ -53,9 +53,9 @@ describe 'organizations' do
       proxy    = organization.dup
       new_name = mock_uuid
 
-      expect {
+      expect do
         proxy.update!(name: new_name)
-      }.to change { organization.reload.name }.from(old_name).to(new_name)
+      end.to change { organization.reload.name }.from(old_name).to(new_name)
     end
 
     it 'should be able to find organizations by external id' do
@@ -77,9 +77,9 @@ describe '#create_organization' do
     client.create_organization('organization' => { 'name' => mock_uuid, external_id: nil }) # also fine
     client.create_organization('organization' => { 'name' => mock_uuid, external_id: external_id }) # it's cool
 
-    expect {
+    expect do
       client.create_organization('organization' => { 'name' => mock_uuid, external_id: external_id })
-    }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+    end.to raise_exception(Zendesk2::Error, /External has already been taken/)
   end
 
   it 'should correctly respond' do
@@ -105,13 +105,13 @@ context 'with a organization' do
 
   describe '#destroy_organization' do
     it 'should require a valid organization' do
-      expect {
+      expect do
         client.destroy_organization(
           'organization' => {
             'id' => 999_999_999,
           }
         )
-      }.to raise_error(Zendesk2::Error) { |e|
+      end.to raise_error(Zendesk2::Error) { |e|
         expect(e.response[:status]).to eq(404)
       }
     end
@@ -150,13 +150,13 @@ context 'with a organization' do
 
   describe '#get_organization' do
     it 'should require a valid organization' do
-      expect {
+      expect do
         client.get_organization(
           'organization' => {
             'id' => 999_999_999,
           }
         )
-      }.to raise_error(Zendesk2::Error) { |e|
+      end.to raise_error(Zendesk2::Error) { |e|
         expect(e.response[:status]).to eq(404)
       }
     end
@@ -183,14 +183,14 @@ context 'with a organization' do
 
   describe '#update_organization' do
     it 'should require a valid organization' do
-      expect {
+      expect do
         client.update_organization(
           'organization' => {
             'id'   => 999_999_999,
             'name' => mock_uuid,
           }
         )
-      }.to raise_error(Zendesk2::Error) { |e|
+      end.to raise_error(Zendesk2::Error) { |e|
         expect(e.response[:status]).to eq(404)
       }
     end
@@ -206,9 +206,9 @@ context 'with a organization' do
       # also fine
       client.update_organization('organization' => { 'id' => another_organization.id, external_id: external_id })
 
-      expect {
+      expect do
         client.update_organization('organization' => { 'id' => organization.id, external_id: external_id })
-      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+      end.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
 
     it 'should correctly respond' do

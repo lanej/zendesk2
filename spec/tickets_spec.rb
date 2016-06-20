@@ -13,9 +13,9 @@ describe 'Zendesk2' do
 
   describe '#create_ticket' do
     it 'should require a description' do
-      expect {
+      expect do
         client.create_ticket('ticket' => { 'subject' => mock_uuid })
-      }.to raise_exception(Zendesk2::Error, /Description: cannot be blank/)
+      end.to raise_exception(Zendesk2::Error, /Description: cannot be blank/)
     end
   end
 
@@ -58,19 +58,19 @@ describe 'Zendesk2' do
     end
 
     it 'should require requester name' do
-      expect {
+      expect do
         client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester: { email: mock_email })
-      }.to raise_exception(Zendesk2::Error, /Requester Name: .* too short/)
+      end.to raise_exception(Zendesk2::Error, /Requester Name: .* too short/)
     end
 
     it 'should require a description' do
-      expect {
+      expect do
         client.tickets.create!(subject: mock_uuid)
-      }.to raise_exception(ArgumentError, /description is required/)
+      end.to raise_exception(ArgumentError, /description is required/)
 
-      expect {
+      expect do
         client.tickets.create!(subject: mock_uuid, description: '')
-      }.to raise_exception(ArgumentError, /description is required/)
+      end.to raise_exception(ArgumentError, /description is required/)
     end
 
     it 'should set priority' do
@@ -105,7 +105,7 @@ describe 'Zendesk2' do
 
     it 'should scope the comments to the source ticket' do
       target_comments = Array.new(2) { ticket.comment(mock_uuid) }
-      Array.new(2) do another_ticket.comment(mock_uuid) end
+      Array.new(2) { another_ticket.comment(mock_uuid) }
 
       # @fixme model (subject + description) || (comment) on create_ticket as a comment
       expect(ticket.comments.all).to include(*target_comments)

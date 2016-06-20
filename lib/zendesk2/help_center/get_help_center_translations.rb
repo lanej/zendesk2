@@ -3,7 +3,7 @@ class Zendesk2::GetHelpCenterTranslations
   include Zendesk2::Request
   include Zendesk2::HelpCenter::TranslationSource::Request
 
-  request_path do |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations.json" end
+  request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations.json" }
   request_params(&:translation_params)
 
   page_params!

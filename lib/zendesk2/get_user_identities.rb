@@ -2,7 +2,7 @@
 class Zendesk2::GetUserIdentities
   include Zendesk2::Request
 
-  request_path do |r| "/users/#{r.user_id}/identities.json" end
+  request_path { |r| "/users/#{r.user_id}/identities.json" }
 
   page_params!
 

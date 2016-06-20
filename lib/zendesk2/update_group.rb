@@ -3,8 +3,8 @@ class Zendesk2::UpdateGroup
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/groups/#{r.group_id}.json" end
-  request_body do |r| { 'group' => r.group_params } end
+  request_path { |r| "/groups/#{r.group_id}.json" }
+  request_body { |r| { 'group' => r.group_params } }
 
   def group_params
     @_group_params ||= Cistern::Hash.slice(params.fetch('group'), *Zendesk2::CreateGroup.accepted_attributes)

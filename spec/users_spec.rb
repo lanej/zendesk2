@@ -22,9 +22,9 @@ describe 'users' do
       client.create_user('user' => { email: mock_email, name: 'b', external_id: nil })         # also fine
       client.create_user('user' => { email: mock_email, name: 'c', external_id: external_id }) # it's cool
 
-      expect {
+      expect do
         client.create_user('user' => { email: mock_email, name: 'd', external_id: external_id })
-      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+      end.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
 
@@ -38,9 +38,9 @@ describe 'users' do
       client.update_user('user' => { 'id' => user.id,         'external_id' => nil })         # fine
       client.update_user('user' => { 'id' => another_user.id, 'external_id' => external_id }) # also fine
 
-      expect {
+      expect do
         client.update_user('user' => { 'id' => user.id, 'external_id' => external_id })
-      }.to raise_exception(Zendesk2::Error, /External has already been taken/)
+      end.to raise_exception(Zendesk2::Error, /External has already been taken/)
     end
   end
 
@@ -99,9 +99,9 @@ describe 'users' do
         another_user.tickets.create!(collaborators: [user], subject: mock_uuid, description: mock_uuid)
       end
 
-      targets = Array.new(2) {
+      targets = Array.new(2) do
         user.tickets.create!(requester: user, subject: mock_uuid, description: mock_uuid)
-      }
+      end
 
       expect(user.requested_tickets.all(per_page: 1).all_entries).to match_array(targets)
     end
@@ -148,9 +148,9 @@ describe 'users' do
       initial_identity = user.identities.all.first
       new_identity     = user.identities.create!(type: 'email', value: email)
 
-      expect {
+      expect do
         initial_identity.destroy
-      }.to change { user.identities.all }
+      end.to change { user.identities.all }
         .from(a_collection_containing_exactly(initial_identity, new_identity))
         .to(a_collection_containing_exactly(new_identity))
 
@@ -196,9 +196,9 @@ describe 'users' do
       original_email = user.email
       user.email = (new_email = mock_email)
 
-      expect {
+      expect do
         user.save!
-      }.to change { user.identities.size }.from(1).to(2)
+      end.to change { user.identities.size }.from(1).to(2)
 
       new_identity = user.identities.find { |i| i.value == new_email }
 
@@ -211,9 +211,9 @@ describe 'users' do
       expect(original_identity.primary).to eq(true)
       expect(user.reload.email).to eq(original_email)
 
-      expect {
+      expect do
         user.save!
-      }.not_to change { user.identities.size }
+      end.not_to change { user.identities.size }
     end
 
     it "should form 'legacy' login url" do

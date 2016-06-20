@@ -52,7 +52,7 @@ module Zendesk2::PagedCollection
     return to_enum(:each_entry) unless block_given?
     page = self
     while page
-      page.to_a.each do |r| yield r end
+      page.to_a.each { |r| yield r }
       page = page.next_page
     end
   end

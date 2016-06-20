@@ -36,19 +36,19 @@ module Zendesk2::Searchable
 
   def search_by_hash(terms)
     terms['type'] = self.class.search_type if self.class.search_type
-    terms.merge(self.class.scopes.inject({}) { |r, k|
+    terms.merge(self.class.scopes.inject({}) do |r, k|
       val = public_send(k)
       val.nil? ? r : r.merge(k.to_s => val)
-    },).map { |k, v| "#{k}:#{v}" }.join(' ',)
+    end,).map { |k, v| "#{k}:#{v}" }.join(' ',)
   end
 
   def search_by_string(terms)
     additional_terms = []
     additional_terms = ["type:#{self.class.search_type}"] if self.class.search_type
-    additional_terms += self.class.scopes.inject([]) { |r, k|
+    additional_terms += self.class.scopes.inject([]) do |r, k|
       val = public_send(k)
       val.nil? ? r : ["#{k}:#{val}"]
-    }
+    end
 
     additional_terms.inject(terms.to_s) do |qualified_search, qualification|
       if !qualified_search.include?(qualification)

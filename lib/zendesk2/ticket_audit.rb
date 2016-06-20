@@ -26,8 +26,8 @@ class Zendesk2::TicketAudit
   end
 
   def events
-    (attributes[:events] || []).map { |ae|
+    (attributes[:events] || []).map do |ae|
       Zendesk2::AuditEvent.for(ae.merge(ticket_audit: self, cistern: cistern))
-    }
+    end
   end
 end

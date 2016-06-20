@@ -3,8 +3,8 @@ class Zendesk2::CreateForum
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/forums.json' end
-  request_body do |r| { 'forum' => r.forum_params } end
+  request_path { |_| '/forums.json' }
+  request_body { |r| { 'forum' => r.forum_params } }
 
   def self.accepted_attributes
     %w(name description category_id organization_id locale_id locked position forum_type access)

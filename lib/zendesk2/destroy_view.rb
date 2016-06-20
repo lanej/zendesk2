@@ -3,7 +3,7 @@ class Zendesk2::DestroyView
   include Zendesk2::Request
 
   request_method :delete
-  request_path do |r| "/views/#{r.view_id}.json" end
+  request_path { |r| "/views/#{r.view_id}.json" }
 
   def view_id
     @_view_id ||= params.fetch('view').fetch('id')

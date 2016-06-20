@@ -3,8 +3,8 @@ class Zendesk2::CreateHelpCenterCategory
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/help_center/categories.json' end
-  request_body do |r| { 'category' => r.category_params } end
+  request_path { |_| '/help_center/categories.json' }
+  request_body { |r| { 'category' => r.category_params } }
 
   def self.accepted_attributes
     %w(category_id description locale name position sorting)

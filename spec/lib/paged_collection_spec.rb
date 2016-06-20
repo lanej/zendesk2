@@ -9,7 +9,7 @@ describe Zendesk2::PagedCollection, :mock_only do
   context '#each_page' do
     it 'should enumerate pages' do
       found_records = []
-      client.organizations.all.each_page do |page| page.each { |entry| found_records << entry } end
+      client.organizations.all.each_page { |page| page.each { |entry| found_records << entry } }
 
       expect(records).to match_array(found_records)
     end
@@ -18,7 +18,7 @@ describe Zendesk2::PagedCollection, :mock_only do
   context '#each_entry' do
     it 'should enumerate entries' do
       found_records = []
-      client.organizations.all.each_entry do |entry| found_records << entry end
+      client.organizations.all.each_entry { |entry| found_records << entry }
 
       expect(records).to match_array(found_records)
     end

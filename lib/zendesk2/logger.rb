@@ -11,14 +11,14 @@ class Zendesk2::Logger < Faraday::Response::Middleware
 
   def call(env)
     info("#{env[:method]} => #{env[:url]}")
-    debug('request') do dump_headers env[:request_headers] end
-    debug('request.body') do env[:body] end
+    debug('request') { dump_headers env[:request_headers] }
+    debug('request.body') { env[:body] }
     super
   end
 
   def on_complete(env)
     info("#{env[:status]} <= #{env[:url]}")
-    debug('response') do dump_headers env[:response_headers] end
+    debug('response') { dump_headers env[:response_headers] }
     debug('response.body') { env[:body] }
   end
 

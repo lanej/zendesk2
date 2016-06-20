@@ -3,7 +3,7 @@ class Zendesk2::GetUserFields
   include Zendesk2::Request
 
   request_method :get
-  request_path do '/user_fields.json' end
+  request_path { '/user_fields.json' }
 
   page_params!
 

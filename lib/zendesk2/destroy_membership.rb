@@ -3,7 +3,7 @@ class Zendesk2::DestroyMembership
   include Zendesk2::Request
 
   request_method :delete
-  request_path do |r| "/organization_memberships/#{r.membership_id}.json" end
+  request_path { |r| "/organization_memberships/#{r.membership_id}.json" }
 
   def membership_id
     params.fetch('membership').fetch('id').to_i
@@ -12,9 +12,9 @@ class Zendesk2::DestroyMembership
   def mock
     membership = delete!(:memberships, membership_id)
 
-    primary_organization = data[:memberships].values.find { |m|
+    primary_organization = data[:memberships].values.find do |m|
       m['user_id'] == membership['user_id'] && m['default']
-    } || data[:memberships].values.find { |m| m['user_id'] == membership['user_id'] }
+    end || data[:memberships].values.find { |m| m['user_id'] == membership['user_id'] }
 
     if primary_organization
       primary_organization['default'] = true

@@ -38,9 +38,9 @@ describe 'help_center/sections' do
       old_viewable_by = policy.viewable_by
       new_viewable_by = 'staff'
 
-      expect {
+      expect do
         policy.update!(viewable_by: new_viewable_by)
-      }.to change { section.reload.access_policy.viewable_by }.from(old_viewable_by).to(new_viewable_by)
+      end.to change { section.reload.access_policy.viewable_by }.from(old_viewable_by).to(new_viewable_by)
     end
   end
 

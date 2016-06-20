@@ -4,7 +4,7 @@ class Zendesk2::Mock
   attr_accessor :last_request
 
   def self.data
-    @data ||= Hash.new { |h, k|
+    @data ||= Hash.new do |h, k|
       h[k] = {
         categories: {},
         forums: {},
@@ -28,7 +28,7 @@ class Zendesk2::Mock
         users: {},
         views: {},
       }
-    }
+    end
   end
 
   def self.serial_id
@@ -61,9 +61,9 @@ class Zendesk2::Mock
     @token               = options[:token]
     @jwt_token           = options[:jwt_token]
 
-    @current_user ||= data[:users].values.find { |u|
+    @current_user ||= data[:users].values.find do |u|
       @username == u['name']
-    } || create_user(
+    end || create_user(
       'user' => { 'email' => @username, 'name' => @username }
     ).body['user']
 

@@ -3,8 +3,8 @@ class Zendesk2::CreateTicket
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/tickets.json' end
-  request_body do |r| { 'ticket' => r.ticket_params } end
+  request_path { |_| '/tickets.json' }
+  request_body { |r| { 'ticket' => r.ticket_params } }
 
   def self.accepted_attributes
     %w(external_id via priority requester requester_id submitter_id assignee_id organization_id subject description
@@ -72,13 +72,13 @@ class Zendesk2::CreateTicket
   end
 
   def get_custom_fields(requested_custom_fields)
-    custom_fields = requested_custom_fields.map { |cf|
+    custom_fields = requested_custom_fields.map do |cf|
       field_id = cf['id'].to_i
 
       if cistern.data[:ticket_fields][field_id]
         { 'id' => field_id, 'value' => cf['value'] }
       end
-    }.compact
+    end.compact
 
     cistern.data[:ticket_fields].each do |field_id, _field|
       requested_custom_fields.find { |cf| cf['id'] == field_id } ||

@@ -8,7 +8,7 @@ shared_examples 'zendesk#resource' do |options = {}|
     let(:search_params) { options[:search_params] ? instance_exec(&options[:search_params]) : create_params }
 
     let(:record) { @record }
-    after(:each) do @record && @record.destroy end
+    after(:each) { @record && @record.destroy }
 
     it 'should be created' do
       @record = collection.create!(create_params)
@@ -26,7 +26,7 @@ shared_examples 'zendesk#resource' do |options = {}|
           @resources = Array.new(3) { collection.create!(instance_exec(&options[:create_params])) }
         end
 
-        after(:each) do (@resources || []).each(&:destroy) end
+        after(:each) { (@resources || []).each(&:destroy) }
 
         it 'should retrieve first page' do
           expect(collection.all('per_page' => '1').size).to eq(1)
@@ -57,12 +57,12 @@ shared_examples 'zendesk#resource' do |options = {}|
     if options.fetch(:update, true)
       it 'should be updated' do
         @record = collection.create!(create_params)
-        update_params.each do |k, v| record.send("#{k}=", v) end
+        update_params.each { |k, v| record.send("#{k}=", v) }
         record.save
-        update_params.each { |k, to|
+        update_params.each do |k, to|
           from = record.send(k)
           expect(from).to eq(to), "Expected #{k} to be updated #{from.inspect} to #{to.inspect}"
-        }
+        end
       end
     end
 

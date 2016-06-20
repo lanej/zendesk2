@@ -3,8 +3,8 @@ class Zendesk2::CreateUserField
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/user_fields.json' end
-  request_body do |r| { 'user_field' => r.user_field_params } end
+  request_path { |_| '/user_fields.json' }
+  request_body { |r| { 'user_field' => r.user_field_params } }
 
   def self.accepted_attributes
     %w(key type title description position active, regexp_for_validation tag custom_field_options)

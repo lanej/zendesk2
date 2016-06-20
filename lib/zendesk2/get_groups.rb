@@ -3,7 +3,7 @@ class Zendesk2::GetGroups
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_| '/groups.json' end
+  request_path { |_| '/groups.json' }
 
   page_params!
 

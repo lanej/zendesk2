@@ -3,7 +3,7 @@ class Zendesk2::UpdateHelpCenterAccessPolicy
   include Zendesk2::Request
 
   request_method :put
-  request_body do |r| { 'access_policy' => r.access_policy_params } end
+  request_body { |r| { 'access_policy' => r.access_policy_params } }
   request_path do |r|
     "/help_center/sections/#{r.section_id}/access_policy.json"
   end

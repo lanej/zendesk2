@@ -3,7 +3,7 @@ class Zendesk2::GetTicketAudits
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/tickets/#{r.ticket_id}/audits.json" end
+  request_path { |r| "/tickets/#{r.ticket_id}/audits.json" }
 
   page_params!
 

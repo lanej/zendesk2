@@ -3,7 +3,7 @@ class Zendesk2::GetUser
   include Zendesk2::Request
 
   request_method :get
-  request_path do |r| "/users/#{r.user_id}.json" end
+  request_path { |r| "/users/#{r.user_id}.json" }
 
   def user_id
     params.fetch('user').fetch('id').to_i

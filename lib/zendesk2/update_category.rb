@@ -3,8 +3,8 @@ class Zendesk2::UpdateCategory
   include Zendesk2::Request
 
   request_method :put
-  request_body do |r| { 'category' => Cistern::Hash.except(r.category, 'id') } end
-  request_path do |r| "/categories/#{r.category_id}.json" end
+  request_body { |r| { 'category' => Cistern::Hash.except(r.category, 'id') } }
+  request_path { |r| "/categories/#{r.category_id}.json" }
 
   def category
     params.fetch('category')

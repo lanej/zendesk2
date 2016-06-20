@@ -3,7 +3,7 @@ class Zendesk2::GetAssignableGroups
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_r| '/groups/assignable.json' end
+  request_path { |_r| '/groups/assignable.json' }
 
   page_params!
 

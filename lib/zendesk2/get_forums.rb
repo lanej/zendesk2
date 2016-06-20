@@ -3,7 +3,7 @@ class Zendesk2::GetForums
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_| '/forums.json' end
+  request_path { |_| '/forums.json' }
 
   page_params!
 

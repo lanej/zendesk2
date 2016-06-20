@@ -3,8 +3,8 @@ class Zendesk2::UpdateTicketField
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/ticket_fields/#{r.ticket_field_id}.json" end
-  request_body do |r| { 'ticket_field' => r.ticket_field_params } end
+  request_path { |r| "/ticket_fields/#{r.ticket_field_id}.json" }
+  request_body { |r| { 'ticket_field' => r.ticket_field_params } }
 
   def ticket_field_id
     params.fetch('ticket_field').fetch('id')

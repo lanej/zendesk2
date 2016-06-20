@@ -3,8 +3,8 @@ class Zendesk2::UpdateForum
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/forums/#{r.forum_id}.json" end
-  request_body do |r| { 'forum' => r.forum_params } end
+  request_path { |r| "/forums/#{r.forum_id}.json" }
+  request_body { |r| { 'forum' => r.forum_params } }
 
   def forum_params
     Cistern::Hash.slice(params.fetch('forum'), *Zendesk2::CreateForum.accepted_attributes)

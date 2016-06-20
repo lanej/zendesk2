@@ -3,8 +3,8 @@ class Zendesk2::CreateTopic
   include Zendesk2::Request
 
   request_method :post
-  request_body do |r| { 'topic' => r.topic_params } end
-  request_path do |_| '/topics.json' end
+  request_body { |r| { 'topic' => r.topic_params } }
+  request_path { |_| '/topics.json' }
 
   def self.accepted_attributes
     %w(title body submitter_id updater_id forum_id locked pinned highlighted position tags)

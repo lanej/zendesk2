@@ -2,7 +2,7 @@
 class Zendesk2::GetHelpCenterSections
   include Zendesk2::Request
 
-  request_path do |_| '/help_center/sections.json' end
+  request_path { |_| '/help_center/sections.json' }
 
   page_params!
 

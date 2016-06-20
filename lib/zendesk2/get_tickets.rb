@@ -3,7 +3,7 @@ class Zendesk2::GetTickets
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_r| '/tickets.json' end
+  request_path { |_r| '/tickets.json' }
 
   page_params!
 

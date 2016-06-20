@@ -3,8 +3,8 @@ class Zendesk2::UpdateUser
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/users/#{r.user_id}.json" end
-  request_body do |r| { 'user' => r.user_params } end
+  request_path { |r| "/users/#{r.user_id}.json" }
+  request_body { |r| { 'user' => r.user_params } }
 
   def user_params
     Cistern::Hash.slice(params.fetch('user'), *Zendesk2::CreateUser.accepted_attributes)

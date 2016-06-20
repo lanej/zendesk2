@@ -3,7 +3,7 @@ class Zendesk2::GetOrganizations
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_| '/organizations.json' end
+  request_path { |_| '/organizations.json' }
 
   page_params!
 

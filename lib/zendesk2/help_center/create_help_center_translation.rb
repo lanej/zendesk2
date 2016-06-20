@@ -4,8 +4,8 @@ class Zendesk2::CreateHelpCenterTranslation
   include Zendesk2::HelpCenter::TranslationSource::Request
 
   request_method :post
-  request_path do |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" end
-  request_body do |r| { 'translation' => r.translation_params } end
+  request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" }
+  request_body { |r| { 'translation' => r.translation_params } }
 
   def self.accepted_attributes
     %w(locale title body outdated draft)

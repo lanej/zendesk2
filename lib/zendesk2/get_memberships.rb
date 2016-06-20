@@ -3,7 +3,7 @@ class Zendesk2::GetMemberships
   include Zendesk2::Request
 
   request_method :get
-  request_path do |_r| '/organization_memberships.json' end
+  request_path { |_r| '/organization_memberships.json' }
 
   page_params!
 

@@ -3,8 +3,8 @@ class Zendesk2::CreateCategory
   include Zendesk2::Request
 
   request_method :post
-  request_path do |_| '/categories.json' end
-  request_body do |r| { 'category' => r.params['category'] } end
+  request_path { |_| '/categories.json' }
+  request_body { |r| { 'category' => r.params['category'] } }
 
   def self.accepted_attributes
     %w(id name description position)

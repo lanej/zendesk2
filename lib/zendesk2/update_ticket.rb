@@ -3,8 +3,8 @@ class Zendesk2::UpdateTicket
   include Zendesk2::Request
 
   request_method :put
-  request_path do |r| "/tickets/#{r.ticket_id}.json"  end
-  request_body do |r| { 'ticket' => r.ticket_params } end
+  request_path { |r| "/tickets/#{r.ticket_id}.json"  }
+  request_body { |r| { 'ticket' => r.ticket_params } }
 
   def self.accepted_attributes
     Zendesk2::CreateTicket.accepted_attributes + ['comment']
