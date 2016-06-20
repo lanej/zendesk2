@@ -5,7 +5,7 @@ describe 'help_center/categories' do
   let(:client) { create_client }
 
   include_examples 'zendesk#resource',
-                   collection: -> { client.help_center_categories },
+                   collection: -> { client.help_center_categories(locale: 'en-us') },
                    create_params: -> { { name: mock_uuid, locale: 'en-us' } },
                    update_params: -> { { name: mock_uuid } },
                    search: false
