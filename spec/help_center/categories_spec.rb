@@ -28,16 +28,4 @@ describe 'help_center/categories' do
       expect(category.articles.all).to match_array(articles)
     end
   end
-
-  describe 'translations' do
-    let!(:category) { client.help_center_categories.create!(name: mock_uuid, locale: 'en-us') }
-    let!(:locale) { mock_uuid }
-
-    include_examples 'zendesk#resource',
-                     collection: -> { category.translations },
-                     fetch_params: ->(r) { Cistern::Hash.slice(r.attributes, :source_id, :source_type, :locale) },
-                     create_params: -> { { source: category, locale: locale, title: mock_uuid } },
-                     update_params: -> { { title: mock_uuid } },
-                     search: false
-  end
 end
