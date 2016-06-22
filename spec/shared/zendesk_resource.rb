@@ -54,6 +54,17 @@ shared_examples 'zendesk#resource' do |options = {}|
       end
     end
 
+    context 'index' do
+      let!(:resource) { @resource = collection.create!(instance_exec(&options[:create_params])) }
+
+      after { @resource.destroy if @resource }
+
+      # real index actions sometimes have delays in population
+      it 'lists', mock_only: true do
+        expect(collection.all).to include(resource)
+      end
+    end
+
     if options.fetch(:update, true)
       it 'should be updated' do
         @record = collection.create!(create_params)
