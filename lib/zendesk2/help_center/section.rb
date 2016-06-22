@@ -73,6 +73,12 @@ class Zendesk2::HelpCenter::Section
     cistern.help_center_access_policy(response)
   end
 
+  def subscriptions
+    requires :identity
+
+    cistern.help_center_subscriptions(content_id: identity, content_type: 'section')
+  end
+
   def translations
     requires :identity
 
