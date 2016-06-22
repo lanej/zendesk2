@@ -1,28 +1,12 @@
 # frozen_string_literal: true
 class Zendesk2::GetHelpCenterSubscription
   include Zendesk2::Request
+  include Zendesk2::HelpCenter::SubscriptionRequest
 
   request_method :get
-  request_path { |r| "help_center/#{r.plural_content_type}/#{r.content_id}/subscriptions/#{r.subscription_id}.json" }
-
-  def plural_content_type
-    pluralize(content_type)
-  end
-
-  def content_type
-    subscription.fetch('content_type')
-  end
-
-  def content_id
-    subscription.fetch('content_id')
-  end
-
-  def subscription_id
-    subscription.fetch('id')
-  end
-
-  def subscription
-    params.fetch('subscription')
+  request_path do |r|
+    content_path = "/#{r.route_prefix}/#{r.plural_content_type}"
+    content_path + "/#{r.content_id}/subscriptions/#{r.subscription_id}.json"
   end
 
   def mock(_params = {})

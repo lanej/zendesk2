@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 class Zendesk2::CreateHelpCenterSubscription
   include Zendesk2::Request
+  include Zendesk2::HelpCenter::SubscriptionRequest
 
   request_method :post
-  request_path { |r| "/help_center/#{r.plural_content_type}/#{r.content_id}/subscriptions.json" }
+  request_path { |r| "/#{r.route_prefix}/#{r.plural_content_type}/#{r.content_id}/subscriptions.json" }
   request_body { |r| { 'subscription' => r.subscription_params } }
 
   def self.accepted_attributes(type)
@@ -13,22 +14,6 @@ class Zendesk2::CreateHelpCenterSubscription
     else
       %w(locale user_id)
     end
-  end
-
-  def plural_content_type
-    pluralize(content_type)
-  end
-
-  def content_type
-    subscription.fetch('content_type')
-  end
-
-  def content_id
-    subscription.fetch('content_id').to_i
-  end
-
-  def subscription
-    Cistern::Hash.stringify_keys(params.fetch('subscription'))
   end
 
   def subscription_params

@@ -37,4 +37,16 @@ describe 'help_center/subscriptions' do
                      paged: false,
                      search: false
   end
+
+  describe 'with a topic' do
+    let!(:topic) { client.help_center_topics.create(name: mock_uuid) }
+
+    include_examples 'zendesk#resource',
+                     collection: -> { topic.subscriptions },
+                     create_params: -> { { include_comments: true } },
+                     destroy: false,
+                     update: false,
+                     paged: false,
+                     search: false
+  end
 end
