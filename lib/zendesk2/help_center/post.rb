@@ -59,4 +59,8 @@ class Zendesk2::HelpCenter::Post
 
     merge_attributes(response.body['post'])
   end
+
+  def author
+    author_id && cistern.users.get!(author_id)
+  end
 end

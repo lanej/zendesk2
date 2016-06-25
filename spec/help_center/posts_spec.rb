@@ -9,6 +9,27 @@ describe 'help_center/posts' do
                    collection: -> { topic.posts },
                    create_params: -> { { title: mock_uuid, details: mock_uuid } },
                    update_params: -> { { title: mock_uuid, details: mock_uuid } },
-                   update: false,
                    search: false
+
+  let(:author) { client.users.create!(email: mock_email, name: mock_uuid) }
+
+  describe 'with an author' do
+    include_examples 'zendesk#resource',
+                     collection: -> { author.posts },
+                     create_params: lambda {
+                                      { title: mock_uuid, details: mock_uuid, topic_id: topic.id, author_id: author.id }
+                                    },
+                     update_params: -> { { title: mock_uuid, details: mock_uuid } },
+                     search: false
+  end
+
+  describe 'with a post' do
+    let!(:post) do
+      client.help_center_posts.create(title: mock_uuid, details: mock_uuid, topic_id: topic.id, author_id: author.id)
+    end
+
+    it 'returns the author' do
+      expect(post.author).to eq(author)
+    end
+  end
 end
