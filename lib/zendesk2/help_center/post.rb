@@ -41,7 +41,9 @@ class Zendesk2::HelpCenter::Post
   attribute :updated_at, type: :time
 
   def destroy!
-    # @fixme
+    requires :identity
+
+    cistern.destroy_help_center_post('post' => { 'id' => identity })
   end
 
   def save!
