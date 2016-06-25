@@ -52,7 +52,9 @@ class Zendesk2::HelpCenter::Post
 
                  cistern.create_help_center_post('post' => attributes)
                else
-                 raise NotImplementedError
+                 requires :identity
+
+                 cistern.update_help_center_post('post' => attributes)
                end
 
     merge_attributes(response.body['post'])

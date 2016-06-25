@@ -8,6 +8,7 @@ describe 'help_center/posts' do
   include_examples 'zendesk#resource',
                    collection: -> { topic.posts },
                    create_params: -> { { title: mock_uuid, details: mock_uuid } },
+                   update_params: -> { { title: mock_uuid, details: mock_uuid } },
                    update: false,
                    search: false
 end
