@@ -63,4 +63,10 @@ class Zendesk2::HelpCenter::Post
   def author
     author_id && cistern.users.get!(author_id)
   end
+
+  def topic
+    requires :topic_id
+
+    cistern.help_center_topics.get!(topic_id)
+  end
 end

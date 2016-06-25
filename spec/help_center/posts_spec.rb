@@ -31,5 +31,9 @@ describe 'help_center/posts' do
     it 'returns the author' do
       expect(post.author).to eq(author)
     end
+
+    it 'returns the topic' do
+      expect(post.topic).to eq(topic)
+    end
   end
 end
