@@ -26,3 +26,5 @@ Metrics/PerceivedComplexity:
 Style/TrailingCommaInArguments:
   Enabled: false
   #EnforcedStyleForMultiline: consistent_comma # this is very broke
+Style/Documentation:
+  Enabled: false

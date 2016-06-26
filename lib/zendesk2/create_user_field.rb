@@ -7,7 +7,7 @@ class Zendesk2::CreateUserField
   request_body { |r| { 'user_field' => r.user_field_params } }
 
   def self.accepted_attributes
-    %w(key type title description position active, regexp_for_validation tag custom_field_options)
+    %w(key type title description position active regexp_for_validation tag custom_field_options)
   end
 
   def user_field_params
