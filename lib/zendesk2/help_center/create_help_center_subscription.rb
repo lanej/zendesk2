@@ -36,11 +36,13 @@ class Zendesk2::CreateHelpCenterSubscription
     end
 
     record = subscription_params.merge(
-      'id'         => identity,
-      'url'        => url,
-      'created_at' => Time.now.iso8601, # @todo create #timestamp helper
-      'updated_at' => Time.now.iso8601,
-      'locale'     => subscription_params['source_locale'],
+      'id'           => identity,
+      'url'          => url,
+      'created_at'   => Time.now.iso8601, # @todo create #timestamp helper
+      'updated_at'   => Time.now.iso8601,
+      'locale'       => subscription_params['source_locale'],
+      'content_id'   => content_id,
+      'content_type' => content_type,
     )
 
     cistern.data[:help_center_subscriptions][identity] = record
