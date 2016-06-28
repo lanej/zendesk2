@@ -189,4 +189,11 @@ class Zendesk2::User
   def organizations
     cistern.organizations(user: self)
   end
+
+  # @return [Zendesk2::HelpCenter::Post] authored posts
+  def posts
+    requires :identity
+
+    cistern.help_center_posts(user_id: identity)
+  end
 end

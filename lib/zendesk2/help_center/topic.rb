@@ -43,4 +43,10 @@ class Zendesk2::HelpCenter::Topic
 
     merge_attributes(response.body['topic'])
   end
+
+  def posts
+    requires :identity
+
+    cistern.help_center_posts(topic_id: identity)
+  end
 end
