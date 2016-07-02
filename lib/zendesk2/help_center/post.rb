@@ -61,7 +61,7 @@ class Zendesk2::HelpCenter::Post
   end
 
   def author
-    author_id && cistern.users.get!(author_id)
+    cistern.users.get!(author_id) if author_id
   end
 
   def topic
