@@ -5,7 +5,9 @@ class Zendesk2::CreateHelpCenterSubscription
 
   request_method :post
   request_path { |r| "/#{r.route_prefix}/#{r.plural_content_type}/#{r.content_id}/subscriptions.json" }
-  request_body { |r| { 'subscription' => r.subscription_params } }
+  request_body do |r|
+    { 'subscription' => r.subscription_params } if r.subscription_params.any?
+  end
 
   def self.accepted_attributes(type)
     case type
