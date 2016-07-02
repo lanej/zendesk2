@@ -13,6 +13,8 @@ class Zendesk2::CreateHelpCenterSubscription
     case type
     when 'topic'
       %w(include_comments user_id)
+    when 'post'
+      %w(user_id)
     else
       %w(locale user_id)
     end
