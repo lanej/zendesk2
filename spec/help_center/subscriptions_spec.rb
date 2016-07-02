@@ -49,4 +49,20 @@ describe 'help_center/subscriptions' do
                      paged: false,
                      search: false
   end
+
+  describe 'with a post' do
+    let!(:author) { client.users.create!(email: mock_email, name: mock_uuid) }
+    let!(:topic) { client.help_center_topics.create(name: mock_uuid) }
+    let!(:post) do
+      client.help_center_posts.create(title: mock_uuid, details: mock_uuid, topic_id: topic.id, author_id: author.id)
+    end
+
+    include_examples 'zendesk#resource',
+                     collection: -> { post.subscriptions },
+                     create_params: -> { { user_id: author.id } },
+                     destroy: false,
+                     update: false,
+                     paged: false,
+                     search: false
+  end
 end

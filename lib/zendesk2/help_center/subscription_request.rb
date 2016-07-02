@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 module Zendesk2::HelpCenter::SubscriptionRequest
   def route_prefix
-    content_type == 'topic' ? 'community' : 'help_center'
+    case content_type
+    when 'topic', 'post'
+      'community'
+    else
+      'help_center'
+    end
   end
 
   def plural_content_type

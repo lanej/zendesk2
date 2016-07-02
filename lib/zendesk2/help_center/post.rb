@@ -69,4 +69,10 @@ class Zendesk2::HelpCenter::Post
 
     cistern.help_center_topics.get!(topic_id)
   end
+
+  def subscriptions
+    requires :identity
+
+    cistern.help_center_subscriptions(content_id: identity, content_type: 'post')
+  end
 end
