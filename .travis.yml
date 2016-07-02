@@ -5,7 +5,6 @@ cache:
 rvm:
   - 2.3.0
   - 2.2.4
-  - 2.1.8
 script: 
   - bundle exec rubocop -Da
   - bundle exec rake spec
