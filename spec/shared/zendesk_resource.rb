@@ -23,7 +23,9 @@ shared_examples 'zendesk#resource' do |options = {}|
     if options.fetch(:paged, true)
       context 'paging' do
         before(:each) do
-          @resources = Array.new(3) { collection.create!(instance_exec(&options[:create_params])) }
+          if collection.reload.count < 3
+            @resources = Array.new(3) { collection.create!(instance_exec(&options[:create_params])) }
+          end
         end
 
         after(:each) { (@resources || []).each(&:destroy) }
