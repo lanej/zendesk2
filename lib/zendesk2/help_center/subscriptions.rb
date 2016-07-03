@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Zendesk2::HelpCenter::Subscriptions
   include Zendesk2::Collection
+  include Zendesk2::PagedCollection
 
   include Zendesk2::Searchable
 
@@ -13,7 +14,6 @@ class Zendesk2::HelpCenter::Subscriptions
 
   attribute :content_id, type: :integer
   attribute :content_type, type: :string
-  attribute :count
 
   scopes << :content_id
   scopes << :content_type

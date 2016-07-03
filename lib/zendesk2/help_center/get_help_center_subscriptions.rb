@@ -5,6 +5,8 @@ class Zendesk2::GetHelpCenterSubscriptions
 
   request_path { |r| "/#{r.route_prefix}/#{r.plural_content_type}/#{r.content_id}/subscriptions.json" }
 
+  page_params!
+
   def content_type
     params.fetch('content_type')
   end
@@ -17,6 +19,7 @@ class Zendesk2::GetHelpCenterSubscriptions
     article_subscriptions = cistern.data[:help_center_subscriptions].values.select do |sub|
       sub['content_id'] == content_id
     end
-    resources(article_subscriptions, root: 'subscriptions')
+
+    page(article_subscriptions, root: 'subscriptions')
   end
 end

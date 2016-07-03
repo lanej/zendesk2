@@ -19,10 +19,15 @@ describe 'help_center/subscriptions' do
 
     include_examples 'zendesk#resource',
                      collection: -> { article.subscriptions },
-                     create_params: -> { { locale: 'en-us' } },
+                     create_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, locale: 'en-us' }
+                                    },
                      destroy: false,
                      update: false,
-                     paged: false,
                      search: false
   end
 
@@ -31,10 +36,15 @@ describe 'help_center/subscriptions' do
 
     include_examples 'zendesk#resource',
                      collection: -> { section.subscriptions },
-                     create_params: -> { { locale: 'en-us' } },
+                     create_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, locale: 'en-us' }
+                                    },
                      destroy: false,
                      update: false,
-                     paged: false,
                      search: false
   end
 
@@ -43,26 +53,46 @@ describe 'help_center/subscriptions' do
 
     include_examples 'zendesk#resource',
                      collection: -> { topic.subscriptions },
-                     create_params: -> { { include_comments: true } },
+                     create_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, include_comments: true }
+                                    },
                      destroy: false,
                      update: false,
-                     paged: false,
                      search: false
   end
 
   describe 'with a post' do
-    let!(:author) { client.users.create!(email: mock_email, name: mock_uuid) }
     let!(:topic) { client.help_center_topics.create(name: mock_uuid) }
+    let!(:author)  do
+      client.users.create!(
+        email: mock_email,
+        name: mock_uuid,
+      )
+    end
     let!(:post) do
-      client.help_center_posts.create(title: mock_uuid, details: mock_uuid, topic_id: topic.id, author_id: author.id)
+      client.help_center_posts.create(
+        title: mock_uuid,
+        details: mock_uuid,
+        topic_id: topic.id,
+        author_id: author.id,
+      )
     end
 
     include_examples 'zendesk#resource',
                      collection: -> { post.subscriptions },
-                     create_params: -> { { user_id: author.id } },
+                     create_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id }
+                                    },
                      destroy: false,
                      update: false,
-                     paged: false,
                      search: false
   end
 end
