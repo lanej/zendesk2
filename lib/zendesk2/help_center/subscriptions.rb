@@ -17,4 +17,10 @@ class Zendesk2::HelpCenter::Subscriptions
 
   scopes << :content_id
   scopes << :content_type
+
+  def get!(*args)
+    requires :content_id, :content_type
+
+    super
+  end
 end
