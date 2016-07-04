@@ -54,6 +54,12 @@ class Zendesk2::HelpCenter::Article
     cistern.help_center_translations(source_id: identity, source_type: 'Article')
   end
 
+  def subscriptions
+    requires :identity
+
+    cistern.help_center_subscriptions(content_id: identity, content_type: 'article')
+  end
+
   def save!
     response = if new_record?
                  requires :title, :locale, :section_id

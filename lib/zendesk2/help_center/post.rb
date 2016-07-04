@@ -61,12 +61,18 @@ class Zendesk2::HelpCenter::Post
   end
 
   def author
-    author_id && cistern.users.get!(author_id)
+    cistern.users.get!(author_id) if author_id
   end
 
   def topic
     requires :topic_id
 
     cistern.help_center_topics.get!(topic_id)
+  end
+
+  def subscriptions
+    requires :identity
+
+    cistern.help_center_subscriptions(content_id: identity, content_type: 'post')
   end
 end

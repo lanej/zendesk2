@@ -8,9 +8,9 @@ gem 'rake'
 # To avoid warnings from JWT
 gem 'json', '~> 1.8'
 gem 'rubocop', '~> 0.41', require: false
-gem 'pry-nav'
 
 group :test do
+  gem 'pry-nav'
   gem 'awesome_print'
   gem 'rspec', '~> 3.2'
   gem 'rack-test'
