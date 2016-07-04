@@ -33,7 +33,6 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, locale: 'en-gb' }
                                     },
-                     destroy: false,
                      search: false
   end
 
@@ -56,7 +55,6 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, locale: 'en-gb' }
                                     },
-                     destroy: false,
                      search: false
   end
 
@@ -79,7 +77,6 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, include_comments: false }
                                     },
-                     destroy: false,
                      search: false
   end
 
@@ -116,7 +113,6 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id }
                                     },
-                     destroy: false,
                      search: false
   end
 end

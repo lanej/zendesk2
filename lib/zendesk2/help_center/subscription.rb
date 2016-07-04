@@ -25,7 +25,9 @@ class Zendesk2::HelpCenter::Subscription
   attribute :updated_at, type: :time # ro: yes, required: no
 
   def destroy!
-    # @todo
+    requires :identity
+
+    cistern.destroy_help_center_subscription('subscription' => attributes)
   end
 
   def save!
