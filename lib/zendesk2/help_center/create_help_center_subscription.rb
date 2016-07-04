@@ -9,17 +9,6 @@ class Zendesk2::CreateHelpCenterSubscription
     { 'subscription' => r.subscription_params } if r.subscription_params.any?
   end
 
-  def self.accepted_attributes(type)
-    case type
-    when 'topic'
-      %w(include_comments user_id)
-    when 'post'
-      %w(user_id)
-    else
-      %w(locale user_id)
-    end
-  end
-
   def subscription_params
     return @subscription_params if @subscription_params
     body = Cistern::Hash.slice(subscription, *self.class.accepted_attributes(content_type))

@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 module Zendesk2::HelpCenter::SubscriptionRequest
+
+  def self.included(klass)
+    super
+    klass.extend(ClassMethods)
+  end
+
+  module ClassMethods
+    def accepted_attributes(type)
+      case type
+      when 'topic'
+        %w(include_comments user_id)
+      when 'post'
+        %w(user_id)
+      else
+        %w(locale user_id)
+      end
+    end
+  end
+
   def route_prefix
     case content_type
     when 'topic', 'post'
