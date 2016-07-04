@@ -115,4 +115,15 @@ describe 'help_center/subscriptions' do
                                     },
                      search: false
   end
+
+  it 'lists subscription by user' do
+    subscriber = client.users.create!(
+      email: mock_email,
+      name: mock_uuid,
+    )
+
+    subscription = section.subscriptions.create(user_id: subscriber.id, locale: 'en-us')
+
+    expect(subscriber.subscriptions).to include(subscription)
+  end
 end
