@@ -26,8 +26,14 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, locale: 'en-us' }
                                     },
+                     update_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, locale: 'en-gb' }
+                                    },
                      destroy: false,
-                     update: false,
                      search: false
   end
 
@@ -43,8 +49,14 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, locale: 'en-us' }
                                     },
+                     update_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, locale: 'en-gb' }
+                                    },
                      destroy: false,
-                     update: false,
                      search: false
   end
 
@@ -60,8 +72,14 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id, include_comments: true }
                                     },
+                     update_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id, include_comments: false }
+                                    },
                      destroy: false,
-                     update: false,
                      search: false
   end
 
@@ -91,8 +109,14 @@ describe 'help_center/subscriptions' do
                                       )
                                       { user_id: subscriber.id }
                                     },
+                     update_params: lambda {
+                                      subscriber = client.users.create!(
+                                        email: mock_email,
+                                        name: mock_uuid,
+                                      )
+                                      { user_id: subscriber.id }
+                                    },
                      destroy: false,
-                     update: false,
                      search: false
   end
 end

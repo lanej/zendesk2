@@ -28,15 +28,17 @@ class Zendesk2::CreateHelpCenterSubscription
       mock_response('Required parameter missing: subscription', status: 400)
     end
 
+
     record = subscription_params.merge(
       'id'           => identity,
       'url'          => url,
       'created_at'   => Time.now.iso8601, # @todo create #timestamp helper
       'updated_at'   => Time.now.iso8601,
-      'locale'       => subscription_params['source_locale'],
       'content_id'   => content_id,
       'content_type' => content_type,
     )
+
+    record['locale'] = record.delete('source_locale') if record['source_locale']
 
     cistern.data[:help_center_subscriptions][identity] = record
 
