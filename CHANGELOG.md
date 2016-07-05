@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/lanej/zendesk2/tree/HEAD)
-
-[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.10.0...HEAD)
+## [v1.11.0](https://github.com/lanej/zendesk2/tree/v1.11.0) (2016-07-05)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.10.0...v1.11.0)
 
 **Implemented enhancements:**
 
