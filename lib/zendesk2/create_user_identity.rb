@@ -24,8 +24,8 @@ class Zendesk2::CreateUserIdentity
     record = {
       'id'         => identity,
       'url'        => url_for("/user/#{user_id}/identities/#{identity}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
       'verified'   => false,
       'primary'    => false,
       'user_id'    => user_id,

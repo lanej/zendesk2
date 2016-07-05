@@ -26,8 +26,8 @@ class Zendesk2::CreateHelpCenterCategory
       'html_url'    => html_url_for("/hc/#{locale}/categories/#{identity}.json"),
       'author_id'   => cistern.current_user['id'],
       'position'    => position,
-      'created_at'  => Time.now.iso8601,
-      'updated_at'  => Time.now.iso8601,
+      'created_at'  => timestamp,
+      'updated_at'  => timestamp,
       'description' => '',
     }.merge(category_params)
 

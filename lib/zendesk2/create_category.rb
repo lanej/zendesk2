@@ -16,8 +16,8 @@ class Zendesk2::CreateCategory
     record = {
       'id'         => identity,
       'url'        => url_for("/categories/#{identity}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
     }.merge(Cistern::Hash.slice(params.fetch('category'), *self.class.accepted_attributes))
 
     cistern.data[:categories][identity] = record

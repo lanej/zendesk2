@@ -20,8 +20,8 @@ class Zendesk2::CreateTopic
     record = {
       'id'         => identity,
       'url'        => url_for("/topics/#{identity}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
     }.merge(topic_params)
 
     data[:topics][identity] = record

@@ -21,7 +21,7 @@ class Zendesk2::CreateTicketField
     record = {
       'active'                => true,
       'collapsed_for_agents'  => false,
-      'created_at'            => Time.now.iso8601,
+      'created_at'            => timestamp,
       'description'           => params['title'],
       'editable_in_portal'    => false,
       'id'                    => identity,
@@ -32,7 +32,7 @@ class Zendesk2::CreateTicketField
       'required_in_portal'    => false,
       'tag'                   => '',
       'title_in_portal'       => params['title'],
-      'updated_at'            => Time.now.iso8601,
+      'updated_at'            => timestamp,
       'url'                   => url_for("/ticket_fields/#{identity}.json"),
       'visible_in_portal'     => false,
     }.merge(ticket_field_params)

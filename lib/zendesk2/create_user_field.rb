@@ -20,7 +20,7 @@ class Zendesk2::CreateUserField
     record = {
       'active'                => true,
       'collapsed_for_agents'  => false,
-      'created_at'            => Time.now.iso8601,
+      'created_at'            => timestamp,
       'description'           => params['title'],
       'editable_in_portal'    => false,
       'id'                    => identity,
@@ -31,7 +31,7 @@ class Zendesk2::CreateUserField
       'required_in_portal'    => false,
       'tag'                   => '',
       'title_in_portal'       => params['title'],
-      'updated_at'            => Time.now.iso8601,
+      'updated_at'            => timestamp,
       'url'                   => url_for("/user_fields/#{identity}.json"),
       'visible_in_portal'     => false,
     }.merge(user_field_params)

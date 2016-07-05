@@ -24,8 +24,8 @@ class Zendesk2::CreateTopicComment
     record = {
       'id'         => identity,
       'url'        => url_for("/topics/#{topic_id}/comments/#{identity}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
       'topic_id'   => topic_id,
     }.merge(topic_comment_params)
 

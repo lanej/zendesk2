@@ -147,6 +147,10 @@ module Zendesk2::Request
     }.merge(cistern.hash.slice(params, :method, :path, :body, :headers),),)
   end
 
+  def timestamp
+    Time.now.iso8601
+  end
+
   def mock_response(body, options = {})
     response(
       method: self.class.request_method,

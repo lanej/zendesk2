@@ -63,8 +63,8 @@ class Zendesk2::CreateView
     record = {
       'id'               => identity,
       'url'              => url_for("/views/#{identity}.json"),
-      'created_at'       => Time.now.iso8601,
-      'updated_at'       => Time.now.iso8601,
+      'created_at'       => timestamp,
+      'updated_at'       => timestamp,
       'active'           => true,
       'execution'        => {
         'columns'       => columns,

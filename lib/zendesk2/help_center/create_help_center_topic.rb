@@ -24,8 +24,8 @@ class Zendesk2::CreateHelpCenterTopic
       'url'         => url_for("/communit/topics/#{identity}.json"),
       'html_url'    => html_url_for("/hc/topics/#{identity}.json"),
       'position'    => position,
-      'created_at'  => Time.now.iso8601,
-      'updated_at'  => Time.now.iso8601,
+      'created_at'  => timestamp,
+      'updated_at'  => timestamp,
       'description' => '',
     }.merge(topic_params)
 

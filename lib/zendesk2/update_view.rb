@@ -28,7 +28,7 @@ class Zendesk2::UpdateView
       a + [{ 'id' => e, 'name' => Zendesk2::CreateView.view_columns.fetch(c) }]
     end
 
-    body['updated_at'] = Time.now.iso8601
+    body['updated_at'] = timestamp
 
     if columns.any?
       body['execution'] = {

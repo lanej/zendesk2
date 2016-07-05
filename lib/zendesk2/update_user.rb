@@ -54,8 +54,8 @@ class Zendesk2::UpdateUser
     user_identity = {
       'id'         => user_identity_id,
       'url'        => url_for("/users/#{user_id}/identities/#{user_identity_id}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
       'type'       => 'email',
       'value'      => email,
       'verified'   => false,

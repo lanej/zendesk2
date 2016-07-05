@@ -31,8 +31,8 @@ class Zendesk2::CreateTicket
     record = {
       'id'               => identity,
       'url'              => url_for("/tickets/#{identity}.json"),
-      'created_at'       => Time.now.iso8601,
-      'updated_at'       => Time.now.iso8601,
+      'created_at'       => timestamp,
+      'updated_at'       => timestamp,
       'priority'         => nil,
       'collaborator_ids' => [],
       'custom_fields'    => custom_fields,

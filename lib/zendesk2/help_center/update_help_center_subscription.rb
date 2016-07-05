@@ -25,7 +25,7 @@ class Zendesk2::UpdateHelpCenterSubscription
 
     updated = subscription_params
     updated['locale'] = updated.delete('source_locale') if updated['source_locale']
-    updated['updated_at'] = Time.now.iso8601
+    updated['updated_at'] = timestamp
 
     subscription.merge!(updated)
 

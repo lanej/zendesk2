@@ -20,8 +20,8 @@ class Zendesk2::CreateGroup
     record = {
       'id'         => identity,
       'url'        => url_for("/groups/#{identity}.json"),
-      'created_at' => Time.now.iso8601,
-      'updated_at' => Time.now.iso8601,
+      'created_at' => timestamp,
+      'updated_at' => timestamp,
       'deleted'    => false,
     }.merge(group_params)
 
