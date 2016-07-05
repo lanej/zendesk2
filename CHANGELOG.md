@@ -2,7 +2,28 @@
 
 ## [Unreleased](https://github.com/lanej/zendesk2/tree/HEAD)
 
-[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.1...HEAD)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.10.0...HEAD)
+
+**Implemented enhancements:**
+
+- Please add support to Help Center subscriptions [\#43](https://github.com/lanej/zendesk2/issues/43)
+- feature\(hc\): add subscriptions [\#54](https://github.com/lanej/zendesk2/pull/54) ([lanej](https://github.com/lanej))
+
+## [v1.10.0](https://github.com/lanej/zendesk2/tree/v1.10.0) (2016-07-01)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.9.0...v1.10.0)
+
+**Implemented enhancements:**
+
+- feature\(hc\): posts [\#56](https://github.com/lanej/zendesk2/pull/56) ([lanej](https://github.com/lanej))
+- feature\(hc\): add topics [\#55](https://github.com/lanej/zendesk2/pull/55) ([lanej](https://github.com/lanej))
+
+**Merged pull requests:**
+
+- Add locale option to categories endpoint [\#53](https://github.com/lanej/zendesk2/pull/53) ([codeminator](https://github.com/codeminator))
+- Enable rubocop [\#52](https://github.com/lanej/zendesk2/pull/52) ([lanej](https://github.com/lanej))
+
+## [v1.9.0](https://github.com/lanej/zendesk2/tree/v1.9.0) (2016-05-25)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.8.1...v1.9.0)
 
 **Merged pull requests:**
 
