@@ -39,6 +39,25 @@ describe 'Zendesk2' do
       end
     end
 
+    it 'should create collaborators' do
+      name = 'Josh Lane'
+      email = mock_email
+      collaborating_user = client.users.create!(email: mock_email, name: mock_uuid)
+      collaborating_user_id = client.users.create!(email: mock_email, name: mock_uuid).identity
+
+      ticket = client.tickets.create!(
+        subject: mock_uuid,
+        description: mock_uuid,
+        collaborators: [{ name: name, email: email }, collaborating_user_id, collaborating_user],
+      )
+
+      collaborators = [collaborating_user]
+      collaborators << client.users.get(collaborating_user_id)
+      collaborators << client.users.search(email: email).first if Zendesk2.mocking?
+
+      expect(ticket.collaborators).to include(*collaborators)
+    end
+
     context 'valid requester exists' do
       it 'sets organization id' do
         ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester_id: 11_111_111_111_199)

@@ -115,17 +115,6 @@ class Zendesk2::Ticket
     )
   end
 
-  # @return [Array<Zendesk2::User>] All users CCD on this ticket
-  def collaborators
-    collaborator_ids.map { |cid| cistern.users.get(cid) }
-  end
-
-  # Update list of users to be CCD on this ticket
-  # @param [Array<Zendesk2::User>] collaborators list of users
-  def collaborators=(collaborators)
-    self.collaborator_ids = collaborators.map(&:identity)
-  end
-
   # @return [Zendesk2::TicketAudits] all audits for this ticket
   def audits
     cistern.ticket_audits(ticket_id: identity).all
@@ -139,5 +128,25 @@ class Zendesk2::Ticket
   # @return [Array<Zendesk2::TicketComment>] all comments for this ticket
   def comments
     cistern.ticket_comments(ticket_id: identity).all
+  end
+
+  # @return [Array<Zendesk2::User>] All users CCD on this ticket
+  def collaborators
+    (collaborator_ids || []).map { |id| cistern.users.get(id) }
+  end
+
+  def collaborators=(collaborators)
+    collaborators = [collaborators] unless collaborators.is_a?(Array)
+
+    value = collaborators.map do |collaborator|
+      case collaborator
+      when Zendesk2::User
+        collaborator.identity
+      else
+        collaborator
+      end
+    end
+
+    attributes[:collaborators] = value
   end
 end
