@@ -23,4 +23,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'faraday',            '~> 0.9'
   gem.add_dependency 'faraday_middleware', '~> 0.9'
   gem.add_dependency 'jwt',                '~> 1.0'
+  gem.add_dependency 'json',               '> 1.7', '< 3.0'
 end
