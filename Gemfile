@@ -5,8 +5,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-# To avoid warnings from JWT
-gem 'json', '~> 1.8'
 gem 'rubocop', '~> 0.42', require: false
 
 group :test do
