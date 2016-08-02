@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 module Zendesk2::HelpCenter::SubscriptionRequest
-
   def self.included(klass)
     super
     klass.extend(ClassMethods)

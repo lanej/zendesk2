@@ -15,7 +15,7 @@ class Zendesk2::GetViewTickets
     view = find!(:views, view_id)
 
     operators = Array(view['conditions']['all']).map do |c|
-      operator = ('is' == c.fetch('operator')) ? :eql? : :!=
+      operator = 'is' == c.fetch('operator') ? :eql? : :!=
       key      = c.fetch('field')
       value    = c.fetch('value').to_s
 
@@ -27,7 +27,7 @@ class Zendesk2::GetViewTickets
     end
 
     any_operators = Array(view['conditions']['any']).map do |c|
-      operator = ('is' == c.fetch('operator')) ? :eql? : :!=
+      operator = 'is' == c.fetch('operator') ? :eql? : :!=
       key      = c.fetch('field')
       value    = c.fetch('value').to_s
 

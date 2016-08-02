@@ -28,7 +28,6 @@ class Zendesk2::CreateHelpCenterSubscription
       mock_response('Required parameter missing: subscription', status: 400)
     end
 
-
     record = subscription_params.merge(
       'id'           => identity,
       'url'          => url,
