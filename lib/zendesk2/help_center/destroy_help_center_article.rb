@@ -10,6 +10,8 @@ class Zendesk2::DestroyHelpCenterArticle
   end
 
   def mock
-    mock_response('article' => find!(:help_center_articles, article_id))
+    delete!(:help_center_articles, article_id)
+
+    mock_response(nil)
   end
 end
