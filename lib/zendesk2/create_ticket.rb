@@ -98,12 +98,15 @@ class Zendesk2::CreateTicket
       else
         raise ArgumentError, "Unprocessable collaborator: #{spec}"
       end
-    end
+    end.compact
 
     create_params.merge!('collaborator_ids' => ids)
   end
 
   def find_or_create_user(user)
+    return nil unless user['email']
+    user['name'] ||= user['email'].split("@").first.capitalize
+
     known_user = cistern.users.search(email: user['email']).first
 
     user_id = (known_user && known_user.identity) ||

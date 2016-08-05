@@ -58,6 +58,28 @@ describe 'Zendesk2' do
       expect(ticket.collaborators).to include(*collaborators)
     end
 
+    it 'fails to create collaborators with missing collaborators[email]' do
+      ticket = client.tickets.create!(
+        subject: mock_uuid,
+        description: mock_uuid,
+        collaborators: { name: 'josh', email: nil },
+      )
+
+      expect(ticket.collaborators).to be_empty
+    end
+
+    it 'fails to create collaborators with missing collaborators[name]' do
+      email = mock_email
+
+      ticket = client.tickets.create!(
+        subject: mock_uuid,
+        description: mock_uuid,
+        collaborators: { name: nil, email: email },
+      )
+
+      expect(ticket.collaborators.map(&:email)).to contain_exactly(email)
+    end
+
     context 'valid requester exists' do
       it 'sets organization id' do
         ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, requester_id: 11_111_111_111_199)
