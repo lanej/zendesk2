@@ -21,15 +21,15 @@ module Zendesk2::Searchable
   # @see http://developer.zendesk.com/documentation/rest_api/search.html
   def search(terms, params = {})
     query = (terms.is_a?(Hash) ? search_by_hash(terms) : search_by_string(terms))
-
     body = cistern.send(self.class.search_request, query, params).body
     data = body.delete('results')
 
-    if data
-      load(data)
-      merge_attributes(Cistern::Hash.slice(body, 'count', 'next_page', 'previous_page').merge('filtered' => true))
-      self
-    end
+    return nil unless data
+
+    load(data)
+
+    merge_attributes(Cistern::Hash.slice(body, 'count', 'next_page', 'previous_page').merge('filtered' => true))
+    self
   end
 
   private
