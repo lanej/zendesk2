@@ -58,19 +58,19 @@ module Zendesk2::PagedCollection
   end
 
   def next_page
-    if next_page_link
-      options = { 'url' => next_page_link }
-      options['filtered'] = filtered if respond_to?(:filtered) # searchable
-      new_page.all(options)
-    end
+    return nil unless next_page_link
+
+    options = { 'url' => next_page_link }
+    options['filtered'] = filtered if respond_to?(:filtered) # searchable
+    new_page.all(options)
   end
 
   def previous_page
-    if previous_page_link
-      options = { 'url' => previous_page_link }
-      options['filtered'] = filtered if respond_to?(:filtered) # searchable
-      new_page.all(options)
-    end
+    return nil unless previous_page_link
+
+    options = { 'url' => previous_page_link }
+    options['filtered'] = filtered if respond_to?(:filtered) # searchable
+    new_page.all(options)
   end
 
   # Attempt creation of resource and explode if unsuccessful

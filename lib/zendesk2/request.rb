@@ -52,18 +52,11 @@ module Zendesk2::Request
 
   attr_reader :params
 
-  def setup(params)
+  def call(*args)
+    params = args.last.is_a?(Hash) ? args.pop : {}
     @params = Cistern::Hash.stringify_keys(params)
-  end
 
-  def _mock(params = {})
-    setup(params)
-    mock
-  end
-
-  def _real(params = {})
-    setup(params)
-    real
+    dispatch
   end
 
   def page_params!(options)

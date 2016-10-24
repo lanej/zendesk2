@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-gem 'rubocop', '~> 0.42', require: false
+gem 'rubocop', '~> 0.44.1', require: false
 
 group :test do
   gem 'pry-nav'

@@ -3,6 +3,7 @@ class Zendesk2::Mock
   attr_reader :username, :url, :token, :jwt_token
   attr_accessor :last_request
 
+  # rubocop:disable Metrics/BlockLength
   def self.data
     @data ||= Hash.new do |h, k|
       h[k] = {

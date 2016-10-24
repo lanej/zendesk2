@@ -19,7 +19,7 @@ require 'securerandom'
 module Zendesk2
   include Cistern::Client.with(interface: :module)
 
-  USER_AGENT = <<-UA
+  USER_AGENT = <<-UA.freeze
   Ruby/#{RUBY_VERSION} (#{RUBY_PLATFORM}; #{RUBY_ENGINE}) Zendesk2/#{Zendesk2::VERSION} Faraday/#{Faraday::VERSION}
   UA
 

@@ -10,16 +10,9 @@ class Zendesk2::SearchOrganization
 
   page_params!
 
-  def _mock(query, params = {})
+  def call(query, params = {})
     @query = query
-    setup(params)
-    mock
-  end
-
-  def _real(query, params = {})
-    @query = query
-    setup(params)
-    real
+    super(params)
   end
 
   def mock

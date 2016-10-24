@@ -105,7 +105,7 @@ class Zendesk2::CreateTicket
 
   def find_or_create_user(user)
     return nil unless user['email']
-    user['name'] ||= user['email'].split("@").first.capitalize
+    user['name'] ||= user['email'].split('@').first.capitalize
 
     known_user = cistern.users.search(email: user['email']).first
 

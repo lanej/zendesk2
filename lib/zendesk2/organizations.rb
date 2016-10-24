@@ -15,11 +15,12 @@ class Zendesk2::Organizations
   def find_by_external_id(external_id)
     body = cistern.get_organization_by_external_id('external_id' => external_id).body
     data = body.delete('organizations')
-    if data
-      collection = clone.load(data)
-      collection.merge_attributes(Cistern::Hash.slice(body, 'count', 'next_page', 'previous_page'))
-      collection
-    end
+
+    return unless data
+
+    collection = clone.load(data)
+    collection.merge_attributes(Cistern::Hash.slice(body, 'count', 'next_page', 'previous_page'))
+    collection
   end
 
   self.collection_method = :get_organizations
