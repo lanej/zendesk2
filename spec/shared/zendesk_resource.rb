@@ -59,7 +59,7 @@ shared_examples 'zendesk#resource' do |options = {}|
     context 'index' do
       let!(:resource) { @resource = collection.create!(instance_exec(&options[:create_params])) }
 
-      after { @resource&.destroy }
+      after { @resource.destroy if @resource }
 
       # real index actions sometimes have delays in population
       it 'lists', mock_only: true do

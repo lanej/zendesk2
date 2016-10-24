@@ -10,7 +10,7 @@ class Zendesk2::SearchOrganization
 
   page_params!
 
-  def call(query, params={})
+  def call(query, params = {})
     @query = query
     super(params)
   end
