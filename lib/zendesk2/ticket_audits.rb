@@ -13,6 +13,8 @@ class Zendesk2::TicketAudits
   self.model_method      = :get_ticket_audit
   self.model_root        = 'audit'
 
+  scopes << :ticket_id
+
   def ticket
     cistern.tickets.get(ticket_id)
   end
