@@ -24,6 +24,7 @@ class Zendesk2::Mock
         ticket_audits: {},
         ticket_comments: {},
         ticket_fields: {},
+        ticket_forms: {},
         ticket_metrics: {},
         tickets: {},
         topic_comments: {},

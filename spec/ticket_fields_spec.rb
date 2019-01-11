@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'ticket_fields' do
+describe '  ticket_fields' do
   let(:client) { create_client }
 
   include_examples 'zendesk#resource', collection: -> { client.ticket_fields },

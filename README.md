@@ -69,6 +69,7 @@ Currently support resources:
 * Ticket Audits
 * Ticket Fields
 * Tickets
+* Ticket Forms
 * Topic Comments
 * Topics
 * User Identities
