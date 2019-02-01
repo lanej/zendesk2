@@ -57,6 +57,8 @@ class Zendesk2::Ticket
   attribute :url, type: :string
   # @return [Hash] This object explains how the ticket was created
   attribute :via
+  # @return [Integer] Enterprise only. The id of the ticket form to render for the ticket
+  attribute :ticket_form_id
 
   # @return [Zendesk2::Organization] organization assigned to ticket
   assoc_reader :organization
