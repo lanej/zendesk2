@@ -61,6 +61,7 @@ Zendesk2.new(url: "http://support.cloud.engineyard.com", username: "mate", token
 Currently support resources:
 
 * Audit Events
+* Brands
 * Categories
 * Forums
 * Groups
