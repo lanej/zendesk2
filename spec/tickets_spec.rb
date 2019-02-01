@@ -130,6 +130,14 @@ describe 'Zendesk2' do
 
       expect(ticket.ticket_form_id).to eq(42)
     end
+
+    it 'should set brand_id' do
+      brand_id = 42
+
+      ticket = client.tickets.create!(subject: mock_uuid, description: mock_uuid, brand_id: brand_id)
+
+      expect(ticket.brand_id).to eq(42)
+    end
   end
 
   describe 'with a created ticket' do

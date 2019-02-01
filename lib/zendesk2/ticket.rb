@@ -59,6 +59,8 @@ class Zendesk2::Ticket
   attribute :via
   # @return [Integer] Enterprise only. The id of the ticket form to render for the ticket
   attribute :ticket_form_id
+  # @return [Integer] Enterprise only. The id of the brand this ticket is associated with
+  attribute :brand_id
 
   # @return [Zendesk2::Organization] organization assigned to ticket
   assoc_reader :organization
