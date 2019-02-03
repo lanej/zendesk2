@@ -31,7 +31,7 @@ class Zendesk2::CreateTicketForm
       'ticket_field_ids'     => params['ticket_field_ids'],
       'in_all_brands'        => false,
       'restricted_brand_ids' => params['restricted_brand_ids'],
-      'url'                  => url_for("/ticket_forms/#{identity}.json")
+      'url'                  => url_for("/ticket_forms/#{identity}.json"),
     }.merge(ticket_form_params)
 
     data[:ticket_forms][identity] = record
