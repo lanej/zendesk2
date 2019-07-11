@@ -45,6 +45,10 @@ class Zendesk2::HelpCenter::Article
   attribute :vote_count, type: :integer # ro:yes required:no
   # @return [Integer] The total sum of votes on this article
   attribute :vote_sum, type: :integer # ro:yes required:no
+  # @return [Integer] The id of the user segment which defines who can see this article
+  attribute :user_segment_id, type: :integer, default: nil # ro:no required:yes
+  # @return [Integer] The id of the permission group which defines who can edit and publish this article
+  attribute :permission_group_id, type: :integer # ro:no required:yes
 
   assoc_accessor :section, collection: :help_center_sections
 
@@ -62,7 +66,7 @@ class Zendesk2::HelpCenter::Article
 
   def save!
     response = if new_record?
-                 requires :title, :locale, :section_id
+                 requires :title, :locale, :section_id, :permission_group_id
 
                  cistern.create_help_center_article('article' => attributes)
                else
