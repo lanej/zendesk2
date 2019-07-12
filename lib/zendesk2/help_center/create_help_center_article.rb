@@ -50,6 +50,8 @@ class Zendesk2::CreateHelpCenterArticle
       'body'              => '',
       'source_locale'     => locale,
       'outdated'          => false,
+      'user_segment_id'   => 0,
+      'permission_group_id' => 0,
     }.merge(article_params)
 
     data[:help_center_articles][identity] = record
