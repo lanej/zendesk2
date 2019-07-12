@@ -14,7 +14,8 @@ describe 'help_center/subscriptions' do
     let!(:article) do
       client.help_center_articles.create!(title: mock_uuid,
                                           locale: 'en-us',
-                                          section: section)
+                                          section: section,
+                                          permission_group_id: 0)
     end
 
     include_examples 'zendesk#resource',
