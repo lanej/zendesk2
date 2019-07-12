@@ -13,7 +13,8 @@ describe 'help_center/articles' do
 
   include_examples 'zendesk#resource',
                    collection: -> { client.help_center_articles },
-                   create_params: -> { { title: mock_uuid, locale: 'en-us', section: section, permission_group_id: 0 } },
+                   create_params:
+                     -> { { title: mock_uuid, locale: 'en-us', section: section, permission_group_id: 0 } },
                    update_params: -> { { title: mock_uuid } },
                    search_params: -> { Cistern::Hash.slice(create_params, :title) },
                    search: true

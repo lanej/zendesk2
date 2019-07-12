@@ -18,11 +18,14 @@ describe 'help_center/sections' do
 
   context 'with a category, sections, and articles' do
     let!(:section)  { category.sections.create!(name: mock_uuid, locale: 'en-us') }
-    let!(:articles) { Array.new(2) { section.articles.create(title: mock_uuid, locale: 'en-us', permission_group_id: 0) } }
+    let!(:articles) do
+      Array.new(2) { section.articles.create(title: mock_uuid, locale: 'en-us', permission_group_id: 0) }
+    end
 
     before do
       client.help_center_categories.create!(name: mock_uuid, locale: 'en-us')
-            .sections.create!(name: mock_uuid, locale: 'en-us').articles.create!(title: mock_uuid, locale: 'en-us', permission_group_id: 0)
+            .sections.create!(name: mock_uuid, locale: 'en-us')
+            .articles.create!(title: mock_uuid, locale: 'en-us', permission_group_id: 0)
     end
 
     it 'lists articles within a section' do

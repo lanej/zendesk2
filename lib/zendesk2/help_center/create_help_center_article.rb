@@ -14,7 +14,19 @@ class Zendesk2::CreateHelpCenterArticle
   end
 
   def self.accepted_attributes
-    %w(author_id body comments_disabled draft label_names locale position promoted section_id title user_segment_id permission_group_id)
+    %w(
+      author_id
+      body
+      comments_disabled
+      draft
+      label_names
+      locale
+      position
+      promoted
+      section_id
+      title user_segment_id
+      permission_group_id
+    )
   end
 
   def article_params

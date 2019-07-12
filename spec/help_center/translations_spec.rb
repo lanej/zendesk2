@@ -29,7 +29,9 @@ describe 'help_center/translations' do
   end
 
   describe 'by article' do
-    let!(:article) { client.help_center_articles.create!(title: mock_uuid, locale: 'en-us', section: section, permission_group_id: 0) }
+    let!(:article) do
+      client.help_center_articles.create!(title: mock_uuid, locale: 'en-us', section: section, permission_group_id: 0)
+    end
 
     include_examples 'zendesk#resource',
                      collection: -> { article.translations },
