@@ -14,7 +14,19 @@ class Zendesk2::CreateHelpCenterArticle
   end
 
   def self.accepted_attributes
-    %w(author_id body comments_disabled draft label_names locale position promoted section_id title)
+    %w(
+      author_id
+      body
+      comments_disabled
+      draft
+      label_names
+      locale
+      position
+      promoted
+      section_id
+      title user_segment_id
+      permission_group_id
+    )
   end
 
   def article_params
@@ -32,24 +44,26 @@ class Zendesk2::CreateHelpCenterArticle
     position = data[:help_center_articles].values.select { |a| a['section_id'] == section_id }.size
 
     record = {
-      'id'                => identity,
-      'url'               => url_for("/help_center/#{locale}/articles/#{identity}.json"),
-      'html_url'          => html_url_for("/hc/#{locale}/articles/#{identity}.json"),
-      'author_id'         => cistern.current_user['id'],
-      'comments_disabled' => false,
-      'label_names'       => [],
-      'draft'             => false,
-      'promoted'          => false,
-      'position'          => position,
-      'vote_sum'          => 0,
-      'vote_count'        => 0,
-      'section_id'        => section_id,
-      'created_at'        => timestamp,
-      'updated_at'        => timestamp,
-      'title'             => '',
-      'body'              => '',
-      'source_locale'     => locale,
-      'outdated'          => false,
+      'id'                  => identity,
+      'url'                 => url_for("/help_center/#{locale}/articles/#{identity}.json"),
+      'html_url'            => html_url_for("/hc/#{locale}/articles/#{identity}.json"),
+      'author_id'           => cistern.current_user['id'],
+      'comments_disabled'   => false,
+      'label_names'         => [],
+      'draft'               => false,
+      'promoted'            => false,
+      'position'            => position,
+      'vote_sum'            => 0,
+      'vote_count'          => 0,
+      'section_id'          => section_id,
+      'created_at'          => timestamp,
+      'updated_at'          => timestamp,
+      'title'               => '',
+      'body'                => '',
+      'source_locale'       => locale,
+      'outdated'            => false,
+      'user_segment_id'     => 0,
+      'permission_group_id' => 0,
     }.merge(article_params)
 
     data[:help_center_articles][identity] = record
