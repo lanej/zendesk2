@@ -1,5 +1,29 @@
 # Change Log
 
+## [v1.13.0](https://github.com/lanej/zendesk2/tree/v1.13.0) (2019-08-28)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.12.0...v1.13.0)
+
+**Closed issues:**
+
+- How to specify role when getting all users? [\#65](https://github.com/lanej/zendesk2/issues/65)
+
+**Merged pull requests:**
+
+- Add user\_segment\_id and permission\_group\_id as arguments to create HelpCenter article [\#67](https://github.com/lanej/zendesk2/pull/67) ([jolly7nap3](https://github.com/jolly7nap3))
+- Add Ticket Form and Brand support [\#66](https://github.com/lanej/zendesk2/pull/66) ([pirvudoru](https://github.com/pirvudoru))
+
+## [v1.12.0](https://github.com/lanej/zendesk2/tree/v1.12.0) (2016-10-25)
+[Full Changelog](https://github.com/lanej/zendesk2/compare/v1.11.0...v1.12.0)
+
+**Merged pull requests:**
+
+- fix master: rubocop and deprecated cistern calls [\#64](https://github.com/lanej/zendesk2/pull/64) ([lanej](https://github.com/lanej))
+- fix\(request\): handle missing requester information in \#create\_ticket [\#61](https://github.com/lanej/zendesk2/pull/61) ([lanej](https://github.com/lanej))
+- Actually destroy the help center article in mocks [\#60](https://github.com/lanej/zendesk2/pull/60) ([omgitsads](https://github.com/omgitsads))
+- chore\(dep\): allow json \> 1.7, \< 3.0 [\#59](https://github.com/lanej/zendesk2/pull/59) ([lanej](https://github.com/lanej))
+- feature\(\*\): create tickets with collaborator descriptions [\#58](https://github.com/lanej/zendesk2/pull/58) ([lanej](https://github.com/lanej))
+- Add a Gitter chat badge to README.md [\#57](https://github.com/lanej/zendesk2/pull/57) ([gitter-badger](https://github.com/gitter-badger))
+
 ## [v1.11.0](https://github.com/lanej/zendesk2/tree/v1.11.0) (2016-07-05)
 [Full Changelog](https://github.com/lanej/zendesk2/compare/v1.10.0...v1.11.0)
 
