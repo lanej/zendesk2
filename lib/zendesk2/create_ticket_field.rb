@@ -8,7 +8,7 @@ class Zendesk2::CreateTicketField
 
   def self.accepted_attributes
     %w(type title description position active required collapsed_for_agents regexp_for_validation title_in_portal
-       visible_in_portal editable_in_portal required_in_portal tag custom_field_options)
+       visible_in_portal editable_in_portal required_in_portal tag custom_field_options agent_description)
   end
 
   def ticket_field_params
@@ -35,6 +35,7 @@ class Zendesk2::CreateTicketField
       'updated_at'            => timestamp,
       'url'                   => url_for("/ticket_fields/#{identity}.json"),
       'visible_in_portal'     => false,
+      'agent_description'     => '',
     }.merge(ticket_field_params)
 
     data[:ticket_fields][identity] = record

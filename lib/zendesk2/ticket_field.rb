@@ -45,6 +45,8 @@ class Zendesk2::TicketField
   attribute :url, type: :string
   # @return [Boolean] Whether this field is available to end users
   attribute :visible_in_portal, type: :boolean
+  # @return [String] A description of the ticket field that only agents can see
+  attribute :agent_description, type: :string
 
   def save!
     data = if new_record?

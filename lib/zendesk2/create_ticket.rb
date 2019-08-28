@@ -8,7 +8,7 @@ class Zendesk2::CreateTicket
 
   def self.accepted_attributes
     %w(external_id via priority requester requester_id submitter_id assignee_id organization_id subject description
-       custom_fields recipient status collaborator_ids collaborators tags)
+       custom_fields recipient status collaborator_ids collaborators tags ticket_form_id brand_id)
   end
 
   def ticket_params

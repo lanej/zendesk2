@@ -7,6 +7,7 @@ class Zendesk2::Mock
   def self.data
     @data ||= Hash.new do |h, k|
       h[k] = {
+        brands: {},
         categories: {},
         forums: {},
         groups: {},
@@ -24,6 +25,7 @@ class Zendesk2::Mock
         ticket_audits: {},
         ticket_comments: {},
         ticket_fields: {},
+        ticket_forms: {},
         ticket_metrics: {},
         tickets: {},
         topic_comments: {},
