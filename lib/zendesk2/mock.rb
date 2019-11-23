@@ -13,6 +13,7 @@ class Zendesk2::Mock
         groups: {},
         help_center_access_policies: {},
         help_center_articles: {},
+        help_center_article_attachments: {},
         help_center_categories: {},
         help_center_posts: {},
         help_center_sections: {},
