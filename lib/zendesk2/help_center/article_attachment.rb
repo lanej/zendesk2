@@ -18,7 +18,9 @@ class Zendesk2::HelpCenter::ArticleAttachment
   attribute :content_type, type: :string # ro:yes required:yes
   # @return [Integer] The size of the attachment file in bytes
   attribute :size, type: :integer # ro:no required:no
-  # @return [Boolean] If true, the attached file is shown in the dedicated admin UI for inline attachments and its url can be referenced in the HTML body of the article. If false, the attachment is listed in the list of attachments. Default is false
+  # @return [Boolean] If true, the attached file is shown in the dedicated admin UI for inline attachments
+  # and its url can be referenced in the HTML body of the article. If false, the attachment is listed
+  # in the list of attachments. Default is false
   attribute :inline, type: :boolean # ro:no required:no
 
   # @return [Time] The time at which the article was created
