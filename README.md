@@ -1,7 +1,5 @@
 # Zendesk2
 
-[![Join the chat at https://gitter.im/lanej/zendesk2](https://badges.gitter.im/lanej/zendesk2.svg)](https://gitter.im/lanej/zendesk2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/lanej/zendesk2.svg?branch=master)](http://travis-ci.org/lanej/zendesk2)
 [![Gem Version](https://fury-badge.herokuapp.com/rb/zendesk2.png)](http://badge.fury.io/rb/zendesk2)
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/lanej/zendesk2)
