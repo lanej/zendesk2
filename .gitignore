@@ -19,3 +19,4 @@ tmp
 doc/
 .rvmrc
 .ruby-version
+.rspec_failures.txt
