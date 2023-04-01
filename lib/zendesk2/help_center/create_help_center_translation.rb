@@ -4,7 +4,7 @@ class Zendesk2::CreateHelpCenterTranslation
   include Zendesk2::HelpCenter::TranslationSource::Request
 
   request_method :post
-  request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations/#{r.locale}.json" }
+  request_path { |r| "/help_center/#{r.source_type_url}/#{r.source_id}/translations" }
   request_body { |r| { 'translation' => r.translation_params } }
 
   def self.accepted_attributes
@@ -20,7 +20,7 @@ class Zendesk2::CreateHelpCenterTranslation
 
     record = {
       'id'                => identity,
-      'url'               => url_for("/help_center/#{source_type_url}/#{source_id}/translation/#{locale}.json"),
+      'url'               => url_for("/help_center/#{source_type_url}/#{source_id}/translation"),
       'html_url'          => html_url_for("/hc/#{locale}/#{source_type_url}/#{source_id}"),
       'created_at'        => timestamp,
       'updated_at'        => timestamp,
